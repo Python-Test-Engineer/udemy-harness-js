@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mini-coding-js &middot; Long-term memory explainer</title>
+<style>
+html{font-size:var(--root-size,31.5px)}
+
+:root{
+  --paper:#f0eee6; --surface:#fbfaf7; --ivory:#fffdfa; --ink:#1f1e1d;
+  --prose:#33302c; --muted:#55524c; --stone:#8c877c;
+  --line:#e0dbcf; --line-soft:#e9e4d8; --tint:#f6ede6;
+  --terra:#d97757; --terra-dark:#c9633f; --amber:#b9862f;
+  --code-bg:#23211e; --code-bar:#2b2823; --code-line:#3a3732;
+  --code-ink:#f2ece1; --code-dim:#a9a294; --code-accent:#f0b49a;
+  --root-size:31.5px;
+  --sidebar:14.5rem; --measure:76rem; --stage-h:clamp(860px,48vh,980px);
+  --shadow:0 18px 48px rgba(31,30,29,.11);
+  --sans:-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif;
+  --serif:'Iowan Old Style',Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif;
+  --mono:'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--prose);
+  font:1rem/1.62 var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:#f0d3c6;color:#2a2622}
+button,select{font:inherit}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);align-items:start}
+.sidebar{
+  position:sticky;top:0;height:100vh;overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-width:thin;scrollbar-color:#cec6b5 transparent;
+  padding:1.5rem 1.05rem 2rem 1.25rem;
+  border-right:.0625rem solid var(--line);
+  background:linear-gradient(180deg,#f4f1e9,#efece3 60%,#ece8de);
+}
+.side-kicker{
+  display:block;margin:0 0 .55rem;color:var(--terra-dark);text-decoration:none;
+  font:600 .64rem/1.3 var(--sans);letter-spacing:.14em;text-transform:uppercase;
+}
+.side-title{margin:0;color:var(--ink);font:500 1.3rem/1.18 var(--serif);letter-spacing:-.01em}
+.side-sub{margin:.4rem 0 0;color:var(--stone);font-size:.76rem;line-height:1.45}
+.side-rule{height:.0625rem;margin:1.05rem 0 .8rem;background:var(--line)}
+.side-label{
+  margin:0 0 .35rem;color:var(--stone);
+  font:600 .63rem/1.3 var(--sans);letter-spacing:.13em;text-transform:uppercase;
+}
+.toc{display:flex;flex-direction:column;gap:.0625rem}
+.toc a{
+  display:flex;gap:.5rem;align-items:baseline;
+  padding:.36rem .5rem .36rem .58rem;border-left:.125rem solid transparent;border-radius:0 .4rem .4rem 0;
+  color:var(--muted);font-size:.79rem;line-height:1.4;text-decoration:none;
+  transition:background .14s,color .14s,border-color .14s;
+}
+.toc a .n{color:#a9a294;font:.66rem/1 var(--mono);flex:0 0 1.1rem}
+.toc a:hover{background:#e8e3d6;color:var(--ink)}
+.toc a.active{background:var(--tint);border-left-color:var(--terra);color:var(--ink);font-weight:600}
+.toc a.active .n{color:var(--terra-dark)}
+.toc a.done .n{color:var(--terra-dark)}
+.side-foot{
+  margin-top:1.15rem;padding-top:.8rem;border-top:.0625rem solid var(--line);
+  color:var(--stone);font-size:.7rem;line-height:1.6;
+}
+.side-foot code{font-size:.64rem}
+.side-foot .key{
+  display:inline-block;padding:.05rem .3rem;border:1px solid var(--line);border-radius:.25rem;
+  background:var(--surface);color:var(--muted);font:.6rem/1.4 var(--mono);
+}
+.sidebar::-webkit-scrollbar{width:.4rem}
+.sidebar::-webkit-scrollbar-thumb{background:#d5ccbb;border-radius:.5rem}
+
+.progress{position:fixed;top:0;left:var(--sidebar);right:0;height:.125rem;z-index:40;background:transparent}
+.progress span{display:block;height:100%;width:0;background:var(--terra);transition:width .1s linear}
+
+/* ---------- content ---------- */
+.pane{padding:1.55rem 1.8rem 4rem;min-width:0}
+.inner{max-width:var(--measure);margin:0 auto}
+.page-heading{margin:0 0 1rem;padding-bottom:.85rem;border-bottom:.0625rem solid var(--line)}
+.page-heading .eyebrow{
+  margin:0 0 .55rem;color:var(--terra-dark);
+  font:600 .66rem/1.3 var(--sans);letter-spacing:.15em;text-transform:uppercase;
+}
+h1{margin:0;color:var(--ink);font:500 clamp(1.8rem,3vw,2.35rem)/1.08 var(--serif);letter-spacing:-.02em}
+.page-heading .lede{margin:.58rem 0 0;color:var(--muted);font-size:.87rem;max-width:44rem}
+.meta{
+  margin:.62rem 0 0;display:flex;flex-wrap:wrap;gap:.2rem .65rem;
+  color:var(--stone);font:.61rem/1.6 var(--mono);
+}
+.meta span::before{content:"·";margin-right:.65rem;color:#c3bcae}
+.meta span:first-child::before{content:none;margin:0}
+code{
+  padding:.1em .34em;border-radius:.28rem;background:#e9e4d7;color:#7c3f2b;
+  font:.84em/1.5 var(--mono);word-break:break-word;
+}
+strong{color:var(--ink);font-weight:600}
+
+/* ---------- player ---------- */
+.player{margin:0 0 1.6rem}
+.player-top{
+  display:flex;justify-content:space-between;gap:1rem;align-items:center;
+  margin:0 0 .5rem;padding:0 .15rem;color:var(--stone);
+  font:.65rem/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;
+}
+.player-lesson{display:flex;align-items:center;gap:.45rem;color:var(--terra-dark);font-weight:600}
+.rec-dot{width:.42rem;height:.42rem;border-radius:50%;background:var(--terra);box-shadow:0 0 0 0 rgba(217,119,87,.5);animation:rec 2.2s infinite}
+@keyframes rec{0%{box-shadow:0 0 0 0 rgba(217,119,87,.45)}70%{box-shadow:0 0 0 .38rem rgba(217,119,87,0)}100%{box-shadow:0 0 0 0 rgba(217,119,87,0)}}
+.player-state{display:flex;gap:.55rem;align-items:center;font-variant-numeric:tabular-nums}
+.player-state .sep{color:var(--line)}
+
+.stage{
+  position:relative;height:var(--stage-h);min-height:860px;overflow:hidden;
+  border:.0625rem solid var(--line);border-radius:1.05rem;
+  background:
+    radial-gradient(1100px 380px at 15% -15%,rgba(217,119,87,.09),transparent 62%),
+    radial-gradient(800px 360px at 100% 110%,rgba(185,134,47,.07),transparent 60%),
+    var(--surface);
+  box-shadow:var(--shadow);
+}
+.stage::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+  background-size:2.4rem 2.4rem;
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.45),transparent 70%);
+}
+.scene{
+  position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;
+  gap:.45rem;padding:1.05rem 1.2rem .7rem;overflow:auto;scrollbar-width:thin;
+  opacity:0;visibility:hidden;transform:translateY(.55rem);
+  transition:opacity .42s ease,transform .42s ease,visibility .42s;
+}
+.scene.active{opacity:1;visibility:visible;transform:none}
+.scene::-webkit-scrollbar{width:.35rem;height:.35rem}
+.scene::-webkit-scrollbar-thumb{background:var(--line);border-radius:.5rem}
+
+.scene-head{display:flex;gap:.85rem;align-items:center;flex:0 0 auto}
+.chip{
+  flex:0 0 auto;display:grid;place-items:center;width:2rem;height:2rem;
+  border-radius:.55rem;background:var(--tint);color:var(--terra-dark);
+  font:700 .72rem/1 var(--mono);
+}
+.scene-kicker{
+  margin:0 0 .2rem;color:var(--stone);
+  font:600 .66rem/1.3 var(--sans);letter-spacing:.15em;text-transform:uppercase;
+}
+.stage-title{margin:0;color:var(--ink);font:500 clamp(1.42rem,2.7vw,2.05rem)/1.09 var(--serif);letter-spacing:-.02em}
+.stage-title em{font-style:italic;color:var(--terra-dark)}
+
+[data-at]{opacity:0;transform:translateY(.55rem);transition:opacity .48s ease,transform .48s ease,box-shadow .3s,border-color .3s,background .3s}
+[data-at].on{opacity:1;transform:none}
+
+.two-col{display:grid;grid-template-columns:1.08fr .92fr;gap:1rem;min-height:0}
+.problem-grid{flex:1;align-items:center}
+.problem-side{display:flex;flex-direction:column;gap:.5rem;justify-content:center}
+.wish{
+  display:flex;gap:.65rem;align-items:center;padding:.58rem .7rem;
+  border:.0625rem solid var(--line);border-radius:.65rem;background:var(--ivory);
+  transition:transform .2s,border-color .2s;
+}
+.wish:hover{transform:translateX(.18rem);border-color:#d8c7b8}
+.wish-ico{display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:.48rem;background:var(--tint);font-size:.9rem;flex:0 0 auto}
+.wish strong{display:block;font-size:.8rem;line-height:1.25}
+.wish small{display:block;color:var(--stone);font-size:.66rem;line-height:1.3}
+.wish-arrow{color:var(--stone);font-size:.66rem;line-height:1.45;text-align:right;padding:.15rem .25rem 0}
+
+.panel{border-radius:.7rem;overflow:hidden;background:var(--code-bg);border:.0625rem solid #34312b;min-width:0}
+.panel-head{
+  display:flex;justify-content:space-between;gap:.6rem;align-items:center;
+  padding:.42rem .72rem;background:var(--code-bar);border-bottom:.0625rem solid var(--code-line);
+  color:var(--code-accent);font:.64rem/1.4 var(--mono);letter-spacing:.02em;
+}
+.panel-lang{color:#7d776b;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase}
+.panel pre{
+  margin:0;padding:.72rem .85rem .82rem;overflow-x:auto;color:var(--code-ink);
+  font:.7rem/1.62 var(--mono);tab-size:2;white-space:pre-wrap;overflow-wrap:break-word;
+}
+.tok-k{color:#e08a6a}.tok-s{color:#a8c98f}.tok-f{color:#e6c07b}.tok-c{color:#8f8a7e}
+
+.big-statement{
+  margin-top:auto;padding:.72rem .9rem;border-left:.18rem solid var(--terra);border-radius:0 .55rem .55rem 0;
+  background:var(--tint);color:#4b4741;font-size:.85rem;line-height:1.5;
+}
+.big-statement .statement-label{
+  display:inline-block;margin-right:.45rem;color:var(--terra-dark);
+  font:700 .57rem/1.4 var(--sans);letter-spacing:.13em;text-transform:uppercase;
+}
+.big-statement em{color:var(--ink);font-style:italic}
+
+/* contract scene */
+.contract-top{display:flex;align-items:stretch;gap:.5rem;flex:0 0 auto}
+.payload-card,.hook-node,.decision-card{
+  flex:1;min-width:0;padding:.62rem .7rem;border:.0625rem solid var(--line);border-radius:.65rem;background:var(--ivory);
+}
+.payload-card .mini-label,.decision-card .mini-label{display:block;margin-bottom:.18rem}
+.payload-card code,.decision-card code{display:inline-block;background:var(--tint);color:#7c3f2b;font-size:.7rem}
+.payload-card small,.decision-card small,.hook-node small{display:block;margin-top:.24rem;color:var(--stone);font-size:.63rem;line-height:1.35}
+.hook-node{
+  flex:0 0 11rem;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  border-color:#d8b6a6;background:linear-gradient(180deg,var(--ivory),var(--tint));
+}
+.hook-node .hook-icon{
+  display:grid;place-items:center;width:1.55rem;height:1.55rem;margin-bottom:.22rem;border-radius:50%;
+  background:var(--terra);color:#fff;font:700 .68rem/1 var(--mono);
+}
+.hook-node strong{font-size:.77rem;line-height:1.2}
+.flow-arrow{display:grid;place-items:center;flex:0 0 auto;color:var(--terra);font-size:1rem}
+.return-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.45rem;flex:1;align-content:center}
+.return-card{
+  padding:.55rem .58rem;border:.0625rem solid var(--line);border-radius:.58rem;background:var(--ivory);
+  min-width:0;display:flex;flex-direction:column;gap:.14rem;
+}
+.return-card code{font-size:.62rem;padding:.08em .22em;align-self:flex-start;background:var(--tint);color:#7c3f2b}
+.return-card b{font-size:.68rem;line-height:1.25;color:var(--ink)}
+.return-card small{font-size:.58rem;line-height:1.35;color:var(--stone)}
+.return-card.block{border-color:#e2b9a7;background:linear-gradient(180deg,var(--ivory),#fbefe8)}
+.return-card.block b{color:var(--terra-dark)}
+.callout-mini{
+  flex:0 0 auto;padding:.55rem .72rem;border-left:.16rem solid var(--terra);border-radius:0 .45rem .45rem 0;
+  background:var(--tint);color:#4b4741;font-size:.73rem;line-height:1.5;
+}
+.callout-mini em{color:var(--ink);font-style:italic}
+
+/* lifecycle scene */
+.lifecycle{flex:1;display:flex;flex-direction:column;justify-content:flex-start;gap:.55rem;min-height:0;padding-top:.2rem}
+.lc-row{display:flex;align-items:center;gap:.42rem;flex-wrap:wrap}
+.lc-label{
+  flex:0 0 100%;color:var(--stone);font:600 .57rem/1.4 var(--sans);
+  letter-spacing:.13em;text-transform:uppercase;margin-bottom:.05rem;
+}
+.lc-loop{
+  padding:.6rem .65rem .68rem;border:.0625rem dashed #d3ccbb;border-radius:.72rem;background:rgba(246,237,230,.42);
+}
+.loop-label{
+  display:flex;justify-content:space-between;align-items:center;margin:0 0 .38rem;
+  color:var(--terra-dark);font:600 .57rem/1.4 var(--sans);letter-spacing:.13em;text-transform:uppercase;
+}
+.loop-spin{display:inline-block;font-size:1rem;animation:spin 7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.node{
+  --accent:var(--terra);
+  display:flex;align-items:center;gap:.36rem;padding:.38rem .48rem;
+  border:.0625rem solid var(--line);border-left:.18rem solid var(--accent);border-radius:.5rem;background:var(--ivory);
+  min-width:0;
+}
+.node.on{box-shadow:0 0 0 .18rem color-mix(in srgb,var(--accent) 15%,transparent)}
+.node-num{display:grid;place-items:center;width:1rem;height:1rem;border-radius:50%;background:var(--accent);color:#fff;font:700 .5rem/1 var(--mono);flex:0 0 auto}
+.node-ico{font-size:.82rem;line-height:1}
+.node-name{font:600 .65rem/1.2 var(--sans);color:var(--ink);white-space:nowrap}
+.node-arrow{color:#c2b5a7;font-size:.8rem;flex:0 0 auto}
+.small-box{
+  padding:.32rem .45rem;border:.0625rem solid var(--line);border-radius:.42rem;
+  background:var(--surface);color:var(--stone);font:.57rem/1.2 var(--mono);white-space:nowrap;
+}
+.loop-second{margin-top:.3rem}
+.loop-turn{color:#c2b5a7;font:.8rem/1 var(--mono);flex:0 0 auto}
+.loop-back{color:var(--stone);font-size:.62rem;line-height:1.4;margin:.3rem 0 0 .2rem}
+.legend-row{
+  display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:center;flex:0 0 auto;
+  color:var(--stone);font-size:.64rem;
+}
+.dot{width:.44rem;height:.44rem;border-radius:50%;display:inline-block;margin-right:.25rem}
+.dot.decide{background:var(--terra)}
+.dot.observe{background:#a9a294}
+
+/* event pair */
+.event-pair{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;flex:1;min-height:0}
+.event-card{
+  --accent:var(--terra);
+  display:flex;flex-direction:column;gap:.52rem;min-width:0;padding:.68rem .72rem;
+  border:.0625rem solid var(--line);border-top:.18rem solid var(--accent);border-radius:.7rem;
+  background:var(--ivory);
+}
+.event-head{display:flex;align-items:center;gap:.45rem}
+.event-ico{display:grid;place-items:center;width:1.55rem;height:1.55rem;border-radius:.48rem;background:var(--tint);font-size:.9rem;flex:0 0 auto}
+.event-head h3{margin:0;color:var(--ink);font:600 .84rem/1.2 var(--sans)}
+.event-num{color:var(--stone);font:.57rem/1 var(--mono)}
+.event-when{
+  margin-left:auto;padding:.1rem .35rem;border:1px solid var(--line);border-radius:1rem;
+  color:var(--stone);font-size:.55rem;letter-spacing:.06em;text-transform:uppercase;
+}
+.event-block{display:flex;flex-direction:column;gap:.15rem}
+.event-block code{font-size:.66rem;align-self:flex-start;background:var(--tint);color:#7c3f2b}
+.event-block p{margin:0;font-size:.7rem;line-height:1.45;color:var(--muted)}
+.event-example{
+  margin-top:auto;padding-top:.45rem;border-top:.0625rem solid var(--line-soft);
+  color:var(--stone);font-size:.62rem;line-height:1.45;
+}
+.mini-label{color:var(--stone);font:600 .55rem/1.3 var(--sans);letter-spacing:.12em;text-transform:uppercase}
+.rewrite{display:flex;flex-direction:column;gap:.28rem;margin-top:.1rem}
+.rewrite-line{display:flex;gap:.38rem;align-items:center;flex-wrap:wrap}
+.rewrite-line code{font-size:.63rem}
+.badge{
+  flex:0 0 auto;padding:.06rem .3rem;border-radius:1rem;background:#e8e3d6;color:var(--stone);
+  font:700 .5rem/1.5 var(--sans);letter-spacing:.08em;text-transform:uppercase;
+}
+.badge.after{background:var(--tint);color:var(--terra-dark)}
+.rewrite-hook{
+  align-self:flex-start;margin-left:.15rem;padding:.18rem .45rem;border-radius:1rem;
+  background:var(--tint);color:var(--terra-dark);font:600 .57rem/1.4 var(--sans);
+}
+mark{background:#f3d7c8;color:#7c3f2b;padding:.02em .18em;border-radius:.18rem}
+
+/* step scene */
+.step-line{
+  display:flex;align-items:center;gap:.42rem;flex-wrap:wrap;
+  padding:.55rem .62rem;border:.0625rem solid var(--line);border-radius:.65rem;background:var(--ivory);
+}
+.step-node{
+  --accent:var(--terra);
+  display:flex;align-items:center;gap:.35rem;padding:.36rem .5rem;
+  border:.0625rem solid var(--line);border-left:.18rem solid var(--accent);border-radius:.5rem;background:var(--surface);
+}
+.step-node > span:first-child{display:grid;place-items:center;width:1rem;height:1rem;border-radius:50%;background:var(--accent);color:#fff;font:700 .5rem/1 var(--mono)}
+.step-node .step-ico{font-size:.82rem}
+.step-node strong{font:600 .66rem/1.2 var(--sans);color:var(--ink)}
+.step-node small{color:var(--stone);font-size:.57rem;line-height:1.2}
+.step-box{
+  padding:.34rem .46rem;border:.0625rem dashed #d3ccbb;border-radius:.42rem;
+  background:var(--surface);color:var(--stone);font:.57rem/1.2 var(--mono);white-space:nowrap;
+}
+.console{border-radius:.65rem;overflow:hidden;background:var(--code-bg);border:.0625rem solid #34312b;min-width:0}
+.console-bar{
+  padding:.38rem .72rem;background:var(--code-bar);border-bottom:.0625rem solid var(--code-line);
+  color:var(--code-accent);font:.6rem/1.4 var(--mono);
+}
+.console pre{
+  margin:0;padding:.55rem .75rem .65rem;overflow-x:auto;color:var(--code-ink);
+  font:.63rem/1.6 var(--mono);white-space:pre-wrap;overflow-wrap:break-word;
+}
+.caption-note{color:var(--muted);font-size:.7rem;line-height:1.45}
+.caption-note em{color:var(--ink);font-style:italic}
+
+/* decision scene */
+.decision-pair{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;flex:1;min-height:0}
+.verdict-card{
+  display:flex;flex-direction:column;gap:.5rem;min-width:0;padding:.68rem .72rem;
+  border:.0625rem solid var(--line);border-radius:.7rem;background:var(--ivory);
+}
+.verdict-head{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
+.verdict-tag{
+  padding:.11rem .42rem;border-radius:1rem;font:700 .52rem/1.5 var(--sans);letter-spacing:.09em;text-transform:uppercase;
+}
+.verdict-tag.block{background:#f0dcd2;color:#9a4d31}
+.verdict-tag.replace{background:#dceadf;color:#3f724d}
+.verdict-head code{font-size:.62rem;background:var(--tint);color:#7c3f2b}
+.verdict-flow{display:flex;flex-direction:column;gap:.3rem}
+.flow-line{
+  display:flex;gap:.38rem;align-items:baseline;flex-wrap:wrap;padding:.3rem .42rem;
+  border:.0625rem solid var(--line-soft);border-radius:.42rem;background:var(--surface);
+  font-size:.63rem;line-height:1.4;
+}
+.flow-line .lbl{color:var(--stone);font:600 .52rem/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase}
+.flow-line code{font-size:.6rem;background:transparent;color:var(--ink);padding:0}
+.flow-line.hook{background:var(--tint);border-color:#e3cfc3}
+.flow-line.hook code{color:var(--terra-dark)}
+.flow-line.result{background:#f3eee4}
+.flow-line.result code{color:#3f724d}
+.verdict-note{margin:auto 0 0;padding-top:.45rem;border-top:.0625rem solid var(--line-soft);color:var(--stone);font-size:.63rem;line-height:1.45}
+
+/* ending scene */
+.ending-flow{flex:1;display:flex;flex-direction:column;justify-content:center;gap:.55rem;min-height:0}
+.end-branch{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.end-card{
+  padding:.6rem .68rem;border:.0625rem solid var(--line);border-radius:.62rem;background:var(--ivory);min-width:0;
+}
+.end-card.happy{border-top:.18rem solid #4f8a5b}
+.end-card.limit{border-top:.18rem solid var(--amber)}
+.end-card.final{border-top:.18rem solid var(--terra);background:linear-gradient(180deg,var(--ivory),var(--tint))}
+.end-card h3{margin:0 0 .1rem;color:var(--ink);font:600 .8rem/1.25 var(--sans);display:flex;align-items:center;gap:.32rem}
+.end-card h3 span{font-size:.9rem}
+.end-card small{display:block;color:var(--stone);font-size:.58rem;line-height:1.35;margin-bottom:.28rem}
+.end-card code{display:inline-block;font-size:.58rem;background:var(--tint);color:#7c3f2b;margin-bottom:.25rem}
+.end-card p{margin:0;color:var(--muted);font-size:.63rem;line-height:1.45}
+.merge-arrows{color:var(--stone);font:.6rem/1.3 var(--mono);text-align:center}
+.merge-arrows::before{content:"↘   ↙";display:block;color:#c2b5a7;font-size:.85rem;letter-spacing:.3rem;line-height:1}
+
+/* registry scene */
+.registry-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:.7rem;min-height:0}
+.chain{display:flex;flex-direction:column;gap:.3rem;min-width:0}
+.chain-title{color:var(--stone);font:600 .55rem/1.3 var(--sans);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.05rem}
+.handler{
+  display:flex;gap:.35rem;align-items:center;padding:.36rem .48rem;
+  border:.0625rem solid var(--line);border-radius:.45rem;background:var(--ivory);
+  font:.61rem/1.35 var(--mono);color:var(--muted);
+}
+.handler .hid{display:grid;place-items:center;flex:0 0 auto;width:1.05rem;height:1.05rem;border-radius:50%;background:#e8e3d6;color:var(--stone);font:700 .52rem/1 var(--mono)}
+.handler.done{border-color:#cfe0d3;background:#f2f7f3}
+.handler.done .hid{background:#4f8a5b;color:#fff}
+.handler.error{border-color:#e6c9c9;background:#fbf1f0}
+.handler.error .hid{background:#b9574f;color:#fff}
+.handler.block{border-color:#e2b9a7;background:#fbefe8}
+.handler.block .hid{background:var(--terra);color:#fff}
+.handler.skipped{opacity:.58;text-decoration:line-through;text-decoration-color:#c2b5a7}
+.console.output pre{font-size:.6rem;line-height:1.55}
+
+/* wiring scene */
+.wiring-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem}
+.wiring-card{
+  display:flex;flex-direction:column;gap:.35rem;min-width:0;padding:.58rem .62rem;
+  border:.0625rem solid var(--line);border-radius:.65rem;background:var(--ivory);
+}
+.wiring-card h3{margin:0;color:var(--ink);font:600 .7rem/1.25 var(--sans);display:flex;align-items:center;gap:.32rem}
+.wiring-num{display:grid;place-items:center;width:1.1rem;height:1.1rem;border-radius:50%;background:var(--tint);color:var(--terra-dark);font:700 .53rem/1 var(--mono)}
+.wiring-card pre{
+  margin:0;padding:.42rem .5rem;border-radius:.42rem;background:var(--code-bg);color:var(--code-ink);
+  font:.55rem/1.55 var(--mono);overflow-x:auto;white-space:pre-wrap;overflow-wrap:break-word;
+}
+.wiring-card p{margin:0;color:var(--stone);font-size:.59rem;line-height:1.42}
+
+/* recap scene */
+.recap-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;flex:0 0 auto}
+.recap-stat{padding:.58rem .7rem;border:.0625rem solid var(--line);border-radius:.65rem;background:var(--ivory);display:flex;align-items:baseline;gap:.55rem}
+.recap-stat b{color:var(--ink);font:500 1.65rem/1 var(--serif);letter-spacing:-.02em}
+.recap-stat span{color:var(--stone);font-size:.62rem;line-height:1.3;text-transform:uppercase;letter-spacing:.05em}
+.recap-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:.65rem;flex:1;min-height:0}
+.recap-rules{display:flex;flex-direction:column;gap:.36rem;justify-content:center}
+.rule{display:flex;gap:.5rem;align-items:flex-start;padding:.38rem .48rem;border:.0625rem solid var(--line);border-radius:.48rem;background:var(--ivory);font-size:.66rem;line-height:1.42;color:var(--muted)}
+.rule > span{color:var(--terra);font:700 .7rem/1.3 var(--mono);flex:0 0 auto}
+.rule strong{color:var(--ink)}
+.recap-code{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.recap-code pre{font-size:.62rem;line-height:1.65}
+.final-quote{
+  margin-top:.1rem;padding:.7rem .82rem;border-left:.18rem solid var(--terra);border-radius:0 .55rem .55rem 0;
+  background:var(--tint);color:#4b4741;font:italic 500 .82rem/1.45 var(--serif);
+}
+.final-quote::before{content:"“";color:var(--terra);font-size:1.3rem;line-height:0;vertical-align:-.15em;margin-right:.15rem}
+
+/* caption + controls */
+.caption-bar{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.7rem;align-items:start;
+  margin-top:.45rem;padding:.55rem .72rem;border:.0625rem solid var(--line);border-radius:.72rem;
+  background:var(--ivory);min-height:3.8rem;
+}
+.caption-index{
+  display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:.48rem;
+  background:var(--tint);color:var(--terra-dark);font:700 .64rem/1 var(--mono);
+}
+.caption-kicker{
+  margin:0 0 .08rem;color:var(--stone);
+  font:600 .55rem/1.3 var(--sans);letter-spacing:.13em;text-transform:uppercase;
+}
+.caption-text{margin:0;color:var(--prose);font-size:.8rem;line-height:1.45;min-height:2.3em}
+.beat-dots{display:flex;gap:.25rem;align-items:center;padding-top:.55rem}
+.beat-dots i{display:block;width:.38rem;height:.38rem;border-radius:50%;background:#ddd6c8;transition:background .25s,transform .25s}
+.beat-dots i.on{background:var(--terra);transform:scale(1.12)}
+
+.timeline{display:flex;gap:.18rem;margin-top:.42rem;height:1.15rem}
+.seg{
+  position:relative;flex-grow:1;flex-basis:0;padding:0;border:0;border-radius:.25rem;overflow:hidden;
+  background:var(--line-soft);cursor:pointer;transition:background .16s;
+}
+.seg:hover{background:#d9d1c1}
+.seg .fill{position:absolute;inset:0;width:0;background:var(--terra);opacity:.8;transition:width .1s linear}
+.seg .seg-label{
+  position:absolute;inset:0;display:grid;place-items:center;color:var(--stone);
+  font:700 .48rem/1 var(--mono);letter-spacing:.02em;z-index:2;
+}
+.seg.active .seg-label{color:#fff}
+.seg.done .fill{opacity:.36}
+.seg:focus-visible{outline:2px solid var(--terra);outline-offset:2px}
+
+.controls{display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-top:.36rem}
+.controls-left{display:flex;align-items:center;gap:.32rem}
+.ctrl{
+  display:grid;place-items:center;width:2rem;height:2rem;padding:0;
+  border:.0625rem solid var(--line);border-radius:50%;background:var(--ivory);color:var(--muted);
+  cursor:pointer;font:1rem/1 var(--sans);transition:border-color .14s,color .14s,background .14s,transform .14s;
+}
+.ctrl:hover{border-color:var(--terra);color:var(--terra-dark);background:var(--tint);transform:translateY(-1px)}
+.ctrl:focus-visible{outline:2px solid var(--terra);outline-offset:2px}
+.ctrl.play{width:2.6rem;height:2.6rem;border-color:var(--terra);background:var(--terra);color:#fff}
+.ctrl.play:hover{background:var(--terra-dark);color:#fff}
+.controls-right{display:flex;align-items:center;gap:.5rem;color:var(--stone);font:.62rem/1.4 var(--mono)}
+.speed{
+  padding:.24rem .35rem;border:.0625rem solid var(--line);border-radius:.38rem;
+  background:var(--ivory);color:var(--muted);font:.62rem/1.2 var(--mono);cursor:pointer;
+}
+.speed:focus-visible{outline:2px solid var(--terra);outline-offset:1px}
+.kbd{display:inline-block;padding:.02rem .28rem;border:1px solid var(--line);border-radius:.22rem;background:var(--surface);color:var(--stone);font-size:.54rem}
+
+/* theme toggle */
+#themebtn{
+  position:fixed;z-index:60;right:1rem;top:1rem;display:grid;place-items:center;
+  width:2.15rem;height:2.15rem;padding:0;border:.0625rem solid var(--line);border-radius:50%;
+  background:var(--surface);color:var(--ink);box-shadow:0 .3rem 1rem rgba(31,30,29,.16);
+  font:500 .8rem/1 var(--serif);cursor:pointer;transition:border-color .14s,color .14s,transform .14s;
+}
+#themebtn:hover{border-color:var(--terra);color:var(--terra-dark);transform:translateY(-1px)}
+#themebtn:focus-visible{outline:2px solid var(--terra);outline-offset:2px}
+
+/* dark */
+html[data-theme="dark"]{
+  --paper:#171614;--surface:#1e1d1a;--ivory:#232220;--ink:#f1ece2;
+  --prose:#cdc7ba;--muted:#a8a294;--stone:#8b857a;
+  --line:#332f29;--line-soft:#2a2721;--tint:#2b241f;
+  --terra:#e08a6a;--terra-dark:#eda07e;--amber:#d3a44a;
+  --code-bg:#1b1a17;--code-bar:#232220;--code-line:#332f2a;
+  --code-ink:#efe9de;--code-dim:#9a948a;--code-accent:#f0b49a;
+  --shadow:0 18px 48px rgba(0,0,0,.3);
+}
+html[data-theme="dark"] ::selection{background:var(--tint);color:var(--ink)}
+html[data-theme="dark"] .sidebar{background:linear-gradient(180deg,var(--surface),var(--paper) 60%,var(--paper))}
+html[data-theme="dark"] .toc a .n{color:var(--stone)}
+html[data-theme="dark"] .toc a:hover{background:var(--surface)}
+html[data-theme="dark"] .toc a.active{background:var(--tint)}
+html[data-theme="dark"] .side-kicker{color:var(--terra)}
+html[data-theme="dark"] code{background:var(--line-soft);color:var(--terra)}
+html[data-theme="dark"] .big-statement,
+html[data-theme="dark"] .callout-mini,
+html[data-theme="dark"] .final-quote{color:var(--prose)}
+html[data-theme="dark"] .wish:hover{border-color:#5a4d40}
+html[data-theme="dark"] .lc-loop{background:rgba(43,36,31,.35);border-color:var(--line)}
+html[data-theme="dark"] .return-card.block{background:linear-gradient(180deg,var(--ivory),#2d211b)}
+html[data-theme="dark"] .handler.done{background:#1d2720;border-color:#33463a}
+html[data-theme="dark"] .handler.error{background:#2a1d1c;border-color:#4a2e2b}
+html[data-theme="dark"] .handler.block{background:#2c211b;border-color:#4a3329}
+html[data-theme="dark"] .flow-line.result{background:var(--line-soft)}
+html[data-theme="dark"] .flow-line.hook{background:var(--tint);border-color:var(--line)}
+html[data-theme="dark"] .badge{background:var(--line-soft)}
+html[data-theme="dark"] mark{background:#4a2f24;color:#f0b49a}
+html[data-theme="dark"] .verdict-tag.block{background:#3a251e;color:#eda07e}
+html[data-theme="dark"] .verdict-tag.replace{background:#203127;color:#93c4a2}
+html[data-theme="dark"] .beat-dots i{background:var(--line)}
+html[data-theme="dark"] .seg:hover{background:#3a352d}
+
+/* narrow */
+@media (max-width:1360px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto;border-right:none;border-bottom:.0625rem solid var(--line);padding:1.2rem 1.1rem 1rem}
+  .toc{flex-direction:row;flex-wrap:wrap;gap:.22rem .32rem}
+  .toc a{padding:.28rem .5rem;border-left:none;border-radius:.38rem;background:#eae5d8;font-size:.72rem}
+  .toc a .n{flex:0 0 auto}
+  .toc a.active{border-left:none}
+  .side-foot{display:none}
+  .progress{left:0}
+  .pane{padding:1.5rem 1.1rem 4.5rem}
+  .stage{--stage-h:auto;height:auto;min-height:0}
+  .scene{position:relative;inset:auto;display:none;overflow:visible}
+  .scene.active{display:flex}
+  .return-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .wiring-grid{grid-template-columns:1fr}
+  .caption-bar{grid-template-columns:auto minmax(0,1fr)}
+  .beat-dots{grid-column:2;padding-top:0}
+}
+@media (max-width:1020px){
+  .two-col,.event-pair,.decision-pair,.registry-grid,.recap-grid,.end-branch{grid-template-columns:1fr}
+  .contract-top{flex-wrap:wrap}
+  .hook-node{flex:0 0 100%}
+  .return-grid{grid-template-columns:1fr 1fr}
+  .recap-stats{grid-template-columns:1fr}
+  .controls-right .kbd-hint{display:none}
+  .scene{padding:1rem}
+  .player-top{font-size:.58rem}
+}
+
+/* print + motion */
+@media print{
+  .sidebar,.progress,#themebtn,.controls,.timeline{display:none!important}
+  .shell{display:block}
+  .pane{padding:0}
+  .stage{height:auto;min-height:0}
+  .scene{position:relative;inset:auto;opacity:1;visibility:visible;transform:none;display:flex!important;page-break-inside:avoid;border-bottom:1px solid var(--line)}
+  .caption-bar{display:none}
+  [data-at]{opacity:1!important;transform:none!important}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+/* generic lesson components (added by the explainer builder) */
+.scene-body{display:flex;flex-direction:column;gap:.62rem;flex:1;min-height:0;padding-top:.18rem}
+.info-grid{display:grid;gap:.58rem;min-height:0}
+.info-grid.cols-1{grid-template-columns:1fr}
+.info-grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.info-grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.info-grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.info-card{
+  --accent:var(--terra);min-width:0;padding:.62rem .7rem;border:.0625rem solid var(--line);
+  border-top:.18rem solid var(--accent);border-radius:.65rem;background:var(--ivory);
+  display:flex;flex-direction:column;gap:.28rem;
+}
+.info-head{display:flex;align-items:center;gap:.36rem;flex-wrap:wrap}
+.info-ico{display:grid;place-items:center;width:1.35rem;height:1.35rem;border-radius:.4rem;background:var(--tint);font-size:.78rem;flex:0 0 auto}
+.info-head strong{color:var(--ink);font:600 .74rem/1.25 var(--sans)}
+.info-tag{margin-left:auto;padding:.06rem .32rem;border-radius:1rem;background:var(--tint);color:var(--terra-dark);font:700 .5rem/1.5 var(--sans);letter-spacing:.08em;text-transform:uppercase}
+.info-card p{margin:0;color:var(--muted);font-size:.65rem;line-height:1.46}
+.info-card code{display:inline-block;align-self:flex-start;font-size:.57rem;padding:.06em .24em;background:var(--tint);color:#7c3f2b}
+.flow-strip{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;padding:.55rem .62rem;border:.0625rem solid var(--line);border-radius:.68rem;background:var(--ivory)}
+.flow-strip .node,.flow-strip .small-box,.flow-strip .step-node{flex:0 0 auto}
+.kv-list{display:flex;flex-direction:column;gap:.26rem}
+.kv-row{display:grid;grid-template-columns:minmax(7.5rem,.35fr) 1fr;gap:.55rem;align-items:baseline;padding:.4rem .52rem;border:.0625rem solid var(--line);border-radius:.45rem;background:var(--ivory);font-size:.66rem;line-height:1.4}
+.kv-row span{color:var(--stone);font:600 .55rem/1.35 var(--sans);letter-spacing:.09em;text-transform:uppercase}
+.kv-row strong{color:var(--ink);font-weight:500;font-size:.68rem}
+.pill-row{display:flex;flex-wrap:wrap;gap:.3rem}
+.pill{padding:.18rem .42rem;border:1px solid var(--line);border-radius:1rem;background:var(--ivory);color:var(--muted);font:.58rem/1.4 var(--mono)}
+.check-list{display:flex;flex-direction:column;gap:.34rem}
+.check-item{display:flex;gap:.5rem;align-items:flex-start;padding:.4rem .5rem;border:.0625rem solid var(--line);border-radius:.48rem;background:var(--ivory);font-size:.66rem;line-height:1.45;color:var(--muted)}
+.check-ico{color:var(--terra);font:700 .7rem/1.35 var(--mono);flex:0 0 auto}
+.check-item strong{color:var(--ink)}
+.console pre{font-size:.62rem;line-height:1.55}
+@media (max-width:1600px){
+  .info-grid.cols-3,.info-grid.cols-4{grid-template-columns:1fr 1fr}
+}
+@media (max-width:1020px){
+  .info-grid.cols-2,.info-grid.cols-3,.info-grid.cols-4{grid-template-columns:1fr 1fr}
+}
+@media (max-width:680px){
+  .info-grid.cols-2,.info-grid.cols-3,.info-grid.cols-4{grid-template-columns:1fr}
+}
+
+</style>
+<script>
+(function () {
+  try {
+    var saved = localStorage.getItem('hooks-explainer:theme');
+    if (!saved) saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+  } catch (e) { /* private mode: use the stylesheet default */ }
+})();
+</script>
+</head>
+<body>
+<div class="progress"><span id="bar"></span></div>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="side-kicker" href="#top">mini-coding-js &middot; Lesson 08</a>
+    <p class="side-title">Long-term memory</p>
+    <p class="side-sub">An animated walk through <code>src/memory.js</code>: a markdown file, two access paths, and honest bounds.</p>
+    <div class="side-rule"></div>
+    <p class="side-label">Scenes</p>
+    <nav class="toc" id="toc">
+      <a href="#scene-0" data-scene="0"><span class="n">01</span><span>Survival</span></a>
+      <a href="#scene-1" data-scene="1"><span class="n">02</span><span>One bullet</span></a>
+      <a href="#scene-2" data-scene="2"><span class="n">03</span><span>parseMemory</span></a>
+      <a href="#scene-3" data-scene="3"><span class="n">04</span><span>Eager and lazy</span></a>
+      <a href="#scene-4" data-scene="4"><span class="n">05</span><span>remember</span></a>
+      <a href="#scene-5" data-scene="5"><span class="n">06</span><span>digest</span></a>
+      <a href="#scene-6" data-scene="6"><span class="n">07</span><span>search and forget</span></a>
+      <a href="#scene-7" data-scene="7"><span class="n">08</span><span>Not a database</span></a>
+      <a href="#scene-8" data-scene="8"><span class="n">09</span><span>Recap</span></a>
+    </nav>
+    <div class="side-foot">
+      Source: <code>mini-coding-js/src/memory.js</code><br>
+      254 lines &middot; one file · two paths · four tags<br>
+      <span class="key">space</span> play &middot; <span class="key">←</span><span class="key">→</span> scenes<br>
+      Companion: <a href="explainer-harness-js.html">explainer-harness-js.html</a>    </div>
+  </aside>
+
+  <main class="pane" id="top">
+    <div class="inner">
+      <header class="page-heading">
+        <p class="eyebrow">Animated explainer &middot; src/memory.js</p>
+        <h1>The only thing that survives the process</h1>
+        <p class="lede">Messages die with the run. memory.md does not. It is a plain markdown file beside the code, read at the start of the next run and searchable on demand. No database, no cache, no index.</p>
+        <p class="meta">
+          <span>9 scenes</span>
+          <span>1 markdown file</span>
+          <span>2 access paths</span>
+          <span>4 tags</span>
+        </p>      </header>
+
+      <div class="player" id="player">
+        <div class="player-top">
+          <div class="player-lesson"><span class="rec-dot"></span>Lesson 08 &middot; Long-term memory</div>
+          <div class="player-state">
+            <span id="sceneCounter">01 / 09</span>
+            <span class="sep">·</span>
+            <span id="clock">00:00 / 02:00</span>
+          </div>
+        </div>
+
+        <div class="stage" id="stage">
+
+
+          <!-- 01 -->
+          <section class="scene active" data-scene="0" id="scene-0">
+            <div class="scene-head">
+              <span class="chip">01</span>
+              <div>
+                <p class="scene-kicker">Why this file exists</p>
+                <h2 class="stage-title">Everything else dies <em>with the process</em>.</h2>
+              </div>
+            </div>
+<div class="scene-body">
+<div class="two-col ">
+  
+<div class="panel " data-at="0">
+  <div class="panel-head"><span>src/memory.js</span><span class="panel-lang">source</span></div>
+  <pre>// messages = working memory inside one run
+// memory.md = the only thing that survives
+export const MEMORY_FILE = 'src/memory.md';
+export const MEMORY_TAGS = ['fact', 'pref', 'fix', 'gotcha'];</pre>
+</div>
+  
+<div class="info-grid cols-1 " data-at="0">
+  
+<article class="info-card " data-at="1">
+  <div class="info-head">
+    <span class="info-ico">🧵</span>
+    <strong>Within a run</strong>
+    
+  </div>
+  <p>messages carry the conversation.</p>
+  
+</article>
+
+<article class="info-card " data-at="1">
+  <div class="info-head">
+    <span class="info-ico">📄</span>
+    <strong>Across runs</strong>
+    
+  </div>
+  <p>memory.md carries lessons.</p>
+  
+</article>
+
+<article class="info-card " data-at="1">
+  <div class="info-head">
+    <span class="info-ico">👀</span>
+    <strong>For humans</strong>
+    
+  </div>
+  <p>open it, diff it, delete a wrong line.</p>
+  
+</article>
+</div>
+</div>
+<div class="big-statement" data-at="2">
+  <span class="statement-label">remember</span>A memory module with a cache is a memory module that lies. memory.md <em>is</em> the store.
+</div></div>
+          </section>
+
+          <!-- 02 -->
+          <section class="scene" data-scene="1" id="scene-1">
+            <div class="scene-head">
+              <span class="chip">02</span>
+              <div>
+                <p class="scene-kicker">The format</p>
+                <h2 class="stage-title">One bullet.<br><em>One memory.</em></h2>
+              </div>
+            </div>
+<div class="scene-body">
+<div class="console " data-at="0">
+  <div class="console-bar">src/memory.md</div>
+  <pre># memory
+
+Long-term notes this agent keeps between runs. One bullet per memory:
+
+- [fact] The demo script lives in workspace/demo/hello.js. _(2026-10-28)_
+- [gotcha] The sandbox refuses writes outside workspace/. _(2026-10-28)_
+- [pref] The user wants short final answers. _(2026-10-29)_</pre>
+</div>
+<div class="kv-list " data-at="1">
+  <div class="kv-row"><span>tag</span><strong>fact · pref · fix · gotcha. Anything else becomes fact.</strong></div>
+  <div class="kv-row"><span>text</span><strong>one self-contained sentence.</strong></div>
+  <div class="kv-row"><span>date</span><strong>when it was learned. Optional for hand-added lines.</strong></div>
+</div></div>
+          </section>
+
+          <!-- 03 -->
+          <section class="scene" data-scene="2" id="scene-2">
+            <div class="scene-head">
+              <span class="chip">03</span>
+              <div>
+                <p class="scene-kicker">Parsing</p>
+                <h2 class="stage-title">Anything that is not a bullet is <em>ignored</em>.</h2>
+              </div>
+            </div>
+<div class="scene-body">
+<div class="panel " data-at="0">
+  <div class="panel-head"><span>src/memory.js</span><span class="panel-lang">source</span></div>
+  <pre>const m = line.match(/^\s*[-*]\s*\[([a-z]+)\]\s*(.+?)\s*(?:_\((\d{4}-\d{2}-\d{2})\)_)\s*$/i);
+if (!m) continue;
+
+const text = normalise(m[2]);
+if (!text) continue;
+entries.push({ tag: m[1].toLowerCase(), text, date: m[3] ?? 'undated' });</pre>
+</div>
+<div class="callout-mini " data-at="1">Prose, headings and comments are safe in this file. Only a bullet with a tag becomes a memory.</div></div>
+          </section>
+
+          <!-- 04 -->
+          <section class="scene" data-scene="3" id="scene-3">
+            <div class="scene-head">
+              <span class="chip">04</span>
+              <div>
+                <p class="scene-kicker">Two access paths</p>
+                <h2 class="stage-title">Eager digest.<br><em>Lazy recall.</em></h2>
+              </div>
+            </div>
+<div class="scene-body">
+<div class="info-grid cols-2 " data-at="0">
+  
+<article class="info-card " data-at="0" style="--accent:#b9862f">
+  <div class="info-head">
+    <span class="info-ico">⚡</span>
+    <strong>Eager: digest()</strong>
+    <span class="info-tag">system prompt</span>
+  </div>
+  <p>The newest few entries, capped by count and characters, appended before step 1.</p>
+  
+</article>
+
+<article class="info-card " data-at="1" style="--accent:#2f9eaa">
+  <div class="info-head">
+    <span class="info-ico">🔎</span>
+    <strong>Lazy: recall</strong>
+    <span class="info-tag">on demand</span>
+  </div>
+  <p>Search the whole file when a run needs the older detail that did not fit.</p>
+  
+</article>
+</div>
+<div class="callout-mini " data-at="2">The digest gives the agent a sense of continuity. Recall keeps the rest reachable without paying for it on every request.</div></div>
+          </section>
+
+          <!-- 05 -->
+          <section class="scene" data-scene="4" id="scene-4">
+            <div class="scene-head">
+              <span class="chip">05</span>
+              <div>
+                <p class="scene-kicker">Writing</p>
+                <h2 class="stage-title">Remember, but <em>stay bounded</em>.</h2>
+              </div>
+            </div>
+<div class="scene-body">
+<div class="panel " data-at="0">
+  <div class="panel-head"><span>src/memory.js</span><span class="panel-lang">source</span></div>
+  <pre>const entry = {
+  tag: MEMORY_TAGS.includes(tag) ? tag : 'fact',
+  text: text.slice(0, this.options.maxEntryChars),
+  date: today(this.now()),
+};
+
+const existing = entries.findIndex((e) =&gt; e.text.toLowerCase() === key);
+if (existing !== -1) {
+  entries[existing] = { ...entries[existing], date: entry.date, tag: entry.tag };
+  // ...refresh, do not duplicate...
+}
+
+entries.push(entry);
+const dropped = Math.max(0, entries.length - this.options.maxEntries);
+if (dropped) entries.splice(0, dropped);</pre>
+</div>
+<div class="info-grid cols-3 " data-at="0">
+  
+<article class="info-card " data-at="1">
+  <div class="info-head">
+    <span class="info-ico">🔁</span>
+    <strong>Dedupe</strong>
+    
+  </div>
+  <p>Same text refreshes the date instead of appending.</p>
+  
+</article>
+
+<article class="info-card " data-at="1">
+  <div class="info-head">
+    <span class="info-ico">📏</span>
+    <strong>Cap each entry</strong>
+    
+  </div>
+  <p>300 chars by default.</p>
+  
+</article>
+
+<article class="info-card " data-at="1">
+  <div class="info-head">
+    <span class="info-ico">✂️</span>
+    <strong>Drop oldest</strong>
+    
+  </div>
+  <p>keep the newest maxEntries.</p>
+  
+</article>
+</div></div>
+          </section>
+
+          <!-- 06 -->
+          <section class="scene" data-scene="5" id="scene-5">
+            <div class="scene-head">
+              <span class="chip">06</span>
+              <div>
+                <p class="scene-kicker">The digest</p>
+                <h2 class="stage-title">Bounded twice.<br><em>Honest about the tail.</em></h2>
+              </div>
+            </div>
+<div class="scene-body">
+<div class="panel " data-at="0">
+  <div class="panel-head"><span>src/memory.js</span><span class="panel-lang">source</span></div>
+  <pre>const newest = all.slice(-Math.max(1, entries)).reverse();
+const lines = [];
+let used = 0;
+for (const entry of newest) {
+  const line = formatEntry(entry);
+  if (used + line.length + 1 &gt; chars) break;
+  lines.push(line);
+  used += line.length + 1;
+}
+
+const hidden = all.length - lines.length;
+const tail = hidden &gt; 0
+  ? '\n(' + hidden + ' older memories not shown - search with recall)'
+  : '';</pre>
+</div>
+<div class="console " data-at="1">
+  <div class="console-bar">what the prompt gets</div>
+  <pre>## What you remember from earlier runs
+- [fact] npm test needs Node 20. _(2026-10-20)_
+- [gotcha] .env must never be edited. _(2026-10-22)_
+(7 older memories not shown - search src/memory.md with the recall tool)</pre>
+</div></div>
+          </section>
+
+          <!-- 07 -->
+          <section class="scene" data-scene="6" id="scene-6">
+            <div class="scene-head">
+              <span class="chip">07</span>
+              <div>
+                <p class="scene-kicker">Searching</p>
+                <h2 class="stage-title">Newest first.<br><em>Every word must match.</em></h2>
+              </div>
+            </div>
+<div class="scene-body">
+<div class="panel " data-at="0">
+  <div class="panel-head"><span>src/memory.js</span><span class="panel-lang">source</span></div>
+  <pre>search(query, { limit = 20 } = {}) {
+  const words = normalise(query).toLowerCase().split(' ').filter(Boolean);
+  const all = this.entries().reverse();
+  const hits = words.length
+    ? all.filter((e) =&gt; words.every((w) =&gt; e.text.toLowerCase().includes(w) || e.tag === w))
+    : all;
+  return hits.slice(0, Math.max(1, Number(limit) || 20));
+}
+
+forget(match) {
+  const kept = entries.filter((e) =&gt; !e.text.toLowerCase().includes(needle));
+  // ...save only if something was removed...
+}</pre>
+</div>
+<div class="callout-mini " data-at="1">“node version” is narrower than “node”. Search is intentionally simple and explainable.</div></div>
+          </section>
+
+          <!-- 08 -->
+          <section class="scene" data-scene="7" id="scene-7">
+            <div class="scene-head">
+              <span class="chip">08</span>
+              <div>
+                <p class="scene-kicker">The honest limit</p>
+                <h2 class="stage-title">No cache.<br><em>No hidden state.</em></h2>
+              </div>
+            </div>
+<div class="scene-body">
+<div class="check-list " data-at="0">
+  
+    <div class="check-item"><span class="check-ico">📄</span><div><strong>The file is the store</strong> every method reads it fresh.</div></div>
+  
+    <div class="check-item"><span class="check-ico">✍️</span><div><strong>Hand edits count</strong> the next call sees them immediately.</div></div>
+  
+    <div class="check-item"><span class="check-ico">🧾</span><div><strong>Diffable</strong> a memory change is a normal markdown diff.</div></div>
+  
+    <div class="check-item"><span class="check-ico">🚫</span><div><strong>Not a database</strong> no index, no query language, no background sync.</div></div>
+</div>
+<div class="big-statement" data-at="1">
+  <span class="statement-label">remember</span>The smallest format that survives a process is often a file you can read.
+</div></div>
+          </section>
+
+          <!-- 09 -->
+          <section class="scene" data-scene="8" id="scene-8">
+            <div class="scene-head">
+              <span class="chip">09</span>
+              <div>
+                <p class="scene-kicker">Recap</p>
+                <h2 class="stage-title">A small file with <em>two jobs</em>.</h2>
+              </div>
+            </div>
+<div class="scene-body">
+<div class="recap-stats" data-at="0">
+  <div class="recap-stat"><b>1</b><span>markdown file</span></div>
+  <div class="recap-stat"><b>2</b><span>access paths</span></div>
+  <div class="recap-stat"><b>4</b><span>tags</span></div>
+</div>
+<div class="recap-rules" data-at="1">
+  <div class="rule"><span>→</span><div><strong>The file is the store.</strong> No cache, no index, no drift.</div></div>
+  <div class="rule"><span>→</span><div><strong>Digest eagerly.</strong> A bounded slice before step 1.</div></div>
+  <div class="rule"><span>→</span><div><strong>Recall lazily.</strong> Search the whole file on demand.</div></div>
+  <div class="rule"><span>→</span><div><strong>Bound the writes.</strong> Dedupe, cap, drop the oldest.</div></div>
+</div>
+<div class="big-statement" data-at="2">
+  <span class="statement-label">remember</span>Memory is not a database feature. It is a file the harness reads and the agent can add to.
+</div></div>
+          </section>
+
+        </div>
+
+        <div class="caption-bar">
+          <div class="caption-index" id="captionIndex">01</div>
+          <div>
+            <p class="caption-kicker" id="captionKicker">Why this file exists</p>
+            <p class="caption-text" id="captionText" aria-live="polite">Everything inside a run lives in messages. When the process exits, it is gone.</p>
+          </div>
+          <div class="beat-dots" id="beatDots" aria-hidden="true"></div>
+        </div>
+
+        <div class="timeline" id="timeline" aria-label="Scene timeline"></div>
+
+        <div class="controls">
+          <div class="controls-left">
+            <button class="ctrl" id="restartBtn" type="button" aria-label="Restart lesson" title="Restart">↺</button>
+            <button class="ctrl" id="prevBtn" type="button" aria-label="Previous scene" title="Previous scene">&lsaquo;</button>
+            <button class="ctrl play" id="playBtn" type="button" aria-label="Pause" title="Play / pause">
+              <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.4" height="12" rx="1" fill="currentColor"/><rect x="9.6" y="2" width="3.4" height="12" rx="1" fill="currentColor"/></svg>
+            </button>
+            <button class="ctrl" id="nextBtn" type="button" aria-label="Next scene" title="Next scene">&rsaquo;</button>
+            <select class="speed" id="speed" aria-label="Playback speed">
+              <option value="0.75">0.75&times;</option>
+              <option value="1" selected>1&times;</option>
+              <option value="1.25">1.25&times;</option>
+              <option value="1.5">1.5&times;</option>
+            </select>
+          </div>
+          <div class="controls-right">
+            <span class="kbd-hint"><span class="kbd">space</span> play/pause</span>
+            <span class="kbd-hint"><span class="kbd">←</span><span class="kbd">→</span> scenes</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<button id="themebtn" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">Aa</button>
+
+<script>
+(function () {
+  'use strict';
+
+  var SCENES = [
+    {
+        "title": "Survival",
+        "kicker": "Why this file exists",
+        "duration": 12500,
+        "beats": [
+            {
+                "at": 0,
+                "text": "Everything inside a run lives in messages. When the process exits, it is gone."
+            },
+            {
+                "at": 4300,
+                "text": "memory.md is the one artifact that survives, and it is deliberately human-readable."
+            },
+            {
+                "at": 9400,
+                "text": "There is no database and no cache. Every method reads the file, so hand edits cannot drift."
+            }
+        ]
+    },
+    {
+        "title": "One bullet",
+        "kicker": "The format",
+        "duration": 12500,
+        "beats": [
+            {
+                "at": 0,
+                "text": "The file is a heading, a sentence of explanation, and bullets."
+            },
+            {
+                "at": 4500,
+                "text": "Each bullet carries a tag, a self-contained text, and a date."
+            },
+            {
+                "at": 9000,
+                "text": "That is the least clever format that still parses, and a human can edit it by hand."
+            }
+        ]
+    },
+    {
+        "title": "parseMemory",
+        "kicker": "Parsing",
+        "duration": 13500,
+        "beats": [
+            {
+                "at": 0,
+                "text": "parseMemory scans line by line and keeps only the bullet shape."
+            },
+            {
+                "at": 4600,
+                "text": "Whitespace is collapsed, so two copies of the same sentence become one memory."
+            },
+            {
+                "at": 9600,
+                "text": "The date is optional. A hand-added line without one still parses as undated."
+            }
+        ]
+    },
+    {
+        "title": "Eager and lazy",
+        "kicker": "Two access paths",
+        "duration": 14500,
+        "beats": [
+            {
+                "at": 0,
+                "text": "The first access path is eager: a small digest goes into the system prompt."
+            },
+            {
+                "at": 5000,
+                "text": "The second is lazy: the recall tool searches the whole file when it is needed."
+            },
+            {
+                "at": 10800,
+                "text": "One path makes the agent feel like it remembers. The other keeps the context window bounded."
+            }
+        ]
+    },
+    {
+        "title": "remember",
+        "kicker": "Writing",
+        "duration": 14500,
+        "beats": [
+            {
+                "at": 0,
+                "text": "remember normalises the text, picks a tag, and caps the entry length."
+            },
+            {
+                "at": 5000,
+                "text": "A duplicate refreshes the date instead of adding the same sentence twice."
+            },
+            {
+                "at": 10800,
+                "text": "The file keeps only the newest entries. Unbounded memory becomes a context leak."
+            }
+        ]
+    },
+    {
+        "title": "digest",
+        "kicker": "The digest",
+        "duration": 15000,
+        "beats": [
+            {
+                "at": 0,
+                "text": "The digest takes the newest entries first, then stops at the character budget."
+            },
+            {
+                "at": 4900,
+                "text": "It counts what it left out and says so in the block."
+            },
+            {
+                "at": 10800,
+                "text": "The model knows recall exists instead of assuming the older memories are gone."
+            }
+        ]
+    },
+    {
+        "title": "search and forget",
+        "kicker": "Searching",
+        "duration": 13500,
+        "beats": [
+            {
+                "at": 0,
+                "text": "Search reverses the file so the newest memories come first."
+            },
+            {
+                "at": 4600,
+                "text": "Every word in the query must appear in the text or match the tag."
+            },
+            {
+                "at": 9700,
+                "text": "Forget removes every entry containing a phrase. Both paths rewrite the same plain file."
+            }
+        ]
+    },
+    {
+        "title": "Not a database",
+        "kicker": "The honest limit",
+        "duration": 12500,
+        "beats": [
+            {
+                "at": 0,
+                "text": "There is no cache and no index. The file is the truth."
+            },
+            {
+                "at": 4400,
+                "text": "If you edit or delete a line by hand, the next call sees it."
+            },
+            {
+                "at": 9100,
+                "text": "That is a feature: memory you can diff and review like any other file."
+            }
+        ]
+    },
+    {
+        "title": "Recap",
+        "kicker": "Recap",
+        "duration": 11000,
+        "beats": [
+            {
+                "at": 0,
+                "text": "One markdown file, two access paths, four tags."
+            },
+            {
+                "at": 4200,
+                "text": "Read it fresh, digest a bounded slice, recall the rest, and bound every write."
+            },
+            {
+                "at": 8300,
+                "text": "That is how the agent remembers without losing control of the context window."
+            }
+        ]
+    }
+];
+
+  var TOTAL = SCENES.reduce(function (sum, s) { return sum + s.duration; }, 0);
+  var stage = document.getElementById('stage');
+  var sceneEls = Array.prototype.slice.call(stage.querySelectorAll('.scene'));
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var timeline = document.getElementById('timeline');
+  var bar = document.getElementById('bar');
+  var playBtn = document.getElementById('playBtn');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var restartBtn = document.getElementById('restartBtn');
+  var speedSel = document.getElementById('speed');
+  var sceneCounter = document.getElementById('sceneCounter');
+  var clock = document.getElementById('clock');
+  var captionIndex = document.getElementById('captionIndex');
+  var captionKicker = document.getElementById('captionKicker');
+  var captionText = document.getElementById('captionText');
+  var beatDots = document.getElementById('beatDots');
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sceneIndex = 0;
+  var elapsed = 0;
+  var playing = !reduceMotion;
+  var ended = false;
+  var speed = 1;
+  var lastFrame = null;
+  var captionKey = '';
+  var segments = [];
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function format(ms) {
+    var total = Math.max(0, Math.round(ms / 1000));
+    return pad(Math.floor(total / 60)) + ':' + pad(total % 60);
+  }
+
+  function buildTimeline() {
+    timeline.innerHTML = '';
+    segments = SCENES.map(function (scene, i) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'seg';
+      btn.setAttribute('aria-label', 'Scene ' + (i + 1) + ': ' + scene.title);
+      btn.title = (i + 1) + ' · ' + scene.title;
+      btn.style.flexGrow = String(scene.duration);
+      var fill = document.createElement('span');
+      fill.className = 'fill';
+      var label = document.createElement('span');
+      label.className = 'seg-label';
+      label.textContent = pad(i + 1);
+      btn.appendChild(fill);
+      btn.appendChild(label);
+      btn.addEventListener('click', function () { goTo(i, playing || ended); });
+      timeline.appendChild(btn);
+      return { el: btn, fill: fill };
+    });
+  }
+
+  function buildDots() {
+    var scene = SCENES[sceneIndex];
+    beatDots.innerHTML = '';
+    scene.beats.forEach(function () {
+      beatDots.appendChild(document.createElement('i'));
+    });
+  }
+
+  function renderScene() {
+    sceneEls.forEach(function (el, i) {
+      var active = i === sceneIndex;
+      el.classList.toggle('active', active);
+      if (!active) {
+        el.querySelectorAll('[data-at]').forEach(function (node) { node.classList.remove('on'); });
+      }
+    });
+    navLinks.forEach(function (link, i) {
+      link.classList.toggle('active', i === sceneIndex);
+      link.classList.toggle('done', i < sceneIndex);
+    });
+    buildDots();
+    captionKey = '';
+    renderCaption(true);
+    updateProgress();
+    updatePlayButton();
+  }
+
+  function currentBeat() {
+    var beats = SCENES[sceneIndex].beats;
+    var beat = 0;
+    for (var i = 0; i < beats.length; i++) {
+      if (elapsed >= beats[i].at) beat = i;
+    }
+    return beat;
+  }
+
+  function renderCaption(force) {
+    var scene = SCENES[sceneIndex];
+    var beat = currentBeat();
+    var key = sceneIndex + '/' + beat;
+    if (!force && key === captionKey) return;
+    captionKey = key;
+
+    captionIndex.textContent = pad(sceneIndex + 1);
+    captionKicker.textContent = scene.kicker;
+    captionText.textContent = scene.beats[beat].text;
+    sceneCounter.textContent = pad(sceneIndex + 1) + ' / ' + pad(SCENES.length);
+
+    var active = sceneEls[sceneIndex];
+    active.dataset.beat = String(beat);
+    active.querySelectorAll('[data-at]').forEach(function (node) {
+      node.classList.toggle('on', Number(node.dataset.at) <= beat);
+    });
+
+    Array.prototype.forEach.call(beatDots.children, function (dot, i) {
+      dot.classList.toggle('on', i <= beat);
+    });
+  }
+
+  function updateProgress() {
+    var before = 0;
+    for (var i = 0; i < sceneIndex; i++) before += SCENES[i].duration;
+    var overall = before + Math.min(elapsed, SCENES[sceneIndex].duration);
+    var pct = TOTAL > 0 ? Math.min(100, (overall / TOTAL) * 100) : 0;
+    bar.style.width = pct + '%';
+
+    segments.forEach(function (seg, i) {
+      var amount = i < sceneIndex ? 100 : i > sceneIndex ? 0 : Math.min(100, (elapsed / SCENES[i].duration) * 100);
+      seg.fill.style.width = amount + '%';
+      seg.el.classList.toggle('active', i === sceneIndex);
+      seg.el.classList.toggle('done', i < sceneIndex);
+      if (i === sceneIndex) seg.el.setAttribute('aria-current', 'step');
+      else seg.el.removeAttribute('aria-current');
+    });
+
+    clock.textContent = format(overall) + ' / ' + format(TOTAL);
+  }
+
+  function updatePlayButton() {
+    if (ended) {
+      playBtn.setAttribute('aria-label', 'Replay lesson');
+      playBtn.title = 'Replay lesson';
+      playBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8a5 5 0 1 1 1.5 3.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M3 3.5V8h4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      return;
+    }
+    playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    playBtn.title = playing ? 'Pause' : 'Play';
+    playBtn.innerHTML = playing
+      ? '<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.4" height="12" rx="1" fill="currentColor"/><rect x="9.6" y="2" width="3.4" height="12" rx="1" fill="currentColor"/></svg>'
+      : '<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.4v11.2a.6.6 0 0 0 .92.5l9-5.6a.6.6 0 0 0 0-1l-9-5.6A.6.6 0 0 0 4 2.4Z" fill="currentColor"/></svg>';
+  }
+
+  function goTo(index, shouldPlay) {
+    sceneIndex = Math.max(0, Math.min(SCENES.length - 1, index));
+    elapsed = 0;
+    ended = false;
+    if (shouldPlay !== undefined) playing = shouldPlay;
+    lastFrame = null;
+    renderScene();
+  }
+
+  function togglePlay() {
+    if (ended) { goTo(0, true); return; }
+    playing = !playing;
+    lastFrame = null;
+    updatePlayButton();
+  }
+
+  function frame(ts) {
+    if (lastFrame === null) lastFrame = ts;
+    var delta = ts - lastFrame;
+    lastFrame = ts;
+
+    if (playing) {
+      elapsed += delta * speed;
+      var duration = SCENES[sceneIndex].duration;
+
+      while (elapsed >= duration) {
+        if (sceneIndex < SCENES.length - 1) {
+          elapsed -= duration;
+          sceneIndex += 1;
+          renderScene();
+          duration = SCENES[sceneIndex].duration;
+        } else {
+          elapsed = duration;
+          playing = false;
+          ended = true;
+          updatePlayButton();
+          break;
+        }
+      }
+
+      renderCaption(false);
+      updateProgress();
+    }
+
+    window.requestAnimationFrame(frame);
+  }
+
+  playBtn.addEventListener('click', togglePlay);
+  prevBtn.addEventListener('click', function () {
+    if (elapsed > 1200) {
+      elapsed = 0;
+      lastFrame = null;
+      renderCaption(true);
+      updateProgress();
+    } else {
+      goTo(sceneIndex - 1, playing || ended);
+    }
+  });
+  nextBtn.addEventListener('click', function () {
+    goTo(sceneIndex + 1, playing || ended);
+  });
+  restartBtn.addEventListener('click', function () { goTo(0, true); });
+  speedSel.addEventListener('change', function () {
+    speed = Number(speedSel.value) || 1;
+    lastFrame = null;
+  });
+
+  navLinks.forEach(function (link, i) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      goTo(i, playing || ended);
+      document.getElementById('player').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+    if (e.code === 'Space') {
+      e.preventDefault();
+      togglePlay();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      goTo(sceneIndex + 1, playing || ended);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      goTo(sceneIndex - 1, playing || ended);
+    } else if (e.key === 'r' || e.key === 'R') {
+      goTo(0, true);
+    }
+  });
+
+  document.getElementById('themebtn').addEventListener('click', function () {
+    var root = document.documentElement;
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('hooks-explainer:theme', next); } catch (e) { /* private mode */ }
+  });
+
+  // Deep links: ?scene=3&beat=2 (or #scene-3) opens a scene paused, which is
+  // handy for linking a class straight to one moment.
+  var params = new URLSearchParams(window.location.search);
+  var deepScene = parseInt(params.get('scene'), 10);
+  var hashScene = (window.location.hash.match(/^#scene-(\d+)$/) || [])[1];
+  if (!isFinite(deepScene) && hashScene) deepScene = parseInt(hashScene, 10) + 1;
+  if (isFinite(deepScene)) sceneIndex = Math.max(0, Math.min(SCENES.length - 1, deepScene - 1));
+  var deepBeat = parseInt(params.get('beat'), 10);
+  if (isFinite(deepBeat)) {
+    var beats = SCENES[sceneIndex].beats;
+    elapsed = beats[Math.max(0, Math.min(beats.length - 1, deepBeat - 1))].at + 20;
+  }
+  if (params.has('paused') || isFinite(deepScene)) playing = false;
+
+  buildTimeline();
+  renderScene();
+  window.requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

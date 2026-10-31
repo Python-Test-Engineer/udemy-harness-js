@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>From an AI Agent in HTML to a Mini Coder in JavaScript</title>
+  <meta name="description"
+    content="Course handbook: build an AI agent in an HTML page, then a working mini coding agent in JavaScript.">
+  <style>
+    html {
+      font-size: var(--root-size, 20px)
+    }
+
+    :root {
+      --paper: #f0eee6;
+      --surface: #fbfaf7;
+      --ivory: #fffdfa;
+      --ink: #1f1e1d;
+      --prose: #33302c;
+      --muted: #55524c;
+      --stone: #8c877c;
+      --line: #e0dbcf;
+      --line-soft: #e9e4d8;
+      --tint: #f6ede6;
+      --terra: #d97757;
+      --terra-dark: #c9633f;
+      --amber: #b9862f;
+      --code-bg: #23211e;
+      --code-bar: #2b2823;
+      --code-line: #3a3732;
+      --code-ink: #f2ece1;
+      --code-dim: #a9a294;
+      --code-accent: #f0b49a;
+      --root-size: 20px;
+      --sidebar: 17rem;
+      --measure: 66rem;
+      --shadow: 0 18px 48px rgba(31, 30, 29, .11);
+      --sans: -apple-system, 'Segoe UI', Inter, Helvetica, Arial, sans-serif;
+      --serif: 'Iowan Old Style', Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+      --mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--prose);
+      font: 1rem/1.68 var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: #f0d3c6;
+      color: #2a2622
+    }
+
+    button,
+    select {
+      font: inherit
+    }
+
+    a {
+      color: var(--terra-dark);
+      text-decoration-thickness: .06em;
+      text-underline-offset: .12em
+    }
+
+    a:hover {
+      color: var(--terra)
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--terra);
+      outline-offset: 2px
+    }
+
+    /* ---------- shell ---------- */
+    .shell {
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      align-items: start
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: #cec6b5 transparent;
+      padding: 1.5rem 1rem 2rem 1.25rem;
+      border-right: .0625rem solid var(--line);
+      background: linear-gradient(180deg, #f4f1e9, #efece3 60%, #ece8de);
+    }
+
+    .side-kicker {
+      display: block;
+      margin: 0 0 .55rem;
+      color: var(--terra-dark);
+      text-decoration: none;
+      font: 600 .64rem/1.3 var(--sans);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .side-title {
+      margin: 0;
+      color: var(--ink);
+      font: 500 1.3rem/1.18 var(--serif);
+      letter-spacing: -.01em
+    }
+
+    .side-sub {
+      margin: .4rem 0 0;
+      color: var(--stone);
+      font-size: .75rem;
+      line-height: 1.5
+    }
+
+    .side-sub code {
+      font-size: .66rem
+    }
+
+    .side-rule {
+      height: .0625rem;
+      margin: 1.05rem 0 .8rem;
+      background: var(--line)
+    }
+
+    .side-label {
+      margin: 0 0 .35rem;
+      color: var(--stone);
+      font: 600 .63rem/1.3 var(--sans);
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .toc {
+      display: flex;
+      flex-direction: column;
+      gap: .0625rem
+    }
+
+    .toc a {
+      display: flex;
+      gap: .5rem;
+      align-items: baseline;
+      padding: .34rem .5rem .34rem .58rem;
+      border-left: .125rem solid transparent;
+      border-radius: 0 .4rem .4rem 0;
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.4;
+      text-decoration: none;
+      transition: background .14s, color .14s, border-color .14s;
+    }
+
+    .toc a .n {
+      color: #a9a294;
+      font: .64rem/1 var(--mono);
+      flex: 0 0 1.15rem
+    }
+
+    .toc a:hover {
+      background: #e8e3d6;
+      color: var(--ink)
+    }
+
+    .toc a.active {
+      background: var(--tint);
+      border-left-color: var(--terra);
+      color: var(--ink);
+      font-weight: 600
+    }
+
+    .toc a.active .n {
+      color: var(--terra-dark)
+    }
+
+    .side-foot {
+      margin-top: 1.15rem;
+      padding-top: .8rem;
+      border-top: .0625rem solid var(--line);
+      color: var(--stone);
+      font-size: .69rem;
+      line-height: 1.6;
+    }
+
+    .side-foot code {
+      font-size: .63rem
+    }
+
+    .side-foot .key {
+      display: inline-block;
+      padding: .05rem .3rem;
+      border: 1px solid var(--line);
+      border-radius: .25rem;
+      background: var(--surface);
+      color: var(--muted);
+      font: .6rem/1.4 var(--mono);
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: .4rem
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: #d5ccbb;
+      border-radius: .5rem
+    }
+
+    .progress {
+      position: fixed;
+      top: 0;
+      left: var(--sidebar);
+      right: 0;
+      height: .125rem;
+      z-index: 40;
+      background: transparent
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: var(--terra);
+      transition: width .1s linear
+    }
+
+    /* ---------- content ---------- */
+    .pane {
+      padding: 2rem 2.8rem 4.5rem;
+      min-width: 0
+    }
+
+    .inner {
+      max-width: var(--measure);
+      margin: 0 auto
+    }
+
+    .page-heading {
+      margin: 0 0 1.6rem;
+      padding-bottom: 1.2rem;
+      border-bottom: .0625rem solid var(--line)
+    }
+
+    .page-heading .eyebrow {
+      margin: 0 0 .55rem;
+      color: var(--terra-dark);
+      font: 600 .66rem/1.3 var(--sans);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--ink);
+      font: 500 clamp(2.1rem, 3.4vw, 2.9rem)/1.06 var(--serif);
+      letter-spacing: -.02em
+    }
+
+    .page-heading .lede {
+      margin: .7rem 0 0;
+      color: var(--muted);
+      font-size: .96rem;
+      line-height: 1.6;
+      max-width: 48rem
+    }
+
+    .meta {
+      margin: .7rem 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .2rem .65rem;
+      color: var(--stone);
+      font: .62rem/1.6 var(--mono);
+    }
+
+    .meta span::before {
+      content: "·";
+      margin-right: .65rem;
+      color: #c3bcae
+    }
+
+    .meta span:first-child::before {
+      content: none;
+      margin: 0
+    }
+
+    code {
+      padding: .1em .34em;
+      border-radius: .28rem;
+      background: #e9e4d7;
+      color: #7c3f2b;
+      font: .84em/1.5 var(--mono);
+      word-break: break-word;
+    }
+
+    strong {
+      color: var(--ink);
+      font-weight: 600
+    }
+
+    em {
+      color: var(--ink);
+      font-style: italic
+    }
+
+    /* hero */
+    .hero {
+      padding: 1.25rem 1.35rem 1.4rem;
+      border: .0625rem solid var(--line);
+      border-radius: 1.05rem;
+      background:
+        radial-gradient(900px 320px at 8% -20%, rgba(217, 119, 87, .10), transparent 62%),
+        radial-gradient(700px 300px at 100% 115%, rgba(185, 134, 47, .08), transparent 60%),
+        var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .hero .big-statement {
+      margin-top: 1.1rem
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: .6rem;
+      margin-top: 1rem
+    }
+
+    .stat {
+      padding: .6rem .7rem;
+      border: .0625rem solid var(--line);
+      border-radius: .65rem;
+      background: var(--ivory);
+      display: flex;
+      align-items: baseline;
+      gap: .5rem;
+      min-width: 0;
+    }
+
+    .stat b {
+      color: var(--ink);
+      font: 500 1.5rem/1 var(--serif);
+      letter-spacing: -.02em
+    }
+
+    .stat span {
+      color: var(--stone);
+      font-size: .6rem;
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: .05em
+    }
+
+    /* sections */
+    .section {
+      scroll-margin-top: 1.2rem;
+      padding: 0 0 2.4rem;
+      margin: 0 0 2.4rem;
+      border-bottom: .0625rem solid var(--line)
+    }
+
+    .section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0
+    }
+
+    .sec-head {
+      display: flex;
+      gap: .85rem;
+      align-items: center;
+      margin: 0 0 .95rem;
+      flex: 0 0 auto
+    }
+
+    .chip {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: .55rem;
+      background: var(--tint);
+      color: var(--terra-dark);
+      font: 700 .7rem/1 var(--mono);
+    }
+
+    .sec-kicker {
+      margin: 0 0 .22rem;
+      color: var(--stone);
+      font: 600 .64rem/1.3 var(--sans);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .stage-title {
+      margin: 0;
+      color: var(--ink);
+      font: 500 clamp(1.55rem, 2.8vw, 2.05rem)/1.1 var(--serif);
+      letter-spacing: -.02em
+    }
+
+    .stage-title em {
+      font-style: italic;
+      color: var(--terra-dark)
+    }
+
+    h3.subhead {
+      margin: 1.55rem 0 .55rem;
+      color: var(--ink);
+      font: 600 .88rem/1.3 var(--sans);
+      letter-spacing: .01em;
+    }
+
+    h3.subhead:first-of-type {
+      margin-top: 1.2rem
+    }
+
+    .prose p {
+      margin: 0 0 .85rem;
+      font-size: .94rem
+    }
+
+    .prose p:last-child {
+      margin-bottom: 0
+    }
+
+    .prose ul,
+    .prose ol {
+      margin: .35rem 0 .9rem;
+      padding-left: 0;
+      list-style: none
+    }
+
+    .prose ul li,
+    .prose ol li {
+      position: relative;
+      padding-left: 1.15rem;
+      margin: .28rem 0;
+      font-size: .94rem;
+      line-height: 1.62
+    }
+
+    .prose ul li::before {
+      content: "";
+      position: absolute;
+      left: .15rem;
+      top: .62em;
+      width: .32rem;
+      height: .32rem;
+      border-radius: 50%;
+      background: var(--terra);
+    }
+
+    .prose ol {
+      counter-reset: item
+    }
+
+    .prose ol li {
+      padding-left: 1.6rem;
+      counter-increment: item
+    }
+
+    .prose ol li::before {
+      content: counter(item, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: .16em;
+      color: var(--terra-dark);
+      font: 700 .62rem/1.6 var(--mono);
+    }
+
+    .prose ul ul {
+      margin: .25rem 0 .2rem
+    }
+
+    .prose ul ul li::before {
+      background: var(--stone)
+    }
+
+    /* callouts */
+    .big-statement {
+      padding: .8rem 1rem;
+      border-left: .18rem solid var(--terra);
+      border-radius: 0 .55rem .55rem 0;
+      background: var(--tint);
+      color: #4b4741;
+      font-size: .9rem;
+      line-height: 1.6;
+    }
+
+    .big-statement .statement-label {
+      display: inline-block;
+      margin-right: .45rem;
+      color: var(--terra-dark);
+      font: 700 .57rem/1.4 var(--sans);
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .callout {
+      margin: 1rem 0;
+      padding: .75rem .9rem;
+      border-left: .16rem solid var(--terra);
+      border-radius: 0 .5rem .5rem 0;
+      background: var(--tint);
+      color: #4b4741;
+      font-size: .84rem;
+      line-height: 1.6;
+    }
+
+    .callout em {
+      color: var(--ink);
+      font-style: italic
+    }
+
+    .note {
+      color: var(--stone);
+      font-size: .76rem;
+      line-height: 1.55;
+      margin: .6rem 0 0
+    }
+
+    /* code */
+    .panel {
+      border-radius: .7rem;
+      overflow: hidden;
+      background: var(--code-bg);
+      border: .0625rem solid #34312b;
+      min-width: 0;
+      margin: .8rem 0 1rem
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: .6rem;
+      align-items: center;
+      padding: .46rem .75rem;
+      background: var(--code-bar);
+      border-bottom: .0625rem solid var(--code-line);
+      color: var(--code-accent);
+      font: .66rem/1.4 var(--mono);
+      letter-spacing: .02em;
+    }
+
+    .panel-lang {
+      color: #7d776b;
+      font-size: .58rem;
+      letter-spacing: .1em;
+      text-transform: uppercase
+    }
+
+    .panel pre {
+      margin: 0;
+      padding: .8rem .9rem .9rem;
+      overflow-x: auto;
+      color: var(--code-ink);
+      font: .72rem/1.68 var(--mono);
+      tab-size: 2;
+      white-space: pre;
+    }
+
+    .panel pre.wrap {
+      white-space: pre-wrap;
+      overflow-wrap: break-word
+    }
+
+    .tok-k {
+      color: #e08a6a
+    }
+
+    .tok-s {
+      color: #a8c98f
+    }
+
+    .tok-c {
+      color: #8f8a7e
+    }
+
+    /* tables */
+    .table-wrap {
+      margin: .8rem 0 1rem;
+      border: .0625rem solid var(--line);
+      border-radius: .7rem;
+      overflow: hidden;
+      overflow-x: auto;
+      background: var(--ivory)
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem;
+      line-height: 1.5
+    }
+
+    thead th {
+      padding: .55rem .75rem;
+      background: var(--surface);
+      border-bottom: .0625rem solid var(--line);
+      color: var(--stone);
+      text-align: left;
+      font: 700 .58rem/1.3 var(--sans);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    tbody td {
+      padding: .55rem .75rem;
+      border-bottom: .0625rem solid var(--line-soft);
+      vertical-align: top;
+      color: var(--muted)
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none
+    }
+
+    tbody tr:hover td {
+      background: rgba(246, 237, 230, .5)
+    }
+
+    td:first-child {
+      color: var(--ink);
+      font-weight: 500;
+      white-space: nowrap
+    }
+
+    td code {
+      font-size: .76rem;
+      white-space: nowrap
+    }
+
+    .table-wrap.wide td:first-child {
+      white-space: normal
+    }
+
+    /* cards / grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .7rem;
+      margin: .9rem 0
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .7rem;
+      margin: .9rem 0
+    }
+
+    .card {
+      padding: .78rem .85rem;
+      border: .0625rem solid var(--line);
+      border-radius: .7rem;
+      background: var(--ivory);
+      min-width: 0;
+    }
+
+    .card h3 {
+      margin: 0 0 .3rem;
+      color: var(--ink);
+      font: 600 .84rem/1.3 var(--sans);
+      display: flex;
+      align-items: center;
+      gap: .4rem
+    }
+
+    .card h3 .num {
+      display: grid;
+      place-items: center;
+      width: 1.35rem;
+      height: 1.35rem;
+      border-radius: .42rem;
+      flex: 0 0 auto;
+      background: var(--tint);
+      color: var(--terra-dark);
+      font: 700 .6rem/1 var(--mono);
+    }
+
+    .card p {
+      margin: 0;
+      font-size: .8rem;
+      line-height: 1.55;
+      color: var(--muted)
+    }
+
+    .card p+p {
+      margin-top: .4rem
+    }
+
+    .card ul {
+      margin: .2rem 0 0;
+      padding-left: 0;
+      list-style: none
+    }
+
+    .card ul li {
+      position: relative;
+      padding-left: .95rem;
+      margin: .22rem 0;
+      font-size: .8rem;
+      line-height: 1.5;
+      color: var(--muted)
+    }
+
+    .card ul li::before {
+      content: "";
+      position: absolute;
+      left: .12rem;
+      top: .55em;
+      width: .28rem;
+      height: .28rem;
+      border-radius: 50%;
+      background: var(--terra)
+    }
+
+    .card.accent {
+      border-top: .18rem solid var(--terra);
+      background: linear-gradient(180deg, var(--ivory), var(--tint))
+    }
+
+    .card.amber {
+      border-top: .18rem solid var(--amber)
+    }
+
+    .card.green {
+      border-top: .18rem solid #4f8a5b
+    }
+
+    .fact-list {
+      display: flex;
+      flex-direction: column;
+      gap: .42rem;
+      margin: .9rem 0
+    }
+
+    .rule {
+      display: flex;
+      gap: .55rem;
+      align-items: flex-start;
+      padding: .52rem .65rem;
+      border: .0625rem solid var(--line);
+      border-radius: .55rem;
+      background: var(--ivory);
+      font-size: .83rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .rule>span {
+      color: var(--terra);
+      font: 700 .72rem/1.4 var(--mono);
+      flex: 0 0 auto
+    }
+
+    .rule strong {
+      color: var(--ink)
+    }
+
+    .rule code {
+      font-size: .76rem
+    }
+
+    .tag {
+      display: inline-block;
+      padding: .08rem .4rem;
+      border-radius: 1rem;
+      background: var(--tint);
+      color: var(--terra-dark);
+      font: 700 .54rem/1.5 var(--sans);
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    .swatch-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem .9rem;
+      align-items: center;
+      color: var(--stone);
+      font-size: .7rem;
+      margin: .4rem 0 0
+    }
+
+    .dot {
+      width: .44rem;
+      height: .44rem;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: .25rem
+    }
+
+    /* footer + theme */
+    .footer {
+      margin-top: 2rem;
+      padding-top: 1.1rem;
+      border-top: .0625rem solid var(--line);
+      color: var(--stone);
+      font-size: .74rem;
+      line-height: 1.6;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem 1rem;
+      justify-content: space-between;
+    }
+
+    .footer a {
+      color: var(--muted)
+    }
+
+    #themebtn {
+      position: fixed;
+      z-index: 60;
+      right: 1rem;
+      top: 1rem;
+      display: grid;
+      place-items: center;
+      width: 2.15rem;
+      height: 2.15rem;
+      padding: 0;
+      border: .0625rem solid var(--line);
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 .3rem 1rem rgba(31, 30, 29, .16);
+      font: 500 .8rem/1 var(--serif);
+      cursor: pointer;
+      transition: border-color .14s, color .14s, transform .14s;
+    }
+
+    #themebtn:hover {
+      border-color: var(--terra);
+      color: var(--terra-dark);
+      transform: translateY(-1px)
+    }
+
+    /* dark */
+    html[data-theme="dark"] {
+      --paper: #171614;
+      --surface: #1e1d1a;
+      --ivory: #232220;
+      --ink: #f1ece2;
+      --prose: #cdc7ba;
+      --muted: #a8a294;
+      --stone: #8b857a;
+      --line: #332f29;
+      --line-soft: #2a2721;
+      --tint: #2b241f;
+      --terra: #e08a6a;
+      --terra-dark: #eda07e;
+      --amber: #d3a44a;
+      --code-bg: #1b1a17;
+      --code-bar: #232220;
+      --code-line: #332f2a;
+      --code-ink: #efe9de;
+      --code-dim: #9a948a;
+      --code-accent: #f0b49a;
+      --shadow: 0 18px 48px rgba(0, 0, 0, .3);
+    }
+
+    html[data-theme="dark"] ::selection {
+      background: var(--tint);
+      color: var(--ink)
+    }
+
+    html[data-theme="dark"] .sidebar {
+      background: linear-gradient(180deg, var(--surface), var(--paper) 60%, var(--paper))
+    }
+
+    html[data-theme="dark"] .toc a .n {
+      color: var(--stone)
+    }
+
+    html[data-theme="dark"] .toc a:hover {
+      background: var(--surface)
+    }
+
+    html[data-theme="dark"] .toc a.active {
+      background: var(--tint)
+    }
+
+    html[data-theme="dark"] .side-kicker {
+      color: var(--terra)
+    }
+
+    html[data-theme="dark"] code {
+      background: var(--line-soft);
+      color: var(--terra)
+    }
+
+    html[data-theme="dark"] .big-statement,
+    html[data-theme="dark"] .callout {
+      color: var(--prose)
+    }
+
+    html[data-theme="dark"] tbody tr:hover td {
+      background: rgba(43, 36, 31, .4)
+    }
+
+    html[data-theme="dark"] .card.accent {
+      background: linear-gradient(180deg, var(--ivory), #2d211b)
+    }
+
+    /* responsive */
+    @media (max-width:1180px) {
+      .shell {
+        grid-template-columns: 1fr
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: .0625rem solid var(--line);
+        padding: 1.2rem 1.1rem 1rem
+      }
+
+      .toc {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: .22rem .32rem
+      }
+
+      .toc a {
+        padding: .28rem .5rem;
+        border-left: none;
+        border-radius: .38rem;
+        background: #eae5d8;
+        font-size: .72rem
+      }
+
+      .toc a .n {
+        flex: 0 0 auto
+      }
+
+      .toc a.active {
+        border-left: none
+      }
+
+      .side-foot {
+        display: none
+      }
+
+      .progress {
+        left: 0
+      }
+
+      .pane {
+        padding: 1.7rem 1.3rem 4rem
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    @media (max-width:760px) {
+      html {
+        font-size: 17px
+      }
+
+      .pane {
+        padding: 1.3rem .85rem 3rem
+      }
+
+      .stat-row {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr
+      }
+
+      .meta {
+        font-size: .58rem
+      }
+
+      .table-wrap {
+        overflow-x: auto
+      }
+
+      table {
+        min-width: 34rem
+      }
+
+      .panel pre {
+        font-size: .66rem
+      }
+
+      h1 {
+        font-size: 2rem
+      }
+    }
+
+    @media print {
+
+      .sidebar,
+      .progress,
+      #themebtn,
+      .footer {
+        display: none !important
+      }
+
+      .shell {
+        display: block
+      }
+
+      .pane {
+        padding: 0
+      }
+
+      .section {
+        break-inside: avoid-page
+      }
+
+      .panel {
+        break-inside: avoid
+      }
+
+      .hero {
+        box-shadow: none
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important
+      }
+    }
+  </style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('udemy-readme:theme');
+        if (!saved) saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+      } catch (e) { /* private mode: use the stylesheet default */ }
+    })();
+  </script>
+</head>
+
+<body>
+  <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+  <div class="shell">
+
+    <aside class="sidebar">
+      <a class="side-kicker" href="#top">Course handbook</a>
+      <p class="side-title">Agents, from HTML to Node</p>
+      <p class="side-sub">One <code>fetch</code> call in a page, then a working mini coding agent in your terminal.</p>
+      <div class="side-rule"></div>
+      <p class="side-label">Contents</p>
+      <nav class="toc" id="toc" aria-label="Sections">
+        <a href="#overview"><span class="n">01</span><span>Overview</span></a>
+        <a href="#repo"><span class="n">02</span><span>What's in the repo</span></a>
+        <a href="#idea"><span class="n">03</span><span>The idea in one diagram</span></a>
+        <a href="#part-1"><span class="n">04</span><span>Part 1 — HTML demos</span></a>
+        <a href="#setup"><span class="n">05</span><span>Setup</span></a>
+        <a href="#part-2"><span class="n">06</span><span>Part 2 — Mini coder</span></a>
+        <a href="#quickstart"><span class="n">07</span><span>Quickstart</span></a>
+        <a href="#commands"><span class="n">08</span><span>Useful commands</span></a>
+        <a href="#layout"><span class="n">09</span><span>Project layout</span></a>
+        <a href="#tools"><span class="n">10</span><span>The eight tools</span></a>
+        <a href="#safety"><span class="n">11</span><span>Safety and boundaries</span></a>
+        <a href="#config"><span class="n">12</span><span>Configuration</span></a>
+        <a href="#learn"><span class="n">13</span><span>What you'll learn</span></a>
+        <a href="#testing"><span class="n">14</span><span>Testing</span></a>
+        <a href="#outline"><span class="n">15</span><span>Course outline</span></a>
+        <a href="#requirements"><span class="n">16</span><span>Requirements</span></a>
+        <a href="#secrets"><span class="n">17</span><span>A note on secrets</span></a>
+      </nav>
+      <div class="side-foot">
+        Source: <code>README.md</code><br>
+        Part 1 HTML &middot; Part 2 Node<br>
+        <span class="key">←</span><span class="key">→</span> jump sections &middot; <span class="key">T</span> theme
+      </div>
+    </aside>
+
+    <main class="pane" id="top">
+      <div class="inner">
+
+        <header class="page-heading" id="overview">
+          <p class="eyebrow">Course materials &middot; README</p>
+          <h1>From an AI Agent in HTML to Our Own Mini Coder in JavaScript</h1>
+          <p class="lede">Course materials for a hands-on look at how AI agents actually work — starting with one HTML
+            page and one <code>fetch</code> call, and ending with a working coding agent in your terminal that reads,
+            writes and edits real files.</p>
+          <p class="lede">No frameworks. No SDKs. No magic. Just an API call in a loop, with every layer built on top of
+            it in plain JavaScript.</p>
+          <div class="meta">
+            <span>2 parts</span>
+            <span>6 HTML pages</span>
+            <span>8 tools</span>
+            <span>9 lifecycle hooks</span>
+            <span>12 sections</span>
+          </div>
+        </header>
+
+        <div class="hero">
+          <div class="big-statement">
+            <span class="statement-label">The one thing to take away</span>
+            an agent is a loop around a model call with a handful of functions the model is allowed to ask for, and a
+            harness that decides what those functions may touch.
+          </div>
+          <div class="stat-row" aria-label="At a glance">
+            <div class="stat"><b>1</b><span>loop</span></div>
+            <div class="stat"><b>6</b><span>demo pages</span></div>
+            <div class="stat"><b>8</b><span>tools</span></div>
+            <div class="stat"><b>0</b><span>frameworks</span></div>
+          </div>
+        </div>
+
+        <section class="section" id="repo">
+          <div class="sec-head">
+            <span class="chip">02</span>
+            <div>
+              <p class="sec-kicker">The map</p>
+              <h2 class="stage-title">What's in this repo</h2>
+            </div>
+          </div>
+          <div class="prose">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Folder / file</th>
+                    <th scope="col">What it is</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>HTML-PAGES/</code></td>
+                    <td>Six standalone demo pages: basic chat, RAG, tool calling, animated tool-call round trip,
+                      animated memory explainer, and chat with <code>localStorage</code> memory</td>
+                  </tr>
+                  <tr>
+                    <td><code>HTML-EXPLAINERS/</code></td>
+                    <td>Supporting notes, diagrams and explainer pages for the concepts in the HTML section</td>
+                  </tr>
+                  <tr>
+                    <td><code>mini-coding-agent-js/</code></td>
+                    <td>The working mini coder: a ReAct loop, eight tools, sandbox, memory, hooks, CLI and offline tests
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>images/</code></td>
+                    <td>Diagrams and screenshots used throughout the course</td>
+                  </tr>
+                  <tr>
+                    <td><code>UDEMY.txt</code></td>
+                    <td>Full course description and outline</td>
+                  </tr>
+                  <tr>
+                    <td><code>UDEMY-LIST.txt</code></td>
+                    <td>The ten key learning outcomes</td>
+                  </tr>
+                  <tr>
+                    <td><code>OPENROUTER-EXAMPLE.txt</code></td>
+                    <td>Example format for the browser demos' key file</td>
+                  </tr>
+                  <tr>
+                    <td><code>.env.example</code></td>
+                    <td>Template configuration for the Node agent</td>
+                  </tr>
+                  <tr>
+                    <td><code>the-loop.png</code></td>
+                    <td>The core think → model call → tool calls diagram</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="idea">
+          <div class="sec-head">
+            <span class="chip">03</span>
+            <div>
+              <p class="sec-kicker">Core mechanism</p>
+              <h2 class="stage-title">The idea in <em>one diagram</em></h2>
+            </div>
+          </div>
+          <div class="prose">
+            <div class="panel">
+              <div class="panel-head"><span>the-loop</span><span class="panel-lang">diagram</span></div>
+              <pre>        ┌─────────────┐
+   ┌───▶│  model call │  system + messages + tools schema
+   │    └──────┬──────┘
+   │           │ tool_calls?
+   │    ┌──────▼──────┐
+   │    │  dispatcher │  validate args → run tool → string result
+   │    └──────┬──────┘
+   └───────────┘        result appended as { role: "tool", tool_call_id }
+                │
+                └── no tool_calls → final answer, stop</pre>
+            </div>
+            <p>Think, then model call, then tool calls. If there are none, print the answer and stop. If there are some,
+              run the tools, append the results and loop back. Every agent you meet afterwards is a variation on this.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" id="part-1">
+          <div class="sec-head">
+            <span class="chip">04</span>
+            <div>
+              <p class="sec-kicker">Part 1</p>
+              <h2 class="stage-title">The HTML demos</h2>
+            </div>
+          </div>
+          <div class="prose">
+            <p>Open any page in <code>HTML-PAGES/</code> over HTTP. The pages read the API key at runtime from
+              <code>OPENROUTER.txt</code>, and a browser cannot fetch a local file from a <code>file://</code> page.</p>
+
+            <h3 class="subhead">The pages</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Page</th>
+                    <th scope="col">Demonstrates</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>01-basic.html</code></td>
+                    <td>The simplest possible one-shot chat completion</td>
+                  </tr>
+                  <tr>
+                    <td><code>02-rag.html</code></td>
+                    <td>RAG without a vector database — context injected into the system prompt</td>
+                  </tr>
+                  <tr>
+                    <td><code>03.1-tool-call-anthropic-animation.html</code></td>
+                    <td>Animated walkthrough of a tool-calling round trip</td>
+                  </tr>
+                  <tr>
+                    <td><code>03.2-tool-calling.html</code></td>
+                    <td>A real tools schema with a working dispatch loop</td>
+                  </tr>
+                  <tr>
+                    <td><code>04.1-chat-with-memory-animation.html</code></td>
+                    <td>Animated explainer of multi-turn memory</td>
+                  </tr>
+                  <tr>
+                    <td><code>04.2-chat-with-memory.html</code></td>
+                    <td>Multi-turn chat persisted to <code>localStorage</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="note"><code>config.js</code> is the shared, secret-free loader used by the pages.</p>
+          </div>
+        </section>
+
+        <section class="section" id="setup">
+          <div class="sec-head">
+            <span class="chip">05</span>
+            <div>
+              <p class="sec-kicker">Before you start</p>
+              <h2 class="stage-title">Setup</h2>
+            </div>
+          </div>
+          <div class="prose">
+            <ol>
+              <li>
+                Copy <code>OPENROUTER-EXAMPLE.txt</code> to <code>OPENROUTER.txt</code> in the repo root and add your
+                key:
+                <div class="panel">
+                  <div class="panel-head"><span>OPENROUTER.txt</span><span class="panel-lang">ini</span></div>
+                  <pre><span class="tok-k">OPENROUTER_API_KEY</span>=sk-or-v1-...
+<span class="tok-k">MODEL</span>=deepseek/deepseek-v4.1-flash-1017</pre>
+                </div>
+              </li>
+              <li>
+                Serve the repo over HTTP. For example, with VS Code's <strong>Live Server</strong> extension,
+                right-click an HTML page and choose <strong>Open with Live Server</strong>.
+          </div>
+          </li>
+          <li>Open <a
+              href="http://localhost:8000/HTML-PAGES/01-basic.html">http://localhost:8000/HTML-PAGES/01-basic.html</a>.
+          </li>
+          </ol>
+          <div class="callout"><em><code>OPENROUTER.txt</code> is git-ignored — never commit a real key.</em> Loading a
+            key in the browser is fine for learning on your own machine, but it is not how you would ship it.</div>
+      </div>
+      </section>
+
+      <section class="section" id="part-2">
+        <div class="sec-head">
+          <span class="chip">06</span>
+          <div>
+            <p class="sec-kicker">Part 2</p>
+            <h2 class="stage-title">The mini coder <em>(Node)</em></h2>
+          </div>
+        </div>
+        <div class="prose">
+          <p>The same loop, moved out of the browser and wrapped in everything a real tool needs. See <a
+              href="mini-coding-agent-js/README.md"><code>mini-coding-agent-js/README.md</code></a> for the full
+            module-by-module reference.</p>
+
+          <h3 class="subhead">Requirements</h3>
+          <ul>
+            <li>Node.js 20 or newer</li>
+            <li>An OpenRouter account and API key</li>
+            <li>Any model that supports tool calling</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section" id="quickstart">
+        <div class="sec-head">
+          <span class="chip">07</span>
+          <div>
+            <p class="sec-kicker">Get it running</p>
+            <h2 class="stage-title">Quickstart</h2>
+          </div>
+        </div>
+        <div class="prose">
+          <div class="panel">
+            <div class="panel-head"><span>terminal</span><span class="panel-lang">bash</span></div>
+            <pre>cd mini-coding-agent-js
+npm install                 <span class="tok-c"># one dependency: chalk (coloured output)</span>
+
+<span class="tok-c"># Reuse the .env at the repo root, or create one:</span>
+cp ../.env.example ../.env  <span class="tok-c"># then add your key</span>
+
+npm start                   <span class="tok-c"># interactive session</span></pre>
+          </div>
+          <p>Run a single task non-interactively:</p>
+          <div class="panel">
+            <div class="panel-head"><span>terminal</span><span class="panel-lang">bash</span></div>
+            <pre>node src/cli.js "create hello.js that prints the date and run it"</pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="commands">
+        <div class="sec-head">
+          <span class="chip">08</span>
+          <div>
+            <p class="sec-kicker">Day to day</p>
+            <h2 class="stage-title">Useful commands</h2>
+          </div>
+        </div>
+        <div class="prose">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Command</th>
+                  <th scope="col">What it does</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>npm start</code></td>
+                  <td>Interactive session: one task after another</td>
+                </tr>
+                <tr>
+                  <td><code>node src/cli.js "task"</code></td>
+                  <td>Run one task and exit</td>
+                </tr>
+                <tr>
+                  <td><code>node src/cli.js --demo</code></td>
+                  <td>Scripted run with no network — the loop and sandbox guards</td>
+                </tr>
+                <tr>
+                  <td><code>node src/cli.js --hooks</code></td>
+                  <td>Print the nine lifecycle hooks</td>
+                </tr>
+                <tr>
+                  <td><code>node src/cli.js --memory</code></td>
+                  <td>Show <code>src/memory.md</code> and what gets injected</td>
+                </tr>
+                <tr>
+                  <td><code>npm test</code></td>
+                  <td>Offline tests using a fake model — no key or network needed</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">Inside a session: <code>/new</code> clears the conversation (not the workspace),
+            <code>/quit</code> exits.</p>
+        </div>
+      </section>
+
+      <section class="section" id="layout">
+        <div class="sec-head">
+          <span class="chip">09</span>
+          <div>
+            <p class="sec-kicker">The shape of the code</p>
+            <h2 class="stage-title">Project layout</h2>
+          </div>
+        </div>
+        <div class="prose">
+          <div class="panel">
+            <div class="panel-head"><span>mini-coding-agent-js/</span><span class="panel-lang">tree</span></div>
+            <pre>mini-coding-agent-js/
+├── src/
+│   ├── agent.js       the loop — about 120 lines of code
+│   ├── prompt.js      system prompt and memory block
+│   ├── tools.js       eight tools, their schemas and the dispatcher
+│   ├── llm.js         one HTTP request with a timeout
+│   ├── workspace.js   path policy: resolve / resolveRead
+│   ├── sandbox.js     the write fence and shell write scan
+│   ├── memory.js      long-term memory in a markdown file
+│   ├── hooks.js       nine named lifecycle moments
+│   ├── config.js      dot-env discovery and precedence
+│   ├── cli.js         flags, banner, session loop, exit codes
+│   ├── ui.js          the console palette
+│   ├── heartbeat.js   liveness during slow calls
+│   ├── demo.js        scripted demo and sandbox scorecard
+│   └── memory.md      the human-readable long-term memory store
+├── test/              offline test suite
+└── workspace/         the only folder file tools may write to</pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="tools">
+        <div class="sec-head">
+          <span class="chip">10</span>
+          <div>
+            <p class="sec-kicker">The model's hands</p>
+            <h2 class="stage-title">The eight tools</h2>
+          </div>
+        </div>
+        <div class="prose">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Tool</th>
+                  <th scope="col">Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>list_files</code></td>
+                  <td>List files in the workspace</td>
+                </tr>
+                <tr>
+                  <td><code>read_file</code></td>
+                  <td>Read a file (reads are deliberately open)</td>
+                </tr>
+                <tr>
+                  <td><code>create_file</code></td>
+                  <td>Create a file; refuses to overwrite</td>
+                </tr>
+                <tr>
+                  <td><code>write_file</code></td>
+                  <td>Overwrite a file</td>
+                </tr>
+                <tr>
+                  <td><code>edit_file</code></td>
+                  <td>Exact-snippet replacement</td>
+                </tr>
+                <tr>
+                  <td><code>run_command</code></td>
+                  <td>Run a shell command with timeout and capped output</td>
+                </tr>
+                <tr>
+                  <td><code>remember</code></td>
+                  <td>Save a note to long-term memory</td>
+                </tr>
+                <tr>
+                  <td><code>recall</code></td>
+                  <td>Retrieve memories</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="safety">
+        <div class="sec-head">
+          <span class="chip">11</span>
+          <div>
+            <p class="sec-kicker">The harness decides</p>
+            <h2 class="stage-title">Safety and boundaries</h2>
+          </div>
+        </div>
+        <div class="prose">
+          <div class="fact-list">
+            <div class="rule"><span>01</span>
+              <p><strong>Write fence</strong> — writes outside the workspace are refused, including absolute paths,
+                <code>..</code>, <code>~</code>, environment variables and UNC paths.</p>
+            </div>
+            <div class="rule"><span>02</span>
+              <p><strong>Shell write scan</strong> — the shell is not a way around the fence; write targets are scanned.
+              </p>
+            </div>
+            <div class="rule"><span>03</span>
+              <p><strong>Environment allow list</strong> — only thirteen environment names reach child processes, so a
+                command cannot echo your API key into the transcript.</p>
+            </div>
+            <div class="rule"><span>04</span>
+              <p><strong>Command policy</strong> — <code>CMD_POLICY=allow|ask|deny</code>, with hard-denied destructive
+                patterns.</p>
+            </div>
+            <div class="rule"><span>05</span>
+              <p><strong>Bounded autonomy</strong> — a step budget, request timeout and handling for truncated replies
+                keep the loop finite.</p>
+            </div>
+            <div class="rule"><span>06</span>
+              <p><strong>Human in the loop</strong> — commands can require a <code>y/N</code> confirmation; a
+                non-interactive prompt degrades to deny.</p>
+            </div>
+            <div class="rule"><span>07</span>
+              <p><strong>Errors as observations</strong> — a failed tool returns a result the model can read and
+                correct, rather than crashing the loop.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="config">
+        <div class="sec-head">
+          <span class="chip">12</span>
+          <div>
+            <p class="sec-kicker">Knobs and defaults</p>
+            <h2 class="stage-title">Configuration precedence</h2>
+          </div>
+        </div>
+        <div class="prose">
+          <p>A CLI flag beats <code>.env</code>, and <code>.env</code> beats the shell environment.</p>
+          <div class="table-wrap wide">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Default</th>
+                  <th scope="col">Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>OPENROUTER_API_KEY</code> (alias <code>OPENROUTER_KEY</code>)</td>
+                  <td>required</td>
+                  <td>API key; never logged</td>
+                </tr>
+                <tr>
+                  <td><code>OPENROUTER_MODEL</code> (alias <code>MODEL</code>)</td>
+                  <td><code>deepseek/deepseek-v4.1-flash-1017</code></td>
+                  <td>Model slug; bare names are expanded to <code>vendor/model</code></td>
+                </tr>
+                <tr>
+                  <td><code>CMD_POLICY</code></td>
+                  <td><code>ask</code></td>
+                  <td><code>allow</code>, <code>ask</code> or <code>deny</code> shell commands</td>
+                </tr>
+                <tr>
+                  <td><code>MAX_STEPS</code></td>
+                  <td><code>12</code></td>
+                  <td>ReAct iterations per task</td>
+                </tr>
+                <tr>
+                  <td><code>REQUEST_TIMEOUT_MS</code></td>
+                  <td><code>90000</code></td>
+                  <td>Timeout per model call</td>
+                </tr>
+                <tr>
+                  <td><code>WORKSPACE_DIR</code></td>
+                  <td><code>workspace</code></td>
+                  <td>The only folder file tools may write to</td>
+                </tr>
+                <tr>
+                  <td><code>MEMORY_FILE</code></td>
+                  <td><code>src/memory.md</code></td>
+                  <td>Long-term memory store</td>
+                </tr>
+                <tr>
+                  <td><code>MEMORY_MAX_ENTRIES</code></td>
+                  <td><code>60</code></td>
+                  <td>Cap on stored memories</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">Copy <code>.env.example</code> to <code>.env</code> and fill it in. <code>.env</code> files
+            and <code>node_modules/</code> are git-ignored.</p>
+        </div>
+      </section>
+
+      <section class="section" id="learn">
+        <div class="sec-head">
+          <span class="chip">13</span>
+          <div>
+            <p class="sec-kicker">Outcomes</p>
+            <h2 class="stage-title">What you'll learn</h2>
+          </div>
+        </div>
+        <div class="prose">
+          <h3 class="subhead">The four building blocks of every agent</h3>
+          <div class="grid-2">
+            <div class="card accent">
+              <h3><span class="num">01</span>Memory</h3>
+              <p>The model is stateless; every request must carry the whole conversation.</p>
+            </div>
+            <div class="card accent">
+              <h3><span class="num">02</span>Context</h3>
+              <p>What you put in front of the model decides whether it is useful.</p>
+            </div>
+            <div class="card accent">
+              <h3><span class="num">03</span>Looping</h3>
+              <p>Repeat the call until the model stops asking for tools. Remove the loop and you have a chatbot.</p>
+            </div>
+            <div class="card accent">
+              <h3><span class="num">04</span>Tool calling</h3>
+              <p>The model cannot touch a file; it emits JSON naming a tool, and your code decides whether and how to
+                run it.</p>
+            </div>
+          </div>
+
+          <h3 class="subhead">The engineering that makes it usable</h3>
+          <div class="callout">A sandbox, an environment allow list, a step budget, errors returned as observations,
+            exit codes, human confirmation, lifecycle hooks and a plain-markdown memory file.</div>
+
+          <h3 class="subhead">The mindset</h3>
+          <p>Prompt engineering becomes context engineering becomes harness engineering. A better harness with a weaker
+            model often beats a weak harness with a stronger model. Look at the patterns and structure, not the syntax.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="testing">
+        <div class="sec-head">
+          <span class="chip">14</span>
+          <div>
+            <p class="sec-kicker">No key required</p>
+            <h2 class="stage-title">Testing</h2>
+          </div>
+        </div>
+        <div class="prose">
+          <p>The test suite runs the real loop against a fake model, so it needs no API key and no network:</p>
+          <div class="panel">
+            <div class="panel-head"><span>terminal</span><span class="panel-lang">bash</span></div>
+            <pre>cd mini-coding-agent-js
+npm test</pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="outline">
+        <div class="sec-head">
+          <span class="chip">15</span>
+          <div>
+            <p class="sec-kicker">The whole path</p>
+            <h2 class="stage-title">Course outline</h2>
+          </div>
+        </div>
+        <div class="prose">
+          <p>The full outline, section by section, is in <a href="UDEMY.txt"><code>UDEMY.txt</code></a>; the key
+            outcomes are in <a href="UDEMY-LIST.txt"><code>UDEMY-LIST.txt</code></a>.</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Section</th>
+                  <th scope="col">Topic</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>The idea: what an agent actually is</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Your first agent in HTML</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>Tools and loops</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>Memory</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>From page to program</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>The eight tools</td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td>Safety and boundaries</td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td>Memory that survives</td>
+                </tr>
+                <tr>
+                  <td>9</td>
+                  <td>Extending the loop with hooks</td>
+                </tr>
+                <tr>
+                  <td>10</td>
+                  <td>The program around the loop</td>
+                </tr>
+                <tr>
+                  <td>11</td>
+                  <td>Proving it works</td>
+                </tr>
+                <tr>
+                  <td>12</td>
+                  <td>Where next: streaming, sub-agents, retries, containers</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="requirements">
+        <div class="sec-head">
+          <span class="chip">16</span>
+          <div>
+            <p class="sec-kicker">What you need</p>
+            <h2 class="stage-title">Requirements</h2>
+          </div>
+        </div>
+        <div class="prose">
+          <ul>
+            <li>A modern browser</li>
+            <li>Node.js 20+ for the Node section</li>
+            <li>An OpenRouter account and API key</li>
+            <li>Python is optional, only to serve the HTML pages over HTTP</li>
+          </ul>
+          <p>No machine learning, maths background or prior agent experience required — just comfort reading JavaScript
+            and using a terminal.</p>
+        </div>
+      </section>
+
+      <section class="section" id="secrets">
+        <div class="sec-head">
+          <span class="chip">17</span>
+          <div>
+            <p class="sec-kicker">Keep keys out of git</p>
+            <h2 class="stage-title">A note on secrets</h2>
+          </div>
+        </div>
+        <div class="prose">
+          <div class="fact-list">
+            <div class="rule"><span>01</span>
+              <p><code>OPENROUTER.txt</code> is used by the browser demos and is git-ignored.</p>
+            </div>
+            <div class="rule"><span>02</span>
+              <p><code>.env</code> is used by the Node agent and is git-ignored.</p>
+            </div>
+            <div class="rule"><span>03</span>
+              <p><code>.env.example</code> and <code>OPENROUTER-EXAMPLE.txt</code> contain placeholders only and are
+                safe to commit.</p>
+            </div>
+            <div class="rule"><span>04</span>
+              <p>The Node agent never prints the key and never passes it to a child process.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>Source: <a href="README.md"><code>README.md</code></a> &middot; Full course: <a
+            href="UDEMY.txt"><code>UDEMY.txt</code></a></span>
+        <span>Styles: js-explainer design system</span>
+      </footer>
+
+  </div>
+  </main>
+  </div>
+
+  <button id="themebtn" type="button" aria-label="Toggle dark mode" title="Toggle dark mode (T)">Aa</button>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var bar = document.getElementById('bar');
+      var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+      var sections = links.map(function (a) {
+        return document.getElementById(a.getAttribute('href').slice(1));
+      }).filter(Boolean);
+
+      function setActive(id) {
+        links.forEach(function (a) {
+          var on = a.getAttribute('href') === '#' + id;
+          a.classList.toggle('active', on);
+          if (on) a.setAttribute('aria-current', 'true');
+          else a.removeAttribute('aria-current');
+        });
+      }
+
+      function onScroll() {
+        var doc = document.documentElement;
+        var max = doc.scrollHeight - window.innerHeight;
+        var pct = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
+        bar.style.width = pct + '%';
+
+        var current = sections[0];
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].getBoundingClientRect().top <= 140) current = sections[i];
+        }
+        if (current && current.id) setActive(current.id);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
+
+      function toggleTheme() {
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('udemy-readme:theme', next); } catch (e) { /* private mode */ }
+      }
+
+      document.getElementById('themebtn').addEventListener('click', toggleTheme);
+
+      document.addEventListener('keydown', function (e) {
+        var tag = (e.target && e.target.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.metaKey || e.ctrlKey || e.altKey) return;
+        if (e.key === 't' || e.key === 'T') {
+          e.preventDefault();
+          toggleTheme();
+          return;
+        }
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          var active = links.findIndex(function (a) { return a.classList.contains('active'); });
+          var next = e.key === 'ArrowRight' ? active + 1 : active - 1;
+          if (next >= 0 && next < links.length) {
+            e.preventDefault();
+            links[next].click();
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>

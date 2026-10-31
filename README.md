@@ -56,11 +56,7 @@ Open any page in `HTML-PAGES/` over HTTP. The pages read the API key at runtime 
    MODEL=deepseek/deepseek-v4.1-flash-1017
    ```
 
-2. Serve the repo over HTTP. For example, with VS Code's **Live Server** extension, right-click an HTML page and choose **Open with Live Server**. Or use Python:
-
-   ```bash
-   python -m http.server 8000
-   ```
+2. Serve the repo over HTTP. For example, with VS Code's **Live Server** extension, right-click an HTML page and choose **Open with Live Server**.
 
 3. Open <http://localhost:8000/HTML-PAGES/01-basic.html>.
 
