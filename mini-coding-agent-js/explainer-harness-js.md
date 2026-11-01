@@ -1,6 +1,7 @@
-<!-- Source of truth for the PDF. Rebuild with:
+<!-- Source of truth for the HTML and the PDF. Rebuild with:
+     python build_explainer.py
      python ../skills/make-pdf-from-md/scripts/make_pdf.py explainer-harness-js.md
-     Do not edit the generated PDF; edit this file and rerun the command. -->
+     Do not edit the generated HTML or PDF; edit this file and rerun the commands. -->
 
 *Explainer · the loop, the tools, the sandbox, the hooks*
 
@@ -53,22 +54,23 @@ Read those four lines as a sentence: the model *thought*, it *acted*, the world 
 
 ## 02 The shape of the program
 
-Twelve files, each answering one question an audience usually asks. They import in one direction only, so there is no cycle to hold in your head — and the loop is a library, not a program: nothing in `agent.js` knows a flag name, a colour or an exit code.
+Thirteen files, each answering one question an audience usually asks. They import in one direction only, so there is no cycle to hold in your head — and the loop is a library, not a program: nothing in `agent.js` knows a flag name, a colour or an exit code.
 
 | File | Lines | The question it answers |
 | --- | --- | --- |
-| `src/agent.js` | 207 | **Where is the loop?** `runTask`: seven beats, nine hook call sites, one `for`. Nothing else lives here on purpose. |
+| `src/agent.js` | 215 | **Where is the loop?** `runTask`: seven beats, nine hook call sites, one `for`. Nothing else lives here on purpose. |
 | `src/prompt.js` | 81 | What is the model told before it starts — and how does memory get in there? |
 | `src/heartbeat.js` | 36 | Why doesn't a 60-second request look like a crash? |
-| `src/tools.js` | 416 | What can the model do, and what happens when it asks? |
+| `src/tools.js` | 432 | What can the model do, and what happens when it asks? |
 | `src/hooks.js` | 398 | Where can outside code get a turn, and what may it change? |
 | `src/memory.js` | 253 | What does it know that survives the process? |
-| `src/demo.js` | 141 | What runs when there is no network, no key and no model? |
-| `src/cli.js` | 461 | **What does a person type?** Flags, banner, the session loop, y/N prompt, exit codes. |
+| `src/demo.js` | 156 | What runs when there is no network, no key and no model? |
+| `src/cli.js` | 468 | **What does a person type?** Flags, banner, the session loop, y/N prompt, exit codes. |
 | `src/config.js` | 195 | Which key, which model, which limits — and where each value came from. |
-| `src/workspace.js` | 85 | How is a path stopped from leaving the sandbox? |
+| `src/workspace.js` | 117 | How is a path stopped from leaving the sandbox? |
+| `src/sandbox.js` | 357 | **May the agent change this file at all?** The write fence around save, edit, delete and shell writes. |
 | `src/llm.js` | 66 | What exactly goes over the wire? |
-| `src/ui.js` | 153 | Where is the colour? (Nowhere else.) |
+| `src/ui.js` | 164 | Where is the colour? (Nowhere else.) |
 
 **imports, top to bottom** · *text*
 
@@ -78,7 +80,8 @@ agent.js ── THE LOOP ─────────────────┐
    ├── heartbeat.js still waiting     │  what one step
    ├── llm.js       one POST          │  needs
    └── tools.js     schemas + run
-         └── workspace.js  containment
+         ├── workspace.js  containment
+         └── sandbox.js    write fence
                                       │
 cli.js ── THE PROGRAM ────────────────┤  everything a
    ├── agent.js     runTask           │  person needs to
@@ -156,7 +159,7 @@ export function demoChat() {
 
 Because the reply is data, the script can do something a live model will not do on cue: steps 6–10 deliberately try to escape the sandbox, and `sandboxScorecard()` then reads those results back and prints which guards actually held. That is chapter 15's scorecard — a claim the program checks, not a slide.
 
-> **Read it in this order.** `agent.js` first and in full — it is 207 lines including comments. Then `prompt.js` (what the model is told) and `tools.js` top to bottom, because the schema descriptions are the only prompt engineering in the project. `hooks.js` and `memory.js` are the two chapters you can read last, and the two an audience always asks about. `cli.js` is the program if you need it; `demo.js` is what runs when the wifi does not.
+> **Read it in this order.** `agent.js` first and in full — it is 215 lines including comments. Then `prompt.js` (what the model is told) and `tools.js` top to bottom, because the schema descriptions are the only prompt engineering in the project. `hooks.js` and `memory.js` are the two chapters you can read last, and the two an audience always asks about. `cli.js` is the program if you need it; `demo.js` is what runs when the wifi does not.
 
 ## 03 The loop
 
@@ -1509,4 +1512,4 @@ That is the whole of it: a model, eight tools, a loop with four bounds, nine lif
 
 ---
 
-Built from the source in `mini-coding-js/` — every excerpt is real code with only the logging lines trimmed and long lines rewrapped to fit, and the run in chapter 15 is a captured terminal session. Tests: `npm test` (104 offline, no key, no network). Demo: `npm run demo`. Hooks: `npm run hooks`. Memory: `node src/cli.js --memory`. Sandbox walkthrough: `sandbox-guide.html` (this page was built alongside `sandbox.html`, which is now `sandbox-guide.html`). Appearance: the round `Aa` button, bottom right - scheme, type scale, fonts and every colour token, saved in `localStorage` and exportable as CSS.
+Built from the source in `mini-coding-js/` — every excerpt is real code with only the logging lines trimmed and long lines rewrapped to fit, and the run in chapter 15 is a captured terminal session. Tests: `npm test` (104 offline, no key, no network). Demo: `npm run demo`. Hooks: `npm run hooks`. Memory: `node src/cli.js --memory`. Sandbox walkthrough: `sandbox-guide.html` (this page was built alongside `sandbox.html`, which is now `sandbox-guide.html`). Site customiser: the round `Aa` button, bottom right - a named site palette, type scale, layout, fonts and every colour token, saved in `localStorage` and exportable as CSS.

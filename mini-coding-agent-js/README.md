@@ -44,12 +44,14 @@ npm start                  # a session: type a task at the "task ›" prompt, th
 | `explainer-harness-js.html` | the talk page: chapters 01-17 walking the whole program, with a captured run |
 | `sandbox-guide.html` | the sandbox walkthrough (renamed from `sandbox.html`; the old filename no longer exists, so update any link or slide that still points at it) |
 
-Both HTML pages are self-contained - open them straight from disk, no build step.
+Both HTML pages are self-contained - open them straight from disk, no build step. The talk page is
+generated from `explainer-harness-js.md` with `python build_explainer.py`; edit the Markdown, not the HTML.
 
-Both pages also carry an **Appearance panel**: the round `Aa` button in the bottom-right corner opens
-colour scheme (auto / light / dark), text size, line height, code size, sidebar and reading-column width,
-the three font stacks and every colour token. Choices are saved in `localStorage` (so they follow you
-between the two pages), reset with one button, and exported as CSS with **Copy CSS**.
+Both pages also carry a **Site customiser**: the round `Aa` button in the bottom-right corner opens a
+named site palette (Warm paper, Slate, Forest, Ocean, Plum, Midnight), text size, line height, code size,
+sidebar and reading-column width, the three font stacks and every colour token. Choices are saved in
+`localStorage` (so they follow you between the two pages), reset with one button, and exported as CSS
+with **Copy CSS**.
 
 ## Sessions: one task after another
 

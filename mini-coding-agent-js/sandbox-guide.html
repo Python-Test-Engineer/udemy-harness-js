@@ -196,29 +196,6 @@ tbody td:first-child{white-space:nowrap}
 }
 .colophon code{font-size:0.7rem}
 
-/* ---------- dark ---------- */
-html[data-theme="dark"]{
-    --paper:#171614; --surface:#1e1d1a; --ivory:#232220; --ink:#f1ece2;
-    --prose:#cdc7ba; --muted:#a8a294; --stone:#8b857a;
-    --line:#332f29; --line-soft:#2a2721; --tint:#2b241f;
-    --terra:#e08a6a; --terra-dark:#eda07e; --amber:#d3a44a;
-    --code-bg:#1b1a17; --code-bar:#232220; --code-line:#332f2a;
-    --code-ink:#efe9de; --code-dim:#9a948a; --code-accent:#f0b49a;
-  }
-html[data-theme="dark"] ::selection{background:var(--tint); color:var(--ink)}
-html[data-theme="dark"] .sidebar{background:linear-gradient(180deg,var(--surface),var(--paper) 60%,var(--paper))}
-html[data-theme="dark"] .toc a .n{color:var(--stone)}
-html[data-theme="dark"] .toc a:hover{background:var(--surface)}
-html[data-theme="dark"] .toc a.active{background:var(--tint)}
-html[data-theme="dark"] .side-kicker{color:var(--terra)}
-html[data-theme="dark"] code{background:var(--line-soft); color:var(--terra)}
-html[data-theme="dark"] .callout{color:var(--prose)}
-html[data-theme="dark"] .callout.warn{color:var(--amber)}
-html[data-theme="dark"] figure.ascii{background:var(--code-bg); border-color:var(--line)}
-html[data-theme="dark"] figure.ascii pre{color:var(--prose)}
-html[data-theme="dark"] .tag{background:var(--tint); color:var(--terra)}
-html[data-theme="dark"] .meta span::before{color:var(--line)}
-
 /* ---------- narrow ---------- */
 @media (max-width: 940px){
   .shell{grid-template-columns:1fr}
@@ -239,7 +216,7 @@ html[data-theme="dark"] .meta span::before{color:var(--line)}
 
 /* ---------- print ---------- */
 @media print{
-  :root,html[data-theme="dark"]{color-scheme:light; --paper:#fff !important; --surface:#fff !important; --ivory:#fff !important; --ink:#1f1e1d !important; --prose:#33302c !important; --muted:#44423d !important; --stone:#6b675f !important; --line:#d8d3c8 !important; --line-soft:#e8e4da !important; --tint:#f8f2ec !important; --terra:#c9633f !important; --terra-dark:#a14e2f !important; --amber:#8a6420 !important; --code-bg:#f6f4ef !important; --code-bar:#efece3 !important; --code-line:#ddd8cc !important; --code-ink:#26241f !important; --code-dim:#6b675f !important; --code-accent:#8f3f27}
+  :root{ --paper:#fff !important; --surface:#fff !important; --ivory:#fff !important; --ink:#1f1e1d !important; --prose:#33302c !important; --muted:#44423d !important; --stone:#6b675f !important; --line:#d8d3c8 !important; --line-soft:#e8e4da !important; --tint:#f8f2ec !important; --terra:#c9633f !important; --terra-dark:#a14e2f !important; --amber:#8a6420 !important; --code-bg:#f6f4ef !important; --code-bar:#efece3 !important; --code-line:#ddd8cc !important; --code-ink:#26241f !important; --code-dim:#6b675f !important; --code-accent:#8f3f27}
 
   .sidebar,.progress{display:none}
   .shell{display:block}
@@ -342,17 +319,7 @@ html[data-theme="dark"] .meta span::before{color:var(--line)}
 }
 
 </style>
-<script>
-(function () {
-  try {
-    var saved = JSON.parse(localStorage.getItem('mca-appearance:v1') || '{}');
-    var mode = saved.mode || 'auto';
-    var dark = mode === 'dark' || (mode === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-  } catch (e) { /* private mode: fall back to the stylesheet default */ }
-})();
-</script>
-</head>
+</head></head>
 <body>
 <div class="progress"><span id="bar"></span></div>
 <div class="shell">
@@ -754,8 +721,9 @@ its.</p>
         are from <code>src/workspace.js</code> and <code>src/tools.js</code> with logging trimmed; tier 3&ndash;6
         snippets are illustrative sketches for this page, not yet in the repo. Flag semantics are
         <code>docker run</code>'s own; start-up figures are rough orders of magnitude, not measurements taken here.
-        Built from a script so the page can be regenerated. Appearance: the round <code>Aa</code> button,
-        bottom right - scheme, type scale, fonts and colour tokens, kept in <code>localStorage</code>.
+        Built from a script so the page can be regenerated. Site customiser: the round <code>Aa</code> button, bottom right -
+        a named site palette, type scale, layout, fonts and every colour token, saved in
+        <code>localStorage</code> and exportable as CSS.
       </p>
     </div>
   </main>
@@ -801,17 +769,20 @@ its.</p>
 
 </script>
 <button id="stylebtn" type="button" aria-expanded="false" aria-controls="stylepanel"
-        aria-label="Appearance settings" title="Appearance">Aa</button>
+        aria-label="Site customiser" title="Site customiser">Aa</button>
 
-<aside id="stylepanel" hidden aria-label="Appearance settings">
+<aside id="stylepanel" hidden aria-label="Site customiser">
   <div class="sp-head">
-    <h2>Appearance</h2>
-    <select id="sp-mode" aria-label="Colour scheme">
-      <option value="auto">Auto</option>
-      <option value="light">Light</option>
-      <option value="dark">Dark</option>
+    <h2>Site customiser</h2>
+    <select id="sp-site" aria-label="Site palette">
+      <option value="warm-paper">Warm paper</option>
+      <option value="slate">Slate</option>
+      <option value="forest">Forest</option>
+      <option value="ocean">Ocean</option>
+      <option value="plum">Plum</option>
+      <option value="midnight">Midnight</option>
     </select>
-    <button id="sp-close" type="button" aria-label="Close appearance panel">&#10005;</button>
+    <button id="sp-close" type="button" aria-label="Close site customiser">&#10005;</button>
   </div>
   <div class="sp-body" id="sp-body"></div>
   <div class="sp-foot">
@@ -826,11 +797,12 @@ its.</p>
   'use strict';
 
   /* ============================================================
-     Appearance panel - the same idea as the one in nanocode's
+     Site customiser - the same idea as the one in nanocode's
      book.html: the page's CSS custom properties are the settings
      schema, so the panel can never drift from the stylesheet.
-     Every change is written as an inline property on :root, saved
-     to localStorage, and can be copied back out as CSS.
+     A site is a complete palette; switching site restyles the page,
+     editing a swatch edits that site in place, and Copy CSS exports
+     the live base settings plus the selected site palette.
      ============================================================ */
 
   var SPEC = [
@@ -879,63 +851,103 @@ its.</p>
       mono: "'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace"
     },
     colors: {
-      light: {
-        paper: '#f0eee6', surface: '#fbfaf7', ivory: '#fffdfa', ink: '#1f1e1d',
-        prose: '#33302c', muted: '#55524c', stone: '#8c877c',
-        line: '#e0dbcf', line_soft: '#e9e4d8', tint: '#f6ede6',
-        terra: '#d97757', terra_dark: '#c9633f', amber: '#b9862f',
-        code_bg: '#23211e', code_bar: '#2b2823', code_line: '#3a3732',
-        code_ink: '#f2ece1', code_dim: '#a9a294', code_accent: '#f0b49a'
-      },
-      dark: {
-        paper: '#171614', surface: '#1e1d1a', ivory: '#232220', ink: '#f1ece2',
-        prose: '#cdc7ba', muted: '#a8a294', stone: '#8b857a',
-        line: '#332f29', line_soft: '#2a2721', tint: '#2b241f',
-        terra: '#e08a6a', terra_dark: '#eda07e', amber: '#d3a44a',
-        code_bg: '#1b1a17', code_bar: '#232220', code_line: '#332f2a',
-        code_ink: '#efe9de', code_dim: '#9a948a', code_accent: '#f0b49a'
-      }
+      paper: '#f0eee6', surface: '#fbfaf7', ivory: '#fffdfa', ink: '#1f1e1d',
+      prose: '#33302c', muted: '#55524c', stone: '#8c877c',
+      line: '#e0dbcf', line_soft: '#e9e4d8', tint: '#f6ede6',
+      terra: '#d97757', terra_dark: '#c9633f', amber: '#b9862f',
+      code_bg: '#23211e', code_bar: '#2b2823', code_line: '#3a3732',
+      code_ink: '#f2ece1', code_dim: '#a9a294', code_accent: '#f0b49a'
     }
   };
 
-  var INIT_MODE = 'auto';
-  var STORE = 'mca-appearance:v1';
+  /* A site is a complete palette. Switching site restyles the whole page;
+     editing a swatch edits that site in place, and Reset restores every site. */
+  var SITES = {
+    'warm-paper': { label: 'Warm paper', colors: DEFAULTS.colors },
+    'slate': { label: 'Slate', colors: {
+      paper: '#eef0f3', surface: '#f8f9fb', ivory: '#ffffff', ink: '#1c222b',
+      prose: '#333b46', muted: '#566070', stone: '#8b95a3',
+      line: '#d8dde4', line_soft: '#e6e9ee', tint: '#e8edf4',
+      terra: '#5b7fa6', terra_dark: '#3f6590', amber: '#b07b2c',
+      code_bg: '#1e242d', code_bar: '#262d38', code_line: '#38414e',
+      code_ink: '#eef2f7', code_dim: '#9aa5b3', code_accent: '#9fc2e6'
+    } },
+    'forest': { label: 'Forest', colors: {
+      paper: '#eef2ed', surface: '#f8faf7', ivory: '#ffffff', ink: '#1d2a21',
+      prose: '#344238', muted: '#57665a', stone: '#8a978b',
+      line: '#d7e0d6', line_soft: '#e5ece3', tint: '#e7efe7',
+      terra: '#4f8a63', terra_dark: '#36704a', amber: '#a97a2f',
+      code_bg: '#1c2620', code_bar: '#243128', code_line: '#354739',
+      code_ink: '#edf4ee', code_dim: '#9aae9f', code_accent: '#9ed0ad'
+    } },
+    'ocean': { label: 'Ocean', colors: {
+      paper: '#eaf2f4', surface: '#f6fbfc', ivory: '#ffffff', ink: '#142a30',
+      prose: '#2f464d', muted: '#526c74', stone: '#8399a0',
+      line: '#d2e1e5', line_soft: '#e2edf0', tint: '#e2f0f3',
+      terra: '#2f7f8f', terra_dark: '#206675', amber: '#b07b2c',
+      code_bg: '#15272b', code_bar: '#1d3338', code_line: '#2f4c52',
+      code_ink: '#eaf5f7', code_dim: '#93aeb4', code_accent: '#8fd0de'
+    } },
+    'plum': { label: 'Plum', colors: {
+      paper: '#f4eef4', surface: '#fbf7fb', ivory: '#ffffff', ink: '#2c1e2f',
+      prose: '#463449', muted: '#6b5670', stone: '#9a879e',
+      line: '#e3d7e4', line_soft: '#eee6ef', tint: '#f1e5f2',
+      terra: '#9b5b9e', terra_dark: '#7d417f', amber: '#b07b2c',
+      code_bg: '#291f2b', code_bar: '#342736', code_line: '#4a3850',
+      code_ink: '#f5eef6', code_dim: '#b09ab5', code_accent: '#d8a9dc'
+    } },
+    'midnight': { label: 'Midnight', colors: {
+      paper: '#14171b', surface: '#1b1f24', ivory: '#232830', ink: '#eef2f6',
+      prose: '#c7d0d8', muted: '#9aa7b4', stone: '#7f8c99',
+      line: '#303944', line_soft: '#263039', tint: '#252f3b',
+      terra: '#e08a6a', terra_dark: '#eda07e', amber: '#d3a44a',
+      code_bg: '#111418', code_bar: '#181d22', code_line: '#2b343e',
+      code_ink: '#eef2f6', code_dim: '#8f9ba7', code_accent: '#f0b49a'
+    } }
+  };
+
+  var SITE_ORDER = ['warm-paper', 'slate', 'forest', 'ocean', 'plum', 'midnight'];
+  var INIT_SITE = 'warm-paper';
+  var STORE = 'mca-site-customiser:v1';
 
   var root = document.documentElement;
-  var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
   var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
   var copy = function (target, source) {
     Object.keys(target).forEach(function (k) { delete target[k]; });
     Object.keys(clone(source)).forEach(function (k) { target[k] = clone(source)[k]; });
+  };
+  var defaultSites = function () {
+    var out = {};
+    SITE_ORDER.forEach(function (id) { out[id] = clone(SITES[id].colors); });
+    return out;
   };
 
   var saved = {};
   try { saved = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { saved = {}; }
 
   var state = {
-    mode: ['auto', 'light', 'dark'].indexOf(saved.mode) >= 0 ? saved.mode : INIT_MODE,
+    site: SITE_ORDER.indexOf(saved.site) >= 0 ? saved.site : INIT_SITE,
     base: Object.assign(clone(DEFAULTS.base), saved.base || {}),
-    colors: {
-      light: Object.assign(clone(DEFAULTS.colors.light), (saved.colors || {}).light || {}),
-      dark: Object.assign(clone(DEFAULTS.colors.dark), (saved.colors || {}).dark || {})
-    }
+    sites: defaultSites()
   };
+  if (saved.sites) {
+    SITE_ORDER.forEach(function (id) {
+      if (saved.sites[id]) Object.assign(state.sites[id], saved.sites[id]);
+    });
+  }
 
-  var resolved = function () {
-    return state.mode === 'auto' ? (darkQuery.matches ? 'dark' : 'light') : state.mode;
-  };
+  var currentColors = function () { return state.sites[state.site]; };
 
   var cssVal = function (item, value) {
     return item.unit ? value + item.unit : String(value);
   };
 
   var apply = function () {
-    var mode = resolved();
-    root.setAttribute('data-theme', mode);
+    root.setAttribute('data-site', state.site);
 
     SPEC.forEach(function (group) {
       group.items.forEach(function (item) {
-        var value = item.kind === 'color' ? state.colors[mode][item.key] : state.base[item.key];
+        var value = item.kind === 'color' ? currentColors()[item.key] : state.base[item.key];
         if (value === undefined || value === null || value === '') root.style.removeProperty(item.cssVar);
         else root.style.setProperty(item.cssVar, cssVal(item, value));
       });
@@ -950,7 +962,7 @@ its.</p>
   var panel = document.getElementById('stylepanel');
   var button = document.getElementById('stylebtn');
   var panelBody = document.getElementById('sp-body');
-  var modeSelect = document.getElementById('sp-mode');
+  var siteSelect = document.getElementById('sp-site');
   var refs = {};
 
   var hex6 = function (value) {
@@ -968,7 +980,7 @@ its.</p>
     if (group.colors) {
       var tag = document.createElement('span');
       tag.className = 'tag';
-      tag.id = 'sp-modetag';
+      tag.id = 'sp-sitetag';
       title.appendChild(tag);
     }
     wrap.appendChild(title);
@@ -991,7 +1003,7 @@ its.</p>
         grid.appendChild(label);
 
         swatch.addEventListener('input', function () {
-          state.colors[resolved()][item.key] = swatch.value;
+          currentColors()[item.key] = swatch.value;
           hex.textContent = swatch.value;
           apply();
           persist();
@@ -1051,18 +1063,18 @@ its.</p>
   SPEC.forEach(addGroup);
 
   var refresh = function () {
-    if (modeSelect.value !== state.mode) modeSelect.value = state.mode;
-    var mode = resolved();
-    var modeTag = document.getElementById('sp-modetag');
-    if (modeTag) modeTag.textContent = mode;
-    button.title = 'Appearance - editing ' + mode + ' colours';
+    if (siteSelect.value !== state.site) siteSelect.value = state.site;
+    var label = SITES[state.site].label;
+    var siteTag = document.getElementById('sp-sitetag');
+    if (siteTag) siteTag.textContent = label;
+    button.title = 'Site customiser - ' + label;
 
     SPEC.forEach(function (group) {
       group.items.forEach(function (item) {
         var ref = refs[item.key];
         if (!ref) return;
         if (item.kind === 'color') {
-          var value = state.colors[mode][item.key] || '#000000';
+          var value = currentColors()[item.key] || '#000000';
           ref.swatch.value = hex6(value);
           ref.hex.textContent = String(value);
         } else if (item.kind === 'font') {
@@ -1078,33 +1090,26 @@ its.</p>
 
   var reopen = function () { apply(); refresh(); };
 
-  modeSelect.addEventListener('change', function () {
-    state.mode = modeSelect.value;
+  siteSelect.addEventListener('change', function () {
+    state.site = siteSelect.value;
     reopen();
     persist();
   });
 
-  if (darkQuery.addEventListener) {
-    darkQuery.addEventListener('change', function () { if (state.mode === 'auto') reopen(); });
-  }
-
-  // Some browsers (and every devtools emulation) do not fire the media-query
-  // event on an OS theme switch; re-check when the page is focused again.
-  window.addEventListener('focus', function () {
-    if (state.mode === 'auto' && root.getAttribute('data-theme') !== resolved()) reopen();
-  });
-
   document.getElementById('sp-reset').addEventListener('click', function () {
     copy(state.base, DEFAULTS.base);
-    copy(state.colors.light, DEFAULTS.colors.light);
-    copy(state.colors.dark, DEFAULTS.colors.dark);
-    state.mode = INIT_MODE;
+    state.sites = defaultSites();
+    state.site = INIT_SITE;
     try { localStorage.removeItem(STORE); } catch (e) { /* ignore */ }
     reopen();
   });
 
   var toCss = function () {
-    var lines = ['/* generated by the appearance panel - paste into the page <style> */', ':root{'];
+    var lines = [
+      '/* generated by the site customiser - ' + SITES[state.site].label + ' */',
+      '/* paste into the page <style>; rebuild after editing the palette */',
+      ':root{'
+    ];
     SPEC.forEach(function (group) {
       if (group.colors) return;
       group.items.forEach(function (item) {
@@ -1114,12 +1119,7 @@ its.</p>
     lines.push('');
     var colors = SPEC[SPEC.length - 1].items;
     colors.forEach(function (item) {
-      lines.push('  ' + item.cssVar + ':' + state.colors.light[item.key] + ';');
-    });
-    lines.push('}');
-    lines.push('html[data-theme="dark"]{');
-    colors.forEach(function (item) {
-      lines.push('  ' + item.cssVar + ':' + state.colors.dark[item.key] + ';');
+      lines.push('  ' + item.cssVar + ':' + currentColors()[item.key] + ';');
     });
     lines.push('}');
     return lines.join('\n');
