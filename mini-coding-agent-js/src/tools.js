@@ -10,6 +10,24 @@ import { formatEntry } from './memory.js';
  * so they are worth tuning - the model picks tools from these words.
  * ------------------------------------------------------------------ */
 export const TOOL_SCHEMAS = [
+  // The network tool: it reads the web, and like every other tool it returns
+  // one plain string. It never writes, so the sandbox does not apply.
+  {
+    type: 'function',
+    function: {
+      name: 'web_search',
+      description: 'Search the web with DuckDuckGo and return the top results (title, URL, snippet). Use it for facts you cannot find in the workspace, current library docs, version numbers or error messages. Snippets are summaries - open a result with run_command (e.g. curl) when you need the full page.',
+      parameters: {
+        type: 'object',
+        properties: {
+          query: { type: 'string', description: 'Search terms, e.g. "node js fetch timeout" or "site:developer.mozilla.org AbortSignal.timeout"' },
+          max_results: { type: 'integer', description: 'How many results to return. Default 5, max 10.' },
+        },
+        required: ['query'],
+        additionalProperties: false,
+      },
+    },
+  },
   {
     type: 'function',
     function: {
@@ -170,6 +188,102 @@ const HARD_DENY = [
 const MAX_OUTPUT = 6000;
 const TIMEOUT_MS = 30_000;
 
+/* ---- web_search ------------------------------------------------------- *
+ * DuckDuckGo's HTML endpoint is a plain form POST with no key and no SDK, which
+ * is why it fits this harness. It is still a scraped page, so the parser below
+ * is deliberately small and forgiving: if the markup changes, the tool returns
+ * an ERROR the model can read instead of throwing into the loop.
+ */
+const SEARCH_URL = 'https://html.duckduckgo.com/html/';
+const SEARCH_TIMEOUT_MS = 15_000;
+const BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
+
+function decodeEntities(text) {
+  return String(text)
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'");
+}
+
+function plainText(html) {
+  // Strip markup first, then decode, so an escaped literal such as Array&lt;T&gt;
+  // survives as text instead of being mistaken for a tag.
+  return decodeEntities(String(html).replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
+}
+
+function resultUrl(href) {
+  const raw = decodeEntities(href);
+  if (raw.startsWith('//')) return `https:${raw}`;
+  try {
+    const url = new URL(raw, 'https://duckduckgo.com');
+    // Sponsored/interstitial links wrap the real target in ?uddg=<encoded>.
+    const target = url.searchParams.get('uddg');
+    return target ? decodeURIComponent(target) : url.href;
+  } catch {
+    return raw;
+  }
+}
+
+function parseResults(html, limit) {
+  const results = [];
+  // Each organic result is a result__a title link followed by a result__snippet.
+  const blocks = String(html).split(/<div class="result results_links/).slice(1);
+  for (const block of blocks) {
+    if (results.length >= limit) break;
+    const link = block.match(/<a[^>]*class="result__a"[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/i);
+    if (!link) continue;
+    const snippet = block.match(/<a[^>]*class="result__snippet"[^>]*>([\s\S]*?)<\/a>/i);
+    const title = plainText(link[2]);
+    if (!title) continue;
+    results.push({
+      title,
+      url: resultUrl(link[1]),
+      snippet: snippet ? plainText(snippet[1]) : '',
+    });
+  }
+  return results;
+}
+
+async function webSearch(args) {
+  const query = String(args.query ?? '').trim();
+  if (!query) return 'ERROR: query is required';
+  const limit = Math.min(Math.max(Number(args.max_results ?? 5), 1), 10);
+
+  let response;
+  try {
+    response = await fetch(SEARCH_URL, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        'user-agent': BROWSER_UA,
+        accept: 'text/html',
+      },
+      body: new URLSearchParams({ q: query, kl: 'wt-wt' }),
+      signal: AbortSignal.timeout(SEARCH_TIMEOUT_MS),
+    });
+  } catch (err) {
+    return `ERROR: web search failed (${err.name === 'TimeoutError' ? `no answer in ${SEARCH_TIMEOUT_MS / 1000}s` : err.message})`;
+  }
+
+  if (!response.ok) return `ERROR: DuckDuckGo returned HTTP ${response.status}`;
+
+  const html = await response.text();
+  const results = parseResults(html, limit);
+  if (!results.length) {
+    return /anomaly|unusual traffic|captcha/i.test(html)
+      ? 'ERROR: DuckDuckGo asked for human verification (rate limit). Wait a moment and try again, or use a narrower query.'
+      : `no results for "${query}". Try different words or a site: filter.`;
+  }
+
+  const lines = results.map((r, i) => `${i + 1}. ${r.title}\n   ${r.url}${r.snippet ? `\n   ${r.snippet}` : ''}`);
+  return clip(`DuckDuckGo results for "${query}" (${results.length}):\n${lines.join('\n')}`);
+}
+
 /**
  * The child gets a short allow-list, not `process.env`.
  * A shell that inherits the harness's environment can do
@@ -221,6 +335,10 @@ function runShell(command, cwd) {
  * reads back. Errors are returned, never thrown out of the loop.
  * ------------------------------------------------------------------ */
 const HANDLERS = {
+  async web_search(ws, args) {
+    return webSearch(args);
+  },
+
   list_files(ws, args) {
     const start = ws.resolveRead(args.path ?? '.');
     if (!fs.existsSync(start.abs)) return `ERROR: no such folder: ${start.rel}`;

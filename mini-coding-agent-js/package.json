@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "A tiny Node coding-agent harness: ReAct loop + 8 tools, one dependency for colour.",
+  "description": "A tiny Node coding-agent harness: ReAct loop + 9 tools, one dependency for colour.",
   "scripts": {
     "start": "node src/cli.js",
     "demo": "node src/cli.js --demo",

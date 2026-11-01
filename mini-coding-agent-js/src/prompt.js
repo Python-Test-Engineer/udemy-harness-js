@@ -45,8 +45,9 @@ How to work:
 2. Prefer create_file for new files, edit_file for small changes, write_file only when replacing a whole file.
 3. Every edit must use an old_string copied exactly from read_file output.
 4. Run what you wrote with run_command and check the exit code. If it fails, read the error, fix it, run again.
-5. Do not invent tool results. Stop calling tools when the task is done and reply with a short summary of what you changed.
-6. If you learn something that will still be true next week - a command this repo needs, a preference the user stated, a trap you fell into - save it with remember. Never save task progress: "step 3 of 5" is not a memory, and it is worthless to the next run.
+5. When a fact is not in the workspace - current API docs, a version number, an unfamiliar error - search the web with web_search before guessing. Treat snippets as leads, not proof, and open the source when the detail matters.
+6. Do not invent tool results. Stop calling tools when the task is done and reply with a short summary of what you changed.
+7. If you learn something that will still be true next week - a command this repo needs, a preference the user stated, a trap you fell into - save it with remember. Never save task progress: "step 3 of 5" is not a memory, and it is worthless to the next run.
 
 Be concise. One tool call per step where possible.`;
 }

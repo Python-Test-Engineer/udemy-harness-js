@@ -205,7 +205,7 @@ key       : sk-or...aaa5 (73 chars) from .env
 env file  : ...\BrightonDev.ai-meetup-nov-2026\.env
 commands  : ask
 timeout   : 90s per model call
-tools     : list_files, read_file, create_file, write_file, edit_file, run_command, remember, recall
+tools     : list_files, read_file, create_file, write_file, edit_file, run_command, web_search, remember, recall
 memory    : src/memory.md (2 memories, newest 2026-10-28)
 ```
 
@@ -280,9 +280,9 @@ a string, so `runTask` still accepts an injected `log`. chalk also decides when
 not to colour - a pipe, `NO_COLOR`, or `FORCE_COLOR` are all honoured, so
 redirecting a run to a file gives clean text.
 
-## The eight tools
+## The nine tools
 
-Six of them change the workspace. Two change what the *next* process knows about it.
+Four of them change the workspace, one reads the web, two keep durable memory, and two only read the workspace.
 
 | Tool | Behaviour |
 |---|---|
@@ -292,6 +292,7 @@ Six of them change the workspace. Two change what the *next* process knows about
 | `write_file` | create or overwrite a whole file |
 | `edit_file` | exact-snippet replace; 0 matches = error, >1 = error unless `replace_all` |
 | `run_command` | shell in the workspace root, 30 s timeout, output capped at 6000 chars, `env` allow-listed, returns `exit code N` + streams |
+| `web_search` | DuckDuckGo HTML search - no key, no dependency; returns up to 10 titles, URLs and snippets |
 | `remember` | append one durable note to `src/memory.md` (deduped, capped, dated) - survives the process |
 | `recall` | search the whole memory file; the injected digest is only the newest few |
 

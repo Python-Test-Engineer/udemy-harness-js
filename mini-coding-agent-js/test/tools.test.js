@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { Workspace } from '../src/workspace.js';
-import { runTool, safeEnv } from '../src/tools.js';
+import { runTool, safeEnv, TOOL_NAMES, TOOL_SCHEMAS } from '../src/tools.js';
 
 function ctx(overrides = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'mca-tools-'));
@@ -159,6 +159,17 @@ test('the child process gets an allow-list, not the harness environment', async 
 test('safeEnv keeps only the allow-listed names', () => {
   const env = safeEnv({ PATH: '/bin', OPENROUTER_API_KEY: 'nope', HOME: '/home/x', RANDOM_THING: '1' });
   assert.deepEqual(env, { PATH: '/bin', HOME: '/home/x' });
+});
+
+test('web_search is advertised and validates its query without touching the network', async () => {
+  assert.ok(TOOL_NAMES.includes('web_search'));
+  const schema = TOOL_SCHEMAS.find((t) => t.function.name === 'web_search');
+  assert.ok(schema);
+  assert.ok(schema.function.parameters.required.includes('query'));
+
+  const c = ctx();
+  assert.match(await runTool('web_search', {}, c), /^ERROR: query is required/);
+  assert.match(await runTool('web_search', { query: 'x', max_results: 'many' }, c), /"max_results" must be a integer/);
 });
 
 test('bad arguments come back as text, not crashes', async () => {
