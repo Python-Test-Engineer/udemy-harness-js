@@ -403,6 +403,49 @@ html[data-theme="dark"] .meta span::before{color:var(--line)}
   #stylebtn,#stylepanel{display:none !important}
 }
 
+/* ---------- printed contents (PDF only) ---------- */
+.print-toc{display:none}
+
+@media print{
+  .print-toc{
+    display:block; break-after:page; margin:0; padding:0;
+  }
+  .pt-head{
+    margin:0 0 1.4em; padding:0 0 .55em; border-bottom:0.5pt solid var(--line);
+  }
+  .pt-kicker{
+    margin:0 0 .35em; color:var(--terra-dark);
+    font:600 7.5pt/1.3 var(--sans); letter-spacing:.15em; text-transform:uppercase;
+  }
+  .pt-head h2{
+    display:block; margin:0; color:var(--ink);
+    font:500 24pt/1.15 var(--serif); letter-spacing:-.015em;
+  }
+  .pt-list{margin:0; padding:0; list-style:none; counter-reset:none}
+  .pt-list li{
+    margin:0; padding:0; break-inside:avoid;
+  }
+  .pt-list li::before{content:none}
+  .pt-list a{
+    display:flex; gap:.65em; align-items:baseline;
+    padding:.38em 0; border-bottom:0.5pt solid var(--line-soft);
+    color:var(--ink); text-decoration:none;
+  }
+  .pt-n{
+    flex:0 0 2.1em; color:var(--terra-dark);
+    font:600 8pt/1.3 var(--mono); letter-spacing:.05em;
+  }
+  .pt-title{font:500 10.8pt/1.35 var(--serif)}
+  .pt-dots{flex:1; min-width:1.5em; border-bottom:0.5pt dotted #b9b2a5; transform:translateY(-.18em)}
+  .pt-pg{
+    flex:0 0 auto; color:var(--muted); font:8pt/1.3 var(--mono);
+    font-variant-numeric:tabular-nums;
+  }
+  .pt-note{
+    margin:1.6em 0 0; color:var(--stone);
+    font:7.6pt/1.5 var(--sans);
+  }
+}
 </style>
 <script>
 (function () {
@@ -471,6 +514,33 @@ html[data-theme="dark"] .meta span::before{color:var(--line)}
           <span>src/ui.js 164</span>
         </p>
       </header>
+
+      <nav class="print-toc" aria-label="Contents">
+        <header class="pt-head">
+          <p class="pt-kicker">Contents</p>
+          <h2>What is in this explainer</h2>
+        </header>
+        <ol class="pt-list">
+          <li><a href="#what"><span class="pt-n">01</span><span class="pt-title">What an agent actually is</span><span class="pt-dots"></span><span class="pt-pg">3</span></a></li>
+          <li><a href="#shape"><span class="pt-n">02</span><span class="pt-title">The shape of the program</span><span class="pt-dots"></span><span class="pt-pg">4</span></a></li>
+          <li><a href="#loop"><span class="pt-n">03</span><span class="pt-title">The loop</span><span class="pt-dots"></span><span class="pt-pg">7</span></a></li>
+          <li><a href="#model"><span class="pt-n">04</span><span class="pt-title">The model call</span><span class="pt-dots"></span><span class="pt-pg">9</span></a></li>
+          <li><a href="#messages"><span class="pt-n">05</span><span class="pt-title">Messages are the memory</span><span class="pt-dots"></span><span class="pt-pg">11</span></a></li>
+          <li><a href="#tools"><span class="pt-n">06</span><span class="pt-title">The eight tools</span><span class="pt-dots"></span><span class="pt-pg">13</span></a></li>
+          <li><a href="#edit"><span class="pt-n">07</span><span class="pt-title">edit_file, the interesting one</span><span class="pt-dots"></span><span class="pt-pg">15</span></a></li>
+          <li><a href="#sandbox"><span class="pt-n">08</span><span class="pt-title">The sandbox</span><span class="pt-dots"></span><span class="pt-pg">17</span></a></li>
+          <li><a href="#policy"><span class="pt-n">09</span><span class="pt-title">Human in the loop</span><span class="pt-dots"></span><span class="pt-pg">20</span></a></li>
+          <li><a href="#ui"><span class="pt-n">10</span><span class="pt-title">The console palette</span><span class="pt-dots"></span><span class="pt-pg">22</span></a></li>
+          <li><a href="#hooks"><span class="pt-n">11</span><span class="pt-title">Lifecycle hooks</span><span class="pt-dots"></span><span class="pt-pg">23</span></a></li>
+          <li><a href="#memory"><span class="pt-n">12</span><span class="pt-title">Long-term memory</span><span class="pt-dots"></span><span class="pt-pg">28</span></a></li>
+          <li><a href="#config"><span class="pt-n">13</span><span class="pt-title">Configuration and precedence</span><span class="pt-dots"></span><span class="pt-pg">32</span></a></li>
+          <li><a href="#bounds"><span class="pt-n">14</span><span class="pt-title">Bounded autonomy</span><span class="pt-dots"></span><span class="pt-pg">34</span></a></li>
+          <li><a href="#trace"><span class="pt-n">15</span><span class="pt-title">A real run, annotated</span><span class="pt-dots"></span><span class="pt-pg">36</span></a></li>
+          <li><a href="#run"><span class="pt-n">16</span><span class="pt-title">Run it yourself</span><span class="pt-dots"></span><span class="pt-pg">41</span></a></li>
+          <li><a href="#limits"><span class="pt-n">17</span><span class="pt-title">What it deliberately does not do</span><span class="pt-dots"></span><span class="pt-pg">43</span></a></li>
+        </ol>
+        <p class="pt-note">Page numbers refer to the folio at the foot of each page.</p>
+      </nav>
 
 <section id="what">
 <h2><span class="num">01</span><span>What an agent actually is</span></h2>
