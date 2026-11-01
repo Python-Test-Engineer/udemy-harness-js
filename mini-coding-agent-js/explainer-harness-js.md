@@ -6,7 +6,7 @@
 
 # How a coding agent actually works
 
-A complete coding agent in 2938 lines of plain Node: one HTTP request, eight tools, a loop with four bounds, nine lifecycle hooks, a memory file and a single folder it is allowed to write to. Read it top to bottom, or jump to the part you doubt.
+A complete coding agent in plain Node: one HTTP request, eight tools, a loop with four bounds, nine lifecycle hooks, a memory file and a single folder it is allowed to write to. Read it top to bottom, or jump to the part you doubt.
 
 `src/agent.js 215` · `src/prompt.js 81` · `src/tools.js 432` · `src/cli.js 468` · `src/workspace.js 117` · `src/sandbox.js 357` · `src/llm.js 66` · `src/ui.js 164`
 
