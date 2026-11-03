@@ -1,0 +1,3442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mini-coding-js · Reverse-engineering teaching notes</title>
+<style>
+html{font-size:var(--root-size,24px)}
+
+:root{
+  --paper:#f0eee6; --surface:#fbfaf7; --ivory:#fffdfa; --ink:#1f1e1d;
+  --prose:#33302c; --muted:#55524c; --stone:#8c877c;
+  --line:#e0dbcf; --line-soft:#e9e4d8; --tint:#f6ede6;
+  --terra:#d97757; --terra-dark:#c9633f; --amber:#b9862f;
+  --code-bg:#23211e; --code-bar:#2b2823; --code-line:#3a3732;
+  --code-ink:#f2ece1; --code-dim:#a9a294; --code-accent:#f0b49a;
+  --sidebar:19.25rem; --measure:46rem;
+  --sans:-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif;
+  --serif:'Iowan Old Style',Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif;
+  --mono:'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace;
+}
+html[data-theme="dark"]{
+  --paper:#14171b; --surface:#1b1f24; --ivory:#232830; --ink:#eef2f6;
+  --prose:#c7d0d8; --muted:#9aa7b4; --stone:#7f8c99;
+  --line:#303944; --line-soft:#263039; --tint:#252f3b;
+  --terra:#e08a6a; --terra-dark:#eda07e; --amber:#d3a44a;
+  --code-bg:#111418; --code-bar:#181d22; --code-line:#2b343e;
+  --code-ink:#eef2f6; --code-dim:#8f9ba7; --code-accent:#f0b49a;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--prose);
+  font:1.03125rem/var(--lh-body,1.66) var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:#f0d3c6; color:#2a2622}
+html[data-theme="dark"] ::selection{background:#4a2f28; color:#f2ece1}
+
+/* ---------- shell ---------- */
+.shell{display:grid; grid-template-columns:var(--sidebar) minmax(0,1fr); align-items:start}
+.sidebar{
+  position:sticky; top:0; height:100vh; overflow-y:auto; overscroll-behavior:contain;
+  scrollbar-width:thin; scrollbar-color:#cec6b5 transparent;
+  padding:1.625rem 1.125rem 2.125rem 1.375rem;
+  border-right:0.0625rem solid var(--line);
+  background:linear-gradient(180deg,#f4f1e9,#efece3 60%,#ece8de);
+}
+html[data-theme="dark"] .sidebar{
+  scrollbar-color:#3a4652 transparent;
+  background:linear-gradient(180deg,#1d2228,#191e23 60%,#171b20);
+}
+.side-kicker{
+  display:block; margin:0 0 0.625rem; color:var(--terra-dark);
+  font:600 0.65625rem/1.3 var(--sans); letter-spacing:.14em; text-transform:uppercase; text-decoration:none;
+}
+.side-title{
+  margin:0; color:var(--ink); font:500 1.3125rem/1.2 var(--serif); letter-spacing:-.01em;
+}
+.side-sub{margin:0.375rem 0 0; color:var(--stone); font-size:0.7875rem; line-height:1.45}
+.side-rule{height:0.0625rem; margin:1.125rem 0 0.875rem; background:var(--line)}
+.side-label{
+  margin:0 0 0.375rem; color:var(--stone);
+  font:600 0.65625rem/1.3 var(--sans); letter-spacing:.13em; text-transform:uppercase;
+}
+.toc{display:flex; flex-direction:column; gap:0.0625rem}
+.toc a{
+  display:flex; gap:0.5625rem; align-items:baseline;
+  padding:0.375rem 0.5625rem 0.375rem 0.625rem; border-left:0.125rem solid transparent; border-radius:0 0.4375rem 0.4375rem 0;
+  color:var(--muted); font-size:0.8375rem; line-height:1.4; text-decoration:none;
+  transition:background .14s,color .14s,border-color .14s;
+}
+.toc a .n{color:#a9a294; font:0.6875rem/1 var(--mono); flex:0 0 1.125rem}
+.toc a:hover{background:#e8e3d6; color:var(--ink)}
+html[data-theme="dark"] .toc a .n{color:#7f8c99}
+html[data-theme="dark"] .toc a:hover{background:#252f3b}
+.toc a.active{background:var(--tint); border-left-color:var(--terra); color:var(--ink); font-weight:600}
+.toc a.active .n{color:var(--terra-dark)}
+.side-foot{
+  margin-top:1.25rem; padding-top:0.875rem; border-top:0.0625rem solid var(--line);
+  color:var(--stone); font-size:0.7375rem; line-height:1.6;
+}
+.side-foot code{font-size:0.6875rem}
+
+.progress{position:fixed; top:0; left:var(--sidebar); right:0; height:0.125rem; z-index:40; background:transparent}
+.progress span{display:block; height:100%; width:0; background:var(--terra); transition:width .1s linear}
+
+.sidebar::-webkit-scrollbar{width:0.4375rem}
+.sidebar::-webkit-scrollbar-thumb{background:#d5ccbb; border-radius:0.5rem}
+html[data-theme="dark"] .sidebar::-webkit-scrollbar-thumb{background:#3a4652}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+
+/* ---------- content pane ---------- */
+.pane{padding:3.25rem 3.5rem 8.75rem; min-width:0}
+.inner{max-width:var(--measure); margin:0 auto}
+
+.page-heading{margin:0 0 2.125rem; padding-bottom:1.75rem; border-bottom:0.0625rem solid var(--line)}
+.page-heading .eyebrow{
+  margin:0 0 0.75rem; color:var(--terra-dark);
+  font:600 0.6875rem/1.3 var(--sans); letter-spacing:.15em; text-transform:uppercase;
+}
+h1{
+  margin:0; color:var(--ink); font:500 clamp(2.125rem,4vw,2.875rem)/1.1 var(--serif); letter-spacing:-.02em;
+}
+.page-heading .lede{margin:0.875rem 0 0; color:var(--muted); font-size:1.09375rem; max-width:38rem}
+.meta{
+  margin:1.25rem 0 0; display:flex; flex-wrap:wrap; gap:0.25rem 0.6875rem;
+  color:var(--stone); font:0.7rem/1.6 var(--mono);
+}
+.meta span::before{content:"\00b7"; margin-right:0.6875rem; color:#c3bcae}
+html[data-theme="dark"] .meta span::before{color:#4a5560}
+.meta span:first-child::before{content:none; margin:0}
+
+section{padding-top:0.375rem; margin:0 0 2.75rem}
+section:first-of-type h2{margin-top:0}
+h2{
+  display:flex; gap:0.8125rem; align-items:baseline;
+  margin:2.375rem 0 0.875rem; color:var(--ink);
+  font:500 1.65625rem/1.22 var(--serif); letter-spacing:-.015em;
+  scroll-margin-top:1.625rem;
+}
+h2 .num{
+  flex:0 0 auto; color:var(--terra); padding-top:0.125rem;
+  font:600 0.71875rem/1 var(--mono); letter-spacing:.06em;
+}
+h3{
+  margin:1.875rem 0 0.625rem; color:var(--ink);
+  font:600 0.96875rem/1.4 var(--sans); letter-spacing:.005em;
+}
+h4{
+  margin:1.5rem 0 0.5rem; color:var(--ink);
+  font:600 0.85rem/1.35 var(--sans); letter-spacing:.005em;
+}
+h5{
+  margin:1.25rem 0 0.4rem; color:var(--ink);
+  font:600 0.8rem/1.3 var(--sans); letter-spacing:.005em;
+}
+p{margin:0 0 0.875rem}
+p + p{margin-top:-0.125rem}
+strong{color:var(--ink); font-weight:600}
+em{font-style:italic; color:var(--ink)}
+a{color:var(--terra-dark); text-decoration-thickness:0.0625rem; text-underline-offset:0.125rem}
+
+ul{margin:0 0 1rem; padding-left:0; list-style:none}
+ol{margin:0 0 1rem; padding-left:0; list-style:none; counter-reset:item}
+ol li{position:relative; margin:0 0 0.625rem; padding-left:1.5rem}
+ol li::before{
+  content:counter(item) "."; counter-increment:item; position:absolute; left:0.1875rem; top:0;
+  color:var(--terra); font:600 0.7rem/1 var(--mono);
+}
+ul li{position:relative; margin:0 0 0.625rem; padding-left:1.25rem}
+ul li::before{
+  content:""; position:absolute; left:0.1875rem; top:.66em;
+  width:0.375rem; height:0.375rem; border-radius:50%; background:#d8b6a6;
+}
+html[data-theme="dark"] ul li::before{background:#8a5a48}
+li strong{color:var(--ink)}
+
+code{
+  padding:.12em .38em; border-radius:0.3125rem; background:#e9e4d7; color:#7c3f2b;
+  font:.855em/1.5 var(--mono); word-break:break-word;
+}
+html[data-theme="dark"] code{background:#2b2521; color:#f0b49a}
+
+/* ---------- callouts ---------- */
+.callout{
+  margin:1.25rem 0 1.375rem; padding:0.8125rem 1.0625rem 0.875rem;
+  border-left:0.1875rem solid var(--terra); border-radius:0 0.5625rem 0.5625rem 0;
+  background:var(--tint); color:#4b4741; font-size:0.925rem; line-height:1.62;
+}
+.callout strong{color:var(--ink)}
+.callout.warn{border-left-color:var(--amber); background:#f7f0da; color:#4e4734}
+html[data-theme="dark"] .callout{color:var(--prose)}
+html[data-theme="dark"] .callout.warn{background:#2e2a1e; color:#d8cfb8}
+
+/* ---------- code ---------- */
+figure.code, figure.ascii{margin:1.125rem 0 1.375rem; border-radius:0.6875rem; overflow:hidden}
+figure.code{margin-left:-1.375rem; margin-right:-1.375rem}
+figure.code{background:var(--code-bg); border:0.0625rem solid #34312b; box-shadow:0 0.125rem 0.625rem rgba(31,30,29,.07)}
+html[data-theme="dark"] figure.code{border-color:#2b343e; box-shadow:0 0.125rem 0.625rem rgba(0,0,0,.28)}
+figure.code figcaption{
+  display:flex; justify-content:space-between; gap:0.75rem; align-items:center;
+  padding:0.5rem 0.875rem; background:var(--code-bar); border-bottom:0.0625rem solid var(--code-line);
+  color:var(--code-accent); font:0.7125rem/1.4 var(--mono); letter-spacing:.02em;
+}
+figure.code figcaption .lang{color:#7d776b; font-size:0.6625rem; letter-spacing:.1em; text-transform:uppercase}
+html[data-theme="dark"] figure.code figcaption .lang{color:#8f9ba7}
+figure.code pre{
+  margin:0; padding:0.9375rem 1.125rem 1.0625rem; overflow-x:auto;
+  color:var(--code-ink); font:var(--fs-code,0.775rem)/1.66 var(--mono); tab-size:2;
+  white-space:pre-wrap; overflow-wrap:break-word;
+}
+figure.ascii{
+  border:0.0625rem dashed #d3ccbb; background:#f7f4ec;
+}
+html[data-theme="dark"] figure.ascii{border-color:#3a4652; background:#1b2026}
+figure.ascii figcaption{
+  padding:0.4375rem 0.875rem 0; color:var(--stone);
+  font:600 0.65rem/1.4 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+}
+figure.ascii pre{
+  margin:0; padding:0.6875rem 0.875rem 0.9375rem; overflow-x:auto;
+  color:#4c483f; font:0.76875rem/1.55 var(--mono); white-space:pre;
+}
+html[data-theme="dark"] figure.ascii pre{color:#c7d0d8}
+
+/* ---------- tables ---------- */
+.table-wrap{margin:1rem 0 1.375rem; overflow-x:auto; scrollbar-width:thin; scrollbar-color:#cec6b5 transparent}
+.table-wrap::-webkit-scrollbar{height:0.4375rem}
+.table-wrap::-webkit-scrollbar-thumb{background:#d5ccbb; border-radius:0.5rem}
+html[data-theme="dark"] .table-wrap{scrollbar-color:#3a4652 transparent}
+html[data-theme="dark"] .table-wrap::-webkit-scrollbar-thumb{background:#3a4652}
+table{width:100%; border-collapse:collapse; font-size:0.875rem; line-height:1.5}
+thead th{
+  padding:0 0.75rem 0.5rem 0; border-bottom:0.0625rem solid var(--line); text-align:left;
+  color:var(--stone); font:600 0.6625rem/1.3 var(--sans); letter-spacing:.09em; text-transform:uppercase;
+}
+tbody td{padding:0.625rem 0.75rem 0.625rem 0; border-bottom:0.0625rem solid var(--line-soft); vertical-align:top; color:var(--muted)}
+tbody tr:last-child td{border-bottom:none}
+tbody td:first-child{color:var(--ink)}
+tbody td code{font-size:0.75rem}
+tbody td:first-child{white-space:nowrap}
+.tag{
+  display:inline-block; margin-left:0.375rem; padding:0.0625rem 0.375rem; border-radius:1.25rem;
+  background:#f0dcd2; color:#9a4d31; font:600 0.6rem/1.5 var(--sans); letter-spacing:.08em; text-transform:uppercase;
+}
+html[data-theme="dark"] .tag{background:#3a2a24; color:#f0b49a}
+
+.table-wrap.dense table{font-size:0.8125rem}
+.table-wrap.dense tbody td, .table-wrap.dense td code{white-space:normal; overflow-wrap:anywhere}
+.table-wrap.dense tbody td{padding-right:0.625rem}
+.table-wrap.dense tbody td:first-child{min-width:8.5rem}
+
+/* ---------- footer ---------- */
+.colophon{
+  margin-top:3.5rem; padding-top:1.125rem; border-top:0.0625rem solid var(--line);
+  color:var(--stone); font-size:0.775rem; line-height:1.7;
+}
+.colophon code{font-size:0.7rem}
+
+/* ---------- narrow ---------- */
+@media (max-width: 940px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:static; height:auto; border-right:none; border-bottom:0.0625rem solid var(--line); padding:1.375rem 1.25rem 1.125rem}
+  .toc{flex-direction:row; flex-wrap:wrap; gap:0.25rem 0.375rem}
+  .toc a{padding:0.3125rem 0.5625rem; border-left:none; border-radius:0.4375rem; background:#eae5d8; font-size:0.775rem}
+  html[data-theme="dark"] .toc a{background:#252f3b}
+  .toc a .n{flex:0 0 auto}
+  .toc a.active{border-left:none}
+  .side-foot{display:none}
+  .progress{left:0}
+  .pane{padding:1.875rem 1.25rem 5.625rem}
+  h2{font-size:1.4375rem}
+  .table-wrap{margin-left:0; margin-right:0}
+  figure.code{margin-left:0; margin-right:0}
+  thead th{white-space:nowrap}
+  tbody td, tbody td code{white-space:normal; overflow-wrap:anywhere}
+}
+
+/* ---------- print ---------- */
+@media print{
+  :root,html[data-theme="dark"]{ --paper:#fff !important; --surface:#fff !important; --ivory:#fff !important; --ink:#1f1e1d !important; --prose:#33302c !important; --muted:#44423d !important; --stone:#6b675f !important; --line:#d8d3c8 !important; --line-soft:#e8e4da !important; --tint:#f8f2ec !important; --terra:#c9633f !important; --terra-dark:#a14e2f !important; --amber:#8a6420 !important; --code-bg:#f6f4ef !important; --code-bar:#efece3 !important; --code-line:#ddd8cc !important; --code-ink:#26241f !important; --code-dim:#6b675f !important; --code-accent:#8f3f27}
+
+  .sidebar,.progress{display:none}
+  .shell{display:block}
+  .pane{padding:0}
+  body{background:#fff; font-size:10.5pt}
+  h2{break-after:avoid} figure,table,.callout{break-inside:avoid}
+  figure.code{margin-left:0; margin-right:0}
+  a{color:inherit; text-decoration:none}
+}
+/* ---------- appearance panel (the rounded "Aa" button, top right) ---------- */
+
+#stylebtn{
+  position:fixed; z-index:60; right:18px; top:18px; bottom:auto;
+  display:grid; place-items:center; width:46px; height:46px; padding:0;
+  border:1px solid var(--line); border-radius:50%;
+  background:var(--surface); color:var(--ink);
+  box-shadow:0 6px 22px rgba(31,30,29,.16);
+  font:500 15px/1 var(--serif); cursor:pointer;
+  transition:border-color .14s, color .14s, transform .14s;
+}
+#stylebtn:hover{border-color:var(--terra); color:var(--terra-dark); transform:translateY(-1px)}
+#stylebtn:focus-visible{outline:2px solid var(--terra); outline-offset:2px}
+#stylebtn[aria-expanded="true"]{border-color:var(--terra); color:var(--terra-dark)}
+
+#stylepanel{
+  position:fixed; z-index:61; right:18px; top:76px; bottom:auto;
+  display:flex; flex-direction:column; width:372px;
+  max-height:calc(100vh - 94px);
+  border:1px solid var(--line); border-radius:14px;
+  background:var(--surface); color:var(--ink);
+  box-shadow:0 18px 50px rgba(31,30,29,.24);
+  font:12.5px/1.45 var(--sans);
+}
+#stylepanel[hidden]{display:none}
+
+.sp-head{
+  display:flex; align-items:center; gap:8px;
+  padding:11px 13px; border-bottom:1px solid var(--line-soft);
+}
+.sp-head h2{margin:0; padding:0; border:0; display:block; font:600 13px/1.2 var(--sans); color:var(--ink)}
+.sp-head h2::before{content:none}
+
+.sp-head select,.sp-foot button{
+  padding:5px 9px; border:1px solid var(--line); border-radius:7px;
+  background:var(--ivory); color:var(--ink);
+  font:12.5px/1.3 var(--sans); cursor:pointer;
+}
+.sp-head select:focus-visible,.sp-foot button:focus-visible{outline:2px solid var(--terra); outline-offset:1px}
+
+#sp-close{
+  width:26px; height:26px; padding:0; border:1px solid transparent; border-radius:50%;
+  background:none; color:var(--stone); font:14px/1 var(--sans); cursor:pointer;
+}
+#sp-close:hover{border-color:var(--line); color:var(--ink)}
+
+.sp-body{padding:2px 13px 12px; overflow-x:hidden; overflow-y:auto; scrollbar-width:thin}
+
+.sp-group{padding:11px 0; border-bottom:1px solid var(--line-soft)}
+.sp-group:last-child{border-bottom:0}
+.sp-group h3{
+  margin:0 0 8px; color:var(--stone);
+  font:700 9.5px/1.2 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+}
+.sp-group h3 .tag{margin-left:6px; color:var(--terra-dark); letter-spacing:.04em; text-transform:none}
+
+.sp-row{display:grid; grid-template-columns:1fr auto; gap:2px 10px; align-items:baseline; margin:9px 0}
+.sp-row label{color:var(--muted)}
+.sp-row > *{min-width:0}
+.sp-row output{color:var(--ink); font-variant-numeric:tabular-nums; font-size:11.5px}
+.sp-row input[type="range"]{grid-column:1/-1; width:100%; margin:3px 0 0; accent-color:var(--terra)}
+.sp-row select{
+  grid-column:1/-1; width:100%; margin-top:4px; padding:5px 8px;
+  border:1px solid var(--line); border-radius:7px;
+  background:var(--ivory); color:var(--ink); font:12px/1.4 var(--sans); cursor:pointer;
+}
+.sp-row select:focus-visible{outline:2px solid var(--terra); outline-offset:1px}
+
+.sp-colors label{
+  display:grid; grid-template-columns:26px 1fr auto; gap:8px; align-items:center; padding:2px 0;
+}
+.sp-colors .swatch-label{overflow:hidden; color:var(--muted); text-overflow:ellipsis; white-space:nowrap}
+.sp-colors input[type="color"]{
+  width:26px; height:22px; padding:0; border:1px solid var(--line); border-radius:6px;
+  background:none; cursor:pointer;
+}
+.sp-colors .hex{color:var(--stone); font:11px/1 var(--mono)}
+
+.sp-foot{
+  display:flex; align-items:center; gap:8px;
+  padding:10px 13px; border-top:1px solid var(--line-soft);
+}
+.sp-foot .spacer{flex:1}
+
+@media (max-width:520px){
+  #stylepanel{right:8px; left:8px; width:auto; top:72px; bottom:auto}
+}
+
+@media print{
+  #stylebtn,#stylepanel{display:none !important}
+}
+
+
+/* ---------- teaching note cards ---------- */
+.teach-card{
+  display:grid; grid-template-columns:auto minmax(0,1fr); gap:0.875rem 1rem;
+  margin:1.375rem 0 1.75rem; padding:1rem 1.125rem 1.0625rem;
+  border:0.0625rem solid var(--line); border-left:0.25rem solid var(--terra);
+  border-radius:0.75rem;
+  background:linear-gradient(135deg,var(--ivory),var(--tint));
+  box-shadow:0 0.375rem 1.25rem rgba(31,30,29,.06);
+}
+.teach-icon{
+  display:grid; place-items:center; width:2.5rem; height:2.5rem;
+  border:0.0625rem solid var(--line); border-radius:50%;
+  background:var(--surface); font-size:1.15rem; line-height:1;
+}
+.teach-kicker{
+  margin:0 0 0.25rem; color:var(--terra-dark);
+  font:700 0.5625rem/1.3 var(--sans); letter-spacing:.13em; text-transform:uppercase;
+}
+.teach-title{
+  margin:0 0 0.375rem; color:var(--ink);
+  font:600 1rem/1.3 var(--serif); letter-spacing:-.005em;
+}
+.teach-card p{margin:0 0 0.5rem; color:var(--prose); font-size:0.9125rem; line-height:1.62}
+.teach-card p:last-child{margin-bottom:0}
+.teach-ask{
+  margin-top:0.625rem !important; padding-top:0.5rem;
+  border-top:0.0625rem solid var(--line-soft);
+  color:var(--muted) !important; font-size:0.86rem !important;
+}
+.teach-ask strong{color:var(--ink)}
+@media (max-width:520px){
+  .teach-card{grid-template-columns:1fr}
+  .teach-icon{width:2.25rem; height:2.25rem}
+}
+@media print{
+  .teach-card{break-inside:avoid; background:var(--tint); box-shadow:none}
+}
+
+/* ---------- hidden answers ---------- */
+.teach-answer{
+  margin:0.5rem 0 0; border:0.0625rem solid var(--line-soft); border-radius:0.5rem;
+  background:var(--surface); overflow:hidden;
+}
+.teach-answer summary{
+  display:flex; align-items:center; gap:0.4rem; padding:0.45rem 0.65rem;
+  color:var(--terra-dark); font:600 0.74rem/1.3 var(--sans); cursor:pointer;
+  list-style:none; user-select:none;
+}
+.teach-answer summary::-webkit-details-marker{display:none}
+.teach-answer summary::before{
+  content:"+"; display:grid; place-items:center; width:1rem; height:1rem;
+  border:0.0625rem solid var(--line); border-radius:50%;
+  color:var(--terra-dark); font:700 0.72rem/1 var(--mono);
+}
+.teach-answer[open] summary::before{content:"−"}
+.teach-answer summary:hover{background:var(--tint)}
+.teach-answer summary:focus-visible{outline:0.125rem solid var(--terra); outline-offset:-0.125rem}
+.teach-answer-body{
+  padding:0.1rem 0.75rem 0.65rem 2.05rem;
+  border-top:0.0625rem solid var(--line-soft);
+}
+.teach-answer-body p{margin:0.55rem 0 0; color:var(--prose); font-size:0.86rem; line-height:1.6}
+@media print{
+  .teach-answer{break-inside:avoid}
+  .teach-answer-body{display:block !important}
+}
+
+.teach-ask-2{margin-top:0.75rem !important}
+</style>
+<script>
+(function () {
+  try {
+    var saved = JSON.parse(localStorage.getItem('mca-site-customiser:v2')) || {};
+    var mode = saved.mode === 'light' || saved.mode === 'dark' ? saved.mode : 'auto';
+    var dark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  } catch (e) { /* no stored preference */ }
+})();
+</script>
+</head>
+<body>
+<div class="progress"><span id="bar"></span></div>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="side-kicker" href="#top">mini-coding-js &middot; Teaching notes</a>
+    <p class="side-title">Reverse-engineering</p>
+    <p class="side-sub">The complete build specification with teaching notes: every file, every contract, and the idea to draw out in each section.</p>
+    <div class="side-rule"></div>
+    <p class="side-label">Contents</p>
+    <nav class="toc" id="toc">
+      <a href="#s01"><span class="n">01</span><span>Build Prompt: `mini-coding-js` — a tiny Node coding-agent harness</span></a>
+      <a href="#s02"><span class="n">02</span><span>1. `workspace.js` — the path policy</span></a>
+      <a href="#s03"><span class="n">03</span><span>2. `sandbox.js` — the mutation gate</span></a>
+      <a href="#s04"><span class="n">04</span><span>3. `tools.js` — eight tools and a dispatcher</span></a>
+      <a href="#s05"><span class="n">05</span><span>4. `llm.js` — the model call</span></a>
+      <a href="#s06"><span class="n">06</span><span>5. `prompt.js` — the system prompt</span></a>
+      <a href="#s07"><span class="n">07</span><span>6. `agent.js` — the loop</span></a>
+      <a href="#s08"><span class="n">08</span><span>7. `hooks.js` — lifecycle extension points</span></a>
+      <a href="#s09"><span class="n">09</span><span>8. `memory.js` — long-term memory</span></a>
+      <a href="#s10"><span class="n">10</span><span>9. `config.js` — environment resolution</span></a>
+      <a href="#s11"><span class="n">11</span><span>10. `ui.js` — all terminal styling</span></a>
+      <a href="#s12"><span class="n">12</span><span>11. `heartbeat.js` — liveness</span></a>
+      <a href="#s13"><span class="n">13</span><span>12. `demo.js` — offline scripted model</span></a>
+      <a href="#s14"><span class="n">14</span><span>13. `cli.js` — the program around the loop</span></a>
+      <a href="#s15"><span class="n">15</span><span>14. Testing requirements</span></a>
+      <a href="#s16"><span class="n">16</span><span>15. README and teaching material</span></a>
+      <a href="#s17"><span class="n">17</span><span>16. Acceptance criteria</span></a>
+      <a href="#s18"><span class="n">18</span><span>17. Suggested implementation order</span></a>
+      <a href="#s19"><span class="n">19</span><span>18. Tone and design philosophy (important)</span></a>
+    </nav>
+    <div class="side-foot">
+      Companion to the animated explainers<br>Every file in <code>src/</code> is specified here
+    </div>
+  </aside>
+
+  <main class="pane" id="top">
+    <div class="inner">
+      <header class="page-heading">
+        <p class="eyebrow">Build prompt · teaching edition</p>
+        <h1>Reverse-engineering mini-coding-js</h1>
+        <p class="lede">A from-scratch specification of the minimal coding-agent harness: one ReAct loop, eight tools, a write sandbox, nine lifecycle hooks, persistent memory, and an offline demo that proves the guards hold. Teaching cards turn each section into a lesson.</p>
+        <p class="meta">
+          <span>19 sections</span>
+          <span>19 teaching cards</span>
+          <span>~1400 lines</span>
+          <span>1 dependency</span>
+        </p>
+      </header>
+
+<div class="teach-card teach-intro">
+  <div class="teach-icon" aria-hidden="true">🎓</div>
+  <div>
+    <p class="teach-kicker">Teaching edition &middot; how to use this page</p>
+    <p class="teach-title">Read the specification, then teach the idea behind it</p>
+    <p>Each section opens with a teaching card. The card gives the one idea to take away, the misconception it prevents, and several layered technical questions. Every question has a hidden answer, so students can commit to an explanation before checking it. The specification beneath the card stays unchanged: it is still the complete build prompt.</p>
+    <p class="teach-ask"><strong>Core question:</strong> What are the core components of the agent, and how do they connect during one task?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The CLI resolves configuration and starts <code>runTask</code>. The loop builds messages, calls the model, dispatches tool calls, appends tool results, and repeats. Workspace, sandbox, hooks, memory, and UI support that loop without replacing it.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Which parts of the app are stateful, and where does each piece of state live?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Conversation state lives in the <code>messages</code> array; durable knowledge lives in the memory file; files live in the workspace; effective settings live in the config object; hooks are scoped to the run. There should be no hidden global state outside those places.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What is the difference between the agent loop and the program that hosts it?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p><code>agent.js</code> owns one task loop and stays unaware of flags, terminal streams, colours, and exit codes. <code>cli.js</code> owns process concerns: argument parsing, sessions, TTY behaviour, signals, and exit codes. The boundary is what makes the loop reusable and testable.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What guarantees does the harness enforce that the model cannot bypass?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Path containment for writes, command policy, tool validation and dispatch, step and output limits, and secret stripping from child environments. The model can only propose tool calls; the harness decides whether and how they execute.</p></div>
+</details>
+  </div>
+</div>
+
+
+<section id="s01">
+<h2><span class="num">01</span><span>Build Prompt: <code>mini-coding-js</code> — a tiny Node coding-agent harness</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🧭</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; the whole system</p>
+    <p class="teach-title">Start with the shape, not the files</p>
+    <p>The build prompt describes many files, but the architecture is one small loop. The model asks for an action, the dispatcher runs a tool, the result is appended to the message array, and the loop repeats. Everything else — workspace, sandbox, hooks, memory, config, UI — exists to make that loop safe and observable.</p>
+    <p class="teach-ask"><strong>Core question:</strong> Why is the tool set deliberately small, and what does that buy the architecture?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A small tool set keeps the action surface auditable, the schemas manageable for the model, and the safety policy centralised in one dispatcher. More tools widen the attack surface and make the loop harder to test and explain.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Where does the model's authority end and the harness's authority begin?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The model only proposes actions as structured tool calls. The harness validates the request, applies policy, executes the tool, and returns a string observation. The model never receives direct file, process, or network authority; the dispatcher is the gate.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> How does the model create a file if it has no hands?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>It emits an assistant message containing a <code>write_file</code> tool call. The dispatcher validates the request, the workspace resolves the path, the tool writes the file, and the result is appended as a tool message.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why is the messages array called the state?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>It is the only conversation content the next model call receives. If an action, result, or instruction is not in the array, the model does not know it. Hidden state outside the array breaks that guarantee.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What would break if <code>agent.js</code> knew about CLI flags and terminal colours?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The loop would become coupled to process and presentation concerns. It would be harder to test, harder to reuse, and a CLI or UI change could force a change in agent logic.</p></div>
+</details>
+  </div>
+</div>
+
+<div class="callout"><strong>How to use this document:</strong> give everything below (from "ROLE" onward) to a capable coding model as a single build prompt. It is a reverse-engineered specification of the existing <code>mini-coding-agent-js</code> app: a deliberately small, readable, teachable coding agent implemented in plain Node.js with one dependency (<code>chalk</code>). The goal is not merely an agent that works, but one whose architecture makes the lesson visible: <strong>one ReAct loop, eight tools, a write sandbox, nine lifecycle hooks, persistent memory, and an offline demo that proves the guards hold.</strong></div>
+
+<hr>
+
+<h3>ROLE</h3>
+
+<p>You are a senior Node.js engineer building a from-scratch implementation of a minimal coding-agent harness. Build the complete application described here. Do not substitute a framework, an agent SDK, a database, a build system, or a frontend. Prefer the Node standard library. The only runtime dependency is <code>chalk</code> for terminal colour.</p>
+
+<p>The app must be small enough for a student to read in one sitting, but complete enough to demonstrate the real architecture of a coding agent: a model/tool loop, a system prompt, an injected model client, a tool dispatcher, path and command guardrails, lifecycle hooks, session history, and a human-readable long-term memory.</p>
+
+<hr>
+
+<h3>PRIMARY CONSTRAINTS</h3>
+
+<ol>
+<li><strong>Language/runtime:</strong> modern ES modules (<code>"type": "module"</code>), Node.js <strong>&gt;= 20</strong>, JavaScript only. No TypeScript, no transpiler, no bundler.</li>
+<li><strong>Dependencies:</strong> exactly one runtime dependency: <code>chalk</code> (v5+). Everything else uses <code>node:</code> built-ins.</li>
+<li><strong>Provider:</strong> OpenRouter's OpenAI-compatible <code>/chat/completions</code> endpoint, called with plain <code>fetch</code>. No provider SDK.</li>
+<li><strong>Separation of concerns:</strong> the loop must be a library. It must not parse flags, print a banner, choose colours, or call <code>process.exit</code>.</li>
+<li><strong>Dependency injection:</strong> the loop receives <code>workspace</code>, <code>sandbox</code>, <code>commandPolicy</code>, <code>maxSteps</code>, <code>chatFn</code>, <code>confirm</code>, <code>hooks</code>, <code>memory</code>, <code>history</code>, <code>log</code>, and <code>heartbeatMs</code>. Tests must be able to run the real loop with a fake model and no network.</li>
+<li><strong>No hidden state:</strong> memory is a markdown file, read from disk on every operation. History is a plain message array. Configuration is resolved once and passed as an object.</li>
+<li><strong>Everything the model sees is text:</strong> each tool returns a string observation. Tool errors are returned as strings, never thrown out of the loop.</li>
+<li><strong>Offline-first testability:</strong> the full test suite runs with <code>node --test</code>, no API key, no network.</li>
+<li><strong>Readable design:</strong> comments should explain <em>why</em> a module exists and what contract it owns, not narrate syntax.</li>
+<li><strong>No fake safety claims:</strong> the sandbox must document exactly what it does and does not protect against.</li>
+</ol>
+
+<hr>
+
+<h3>DELIVERABLE FILE LAYOUT</h3>
+
+<p>Create this structure:</p>
+
+<figure class="code"><pre>mini-coding-agent-js/
+├── package.json
+├── .gitignore
+├── README.md
+├── demo_prompt.md
+├── src/
+│   ├── agent.js          # the ReAct loop (library, one exported runTask)
+│   ├── cli.js            # the program: flags, banner, sessions, exit codes
+│   ├── config.js         # .env discovery/loading, model normalisation
+│   ├── demo.js           # scripted fake model + sandbox scorecard
+│   ├── heartbeat.js      # "still waiting" liveness timer
+│   ├── hooks.js          # lifecycle registry, catalogue, tracer
+│   ├── llm.js            # OpenRouter fetch call + assistant sanitisation
+│   ├── memory.js         # markdown-backed long-term memory
+│   ├── memory.md         # the initial memory store
+│   ├── prompt.js         # system prompt + memory digest injection
+│   ├── sandbox.js        # write fence + shell write-target detection
+│   ├── tools.js          # 8 tool schemas + handlers + validation
+│   ├── ui.js             # all terminal styling
+│   └── workspace.js      # path policy (read vs write)
+├── test/                 # offline node:test suites
+└── workspace/
+    └── .gitkeep          # the agent's writable root</pre></figure>
+
+<p><code>package.json</code> must contain:</p>
+
+<figure class="code"><pre>{
+  "name": "mini-coding-js",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A tiny Node coding-agent harness: ReAct loop + 8 tools, one dependency for colour.",
+  "scripts": {
+    "start": "node src/cli.js",
+    "demo": "node src/cli.js --demo",
+    "hooks": "node src/cli.js --hooks",
+    "memory": "node src/cli.js --memory",
+    "trace": "node src/cli.js --demo",
+    "test": "node --test"
+  },
+  "engines": { "node": "&gt;=20" },
+  "dependencies": { "chalk": "^5.6.2" }
+}</pre></figure>
+
+<p><code>.gitignore</code> must ignore <code>node_modules/</code>, <code>.env</code>, everything under <code>workspace/*</code>, but keep <code>!workspace/.gitkeep</code>.</p>
+
+<hr>
+
+<h3>ARCHITECTURE AT A GLANCE</h3>
+
+<figure class="code"><pre>CLI (cli.js)
+  ├─ loadConfig()              config.js
+  ├─ Workspace + Sandbox       workspace.js / sandbox.js
+  ├─ Memory                    memory.js
+  ├─ chatFn (real | demo)      llm.js / demo.js
+  ├─ Hooks (trace by default)  hooks.js
+  └─ runTask() per task        agent.js
+       └─ think → model call → tool calls? ──no──→ answer, stop
+                    ↑                │
+                    └──── yes: run each tool, append result</pre></figure>
+
+<p>The loop must be generic and testable. The CLI owns all process concerns. <code>agent.js</code> must remain unaware of flags, <code>.env</code>, colours, and exit codes.</p>
+
+</section>
+
+<hr>
+
+<section id="s02">
+<h2><span class="num">02</span><span>1. <code>workspace.js</code> — the path policy</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🗺️</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; path policy</p>
+    <p class="teach-title">Reads are open; writes are fenced</p>
+    <p><code>workspace.js</code> teaches the difference between access and mutation. Reading docs from anywhere can be useful and is relatively low-risk; writing outside the workspace is the dangerous operation. The strict resolver normalises paths first, then checks containment, including symlink and junction escapes.</p>
+    <p class="teach-ask"><strong>Core question:</strong> Why is rejecting <code>../</code> not enough on its own? What can a symlink do that a plain path cannot?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Rejecting <code>../</code> only catches one spelling of escape. Paths can be absolute, drive-relative, UNC, expanded from environment variables, or hidden behind a symlink or junction inside the workspace. The resolver must normalise first, resolve the deepest existing ancestor with <code>realpath</code>, then test containment.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Why must <code>~</code>, <code>%VAR%</code>, and <code>$VAR</code> be expanded before the containment check?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A path that looks harmless before expansion can become a home or system path afterwards. Expansion first means every later check sees the real path being requested. Checking before expansion would allow an environment variable or tilde to bypass the policy.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why are <code>resolve()</code> and <code>resolveRead()</code> separate methods?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>They express different policies: writes are fenced, reads are deliberately open. Separate methods make the asymmetry explicit and prevent a caller from accidentally applying the wrong rule.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why resolve the deepest existing ancestor instead of the final path?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The final path may not exist yet. The deepest existing ancestor is the part that can be resolved with <code>realpath</code> to reveal symlinks or junctions; the not-yet-created remainder is appended afterwards.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What race remains even after careful path checks?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Time-of-check/time-of-use: the filesystem can change between the check and the write. Path policy is best-effort against mistakes; adversarial concurrency needs OS or container isolation.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export <code>PathError</code> and <code>Workspace</code>.</p>
+
+<h3><code>Workspace</code> contract</h3>
+
+<figure class="code"><pre>new Workspace(root) // resolves root, mkdir -p, stores `root` as a realpath
+workspace.resolve(requested)     // returns { abs, rel }; mutations only
+workspace.resolveRead(requested) // returns { abs, rel }; reads anywhere</pre></figure>
+
+<ul>
+<li>Relative paths resolve against the workspace root.</li>
+<li><code>rel</code> is <code>/</code>-separated and is <code>'.'</code> for the root.</li>
+<li><code>resolve()</code> is the strict write policy. It must reject:</li>
+<li>empty/non-string paths;</li>
+<li>drive-absolute and drive-relative paths (<code>C:\...</code>, <code>C:foo</code>);</li>
+<li>UNC paths (<code>\\server\share</code>, <code>//server/share</code>);</li>
+<li>any absolute path;</li>
+<li>paths beginning with <code>~</code>, <code>$</code>, <code>%</code> that expand to a home/environment path;</li>
+<li>a first segment that looks like a home/system folder: <code>users</code>, <code>windows</code>, <code>program files</code>, <code>program files (x86)</code>, <code>programdata</code>, <code>desktop</code>, <code>documents</code>, <code>downloads</code>, <code>appdata</code>, <code>onedrive</code>, <code>library</code>, <code>system32</code>;</li>
+<li>any path that escapes the root after realpath resolution.</li>
+<li>Expand <code>~</code>, <code>%VAR%</code>, and <code>${VAR}</code> / <code>$VAR</code> before containment checks.</li>
+<li>Symlink/junction safety: resolve the deepest existing ancestor with <code>fs.realpathSync</code>, then append the not-yet-created remainder. A symlink inside the workspace must not smuggle a write outside.</li>
+<li>Containment test: <code>rel === ''</code> or <code>rel</code> does not start with <code>..</code> and is not absolute.</li>
+<li><code>resolveRead()</code> deliberately does <strong>not</strong> fence reads. Absolute paths and paths outside the workspace are allowed. This is intentional: an agent must be able to read docs/logs/libraries; only mutation is dangerous. Relative reads still start at the workspace root.</li>
+</ul>
+
+<p>The read/write asymmetry is a core lesson: <strong>reads are open; writes are fenced.</strong></p>
+
+</section>
+
+<hr>
+
+<section id="s03">
+<h2><span class="num">03</span><span>2. <code>sandbox.js</code> — the mutation gate</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🛡️</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; mutation gate</p>
+    <p class="teach-title">A permission check is not a container</p>
+    <p>The sandbox is an interface, not an isolation boundary. It scans commands, applies a command policy, strips secrets from the child environment, and refuses obvious escapes. That is useful defence in depth, but it is still best-effort. Say this out loud: the honest limit is part of the lesson.</p>
+    <p class="teach-ask"><strong>Core question:</strong> What is the difference between "we checked the command" and "the command cannot affect the host"?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A command scan is a permission check: it looks at what the command appears to do and allows or denies it. A container or kernel boundary changes what the command is capable of doing. The workspace fence and deny-list are useful, but they are not the same guarantee as isolation.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Why strip API keys and tokens from the child environment even when the command itself is allowed?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Least privilege: an allowed command still does not need the agent's secrets. Stripping keys and tokens prevents accidental printing, logging, or exfiltration through a command that was permitted for another reason. Policy and secret isolation are separate controls.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What is the difference between <code>ask</code>, <code>allow</code>, and <code>deny</code> command policies?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p><code>ask</code> requires confirmation and denies when there is no TTY; <code>allow</code> runs without a prompt; <code>deny</code> refuses. Hard-denied commands remain refused even under <code>--yes</code>.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why can hard-denied commands not be overridden by <code>--yes</code>?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>They are the non-negotiable safety floor. If a convenience flag could bypass them, the policy would provide no real guarantee for demos or unattended runs.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> If command scanning can be bypassed, why keep it?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>It is defence in depth. It catches obvious mistakes, adds friction to dangerous actions, and centralises policy. It is not the sole boundary; untrusted code still needs real isolation.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export <code>SANDBOX_DIR</code>, <code>ACTIONS</code>, <code>ForbiddenError</code>, <code>Sandbox</code>, <code>sandboxFor</code>, <code>tokenizeCommand</code>, <code>shellWriteTargets</code>.</p>
+
+<h3>Constants and errors</h3>
+
+<figure class="code"><pre>export const SANDBOX_DIR = path.resolve(import.meta.dirname, '..', 'workspace');
+export const ACTIONS = Object.freeze({ SAVE: 'save', EDIT: 'edit', DELETE: 'delete' });</pre></figure>
+
+<p><code>ForbiddenError</code> carries <code>action</code>, <code>requested</code>, <code>reason</code>, and has <code>name = 'ForbiddenError'</code>, <code>code = 'FORBIDDEN'</code>. Its message is exactly:</p>
+
+<figure class="code"><pre>SAVE ../escape.txt - path escapes the workspace: ../escape.txt</pre></figure>
+
+<h3><code>Sandbox</code> contract</h3>
+
+<figure class="code"><pre>new Sandbox({ workspace, root, log }) // reuses workspace or builds one from root; one per run
+sandbox.refusals                      // count of refusals
+sandbox.check(action, requested)      // { abs, rel } or throws ForbiddenError
+sandbox.write(target, content)        // mkdir -p, write, return { existed, bytes }
+sandbox.save(requested, content)
+sandbox.remove(requested)             // file or empty dir; only inside root
+sandbox.checkCommand(command)         // inspect visible shell write targets
+sandbox.summary()                     // "save, edit, delete - only inside &lt;root&gt;"
+Sandbox.allowsAction(action)
+sandboxFor(ctx)</pre></figure>
+
+<ul>
+<li><code>check()</code> delegates path policy to <code>workspace.resolve()</code> and converts <code>PathError</code> into a refusal.</li>
+<li>Deleting the sandbox root itself must be refused.</li>
+<li>A refusal must:</li>
+</ul>
+
+<ol>
+<li>increment <code>refusals</code>;</li>
+<li>print exactly one loud line through <code>ui.forbidden(...)</code>;</li>
+<li>throw <code>ForbiddenError</code>.</li>
+</ol>
+
+<ul>
+<li>This is the <strong>only</strong> code path that prints <code>FORBIDDEN</code>. That gives the question "was this allowed?" one answer and one place to look.</li>
+<li><code>remove()</code> on directories uses <code>rmdirSync</code> (empty directories only, on purpose). Missing targets return <code>{ missing: true }</code>.</li>
+<li><code>checkCommand()</code> is best effort. It tokenises the command line and finds visible write targets. If any target resolves outside the workspace, print the <code>FORBIDDEN</code> line(s), then throw one <code>ForbiddenError('command', joinedTargets, 'the shell would write outside the sandbox')</code>. Refuse <em>before</em> asking for approval.</li>
+</ul>
+
+<h3>Shell write-target scanning</h3>
+
+<p><code>tokenizeCommand(text)</code> must split on whitespace while honouring single and double quotes, and emit operators as tokens: <code>&gt;</code>, <code>&gt;&gt;</code>, <code>&lt;</code>, <code>|</code>, <code>||</code>, <code>&amp;</code>, <code>&amp;&amp;</code>, <code>;</code>. Quotes are stripped, so quoted paths with spaces remain one token.</p>
+
+<p><code>shellWriteTargets(command)</code> scans each command segment between separators:</p>
+
+<ul>
+<li>Redirections: <code>&gt;</code> and <code>&gt;&gt;</code> write to the following token. Handle <code>2&gt; file</code> where the stream number is a separate token.</li>
+<li><code>&lt;</code> writes nothing; skip its operand.</li>
+<li><code>DEST_LAST</code> commands: <code>copy</code>, <code>cp</code>, <code>move</code>, <code>mv</code>, <code>xcopy</code>, <code>ren</code>, <code>rename</code>, <code>ln</code>, <code>install</code>, <code>scp</code>, <code>rsync</code>. Their last positional argument is the write target; require at least two positionals.</li>
+<li><code>robocopy</code>: positional argument 2 is the destination.</li>
+<li><code>ALL_POSITIONAL</code> commands: <code>del</code>, <code>erase</code>, <code>rd</code>, <code>rmdir</code>, <code>rm</code>, <code>md</code>, <code>mkdir</code>, <code>touch</code>, <code>tee</code>, <code>unlink</code>, <code>truncate</code>, <code>shred</code>. Every positional argument is a write/delete target.</li>
+<li>Downloaders: <code>curl</code> output flags <code>-o</code>, <code>--output</code>, <code>-O</code>, <code>--remote-name</code>; <code>wget</code> <code>-O</code>, <code>--output-document</code>. For <code>curl -O</code>/<code>--remote-name</code>, the output is the URL filename (last positional).</li>
+<li>PowerShell: <code>out-file</code>, <code>set-content</code>, <code>add-content</code>, <code>new-item</code>, <code>ni</code>, <code>remove-item</code>, <code>copy-item</code>, <code>move-item</code>, <code>rename-item</code>; target flags <code>-destination</code>, <code>-dest</code>, <code>-path</code>, <code>-filepath</code>, <code>-literalpath</code>. Also inspect nested cmdlets inside <code>powershell</code>/<code>pwsh</code>/<code>ps</code>.</li>
+<li>Strip <code>.exe</code>, <code>.cmd</code>, <code>.bat</code>, <code>.com</code>, <code>.ps1</code> from command names and compare case-insensitively.</li>
+<li>A switch is <code>--flag</code>, <code>-f</code>, or a short Windows <code>/x</code>; a POSIX path like <code>/home</code> is not a switch.</li>
+</ul>
+
+<p><strong>Document the limitation honestly:</strong> this is not a shell sandbox. <code>node -e "fs.copyFileSync(...)"</code> or a downloaded script can still write anywhere. A container is the real answer. Do not claim otherwise.</p>
+
+</section>
+
+<hr>
+
+<section id="s04">
+<h2><span class="num">04</span><span>3. <code>tools.js</code> — eight tools and a dispatcher</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🧰</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; tools</p>
+    <p class="teach-title">The model proposes; the dispatcher disposes</p>
+    <p>Tools are the only way the model can act. Each tool has a schema, a handler, and a string result. Errors come back as observations rather than crashes. The dispatcher is the narrow waist: if every action passes through one function, policy and logging stay in one place.</p>
+    <p class="teach-ask"><strong>Core question:</strong> Why return a tool error as text instead of throwing an exception that ends the run?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Throwing ends the run and loses the model's chance to adapt. Returning the error as a string keeps the protocol intact: every tool call gets a result, the observation becomes part of the message history, and the model can try a different approach on the next step.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> What makes a tool schema good enough for a model to use reliably?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A clear name, a narrow argument set, obvious required fields, descriptions that explain when to use it, validation before execution, and a predictable result format. Small, boring schemas are easier for the model to call correctly and easier for the harness to check.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What belongs in a tool result string?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A truthful, bounded, model-readable outcome: success data, paths, errors, or refusals. It should contain enough context for the next step and must never be invented by the harness.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> How should the dispatcher handle an unknown tool or invalid JSON arguments?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Return an error observation instead of crashing. Name the tool or parse problem clearly, and still produce a tool result so the loop can continue and the model can adapt.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why should tools not be invoked directly by the model?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The model cannot execute code; it can only ask. Harness mediation provides validation, policy, logging, sandboxing, and a consistent result contract. Direct authority would remove those controls.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export <code>TOOL_SCHEMAS</code>, <code>TOOL_NAMES</code>, <code>SANDBOX_LIMITS</code>, <code>safeEnv</code>, <code>runTool</code>.</p>
+
+<h3>Exact tool set</h3>
+
+<p>The model may call exactly these eight tools, in this order in the schema array and in <code>TOOL_NAMES</code>:</p>
+
+<ol>
+<li><code>list_files</code></li>
+<li><code>read_file</code></li>
+<li><code>create_file</code></li>
+<li><code>write_file</code></li>
+<li><code>edit_file</code></li>
+<li><code>run_command</code></li>
+<li><code>remember</code></li>
+<li><code>recall</code></li>
+</ol>
+
+<p>Each schema is OpenAI function-calling shaped:</p>
+
+<figure class="code"><pre>{ type: 'function', function: { name, description, parameters: {...} } }</pre></figure>
+
+<p>All parameter objects must use <code>additionalProperties: false</code>.</p>
+
+<h3>Tool contracts</h3>
+
+<h4><code>list_files</code></h4>
+
+<p>Parameters: <code>path</code> (string, optional, default <code>'.'</code>), <code>depth</code> (integer, optional, default 3, max 6).</p>
+
+<ul>
+<li>Resolve with <code>workspace.resolveRead()</code>.</li>
+<li>Missing folder → <code>ERROR: no such folder: &lt;rel&gt;</code>; non-folder → <code>ERROR: not a folder: &lt;rel&gt;</code>.</li>
+<li>Walk recursively, sorted by name, skipping <code>.git</code>, <code>node_modules</code>, <code>.venv</code>, <code>__pycache__</code>.</li>
+<li>Directories print <code>&lt;rel&gt;/</code>; files print <code>&lt;rel&gt;  (&lt;size&gt;b)</code>.</li>
+<li>Stop at <code>depth</code> levels and at 200 lines.</li>
+<li>End with <code>\n\n&lt;dirs&gt; folder(s), &lt;files&gt; file(s) under &lt;start.rel&gt;</code>.</li>
+<li>Empty result is <code>(empty)</code> plus the counts.</li>
+</ul>
+
+<h4><code>read_file</code></h4>
+
+<p>Parameters: <code>path</code> (required), <code>offset</code> (integer, default 1), <code>limit</code> (integer, default 200, max 2000).</p>
+
+<ul>
+<li>Resolve with <code>resolveRead()</code>.</li>
+<li>Missing → <code>ERROR: no such file: &lt;rel&gt;</code>; directory → <code>ERROR: &lt;rel&gt; is a folder - use list_files</code>.</li>
+<li>Return <code>"&lt;rel&gt; (&lt;total lines&gt;)"</code>, then numbered lines with line numbers right-aligned to width 4 followed by <code>| </code>.</li>
+<li>Append <code>\n... [&lt;n&gt; more lines]</code> when truncated.</li>
+<li><code>offset</code> clamps to &gt;= 1; <code>limit</code> clamps to 1..2000.</li>
+</ul>
+
+<h4><code>create_file</code></h4>
+
+<p>Parameters: <code>path</code>, <code>content</code> (both required).</p>
+
+<ul>
+<li>Use <code>sandbox.check(ACTIONS.SAVE, path)</code>.</li>
+<li>If the file exists, return <code>ERROR: &lt;rel&gt; already exists - use edit_file to change it or write_file to overwrite</code> and do not touch it.</li>
+<li>Otherwise write through the sandbox; return <code>created &lt;rel&gt; (&lt;bytes&gt; bytes)</code>.</li>
+</ul>
+
+<h4><code>write_file</code></h4>
+
+<p>Parameters: <code>path</code>, <code>content</code> (both required).</p>
+
+<ul>
+<li>Sandbox save check, create parent folders, overwrite.</li>
+<li>Return <code>created &lt;rel&gt; (&lt;bytes&gt; bytes)</code> or <code>overwrote &lt;rel&gt; (&lt;bytes&gt; bytes)</code>.</li>
+</ul>
+
+<h4><code>edit_file</code></h4>
+
+<p>Parameters: <code>path</code>, <code>old_string</code>, <code>new_string</code>, <code>replace_all</code> (boolean, default false).</p>
+
+<ul>
+<li>Sandbox <code>EDIT</code> check. Missing file → <code>ERROR: no such file: &lt;rel&gt;</code>.</li>
+<li>Empty <code>old_string</code> → <code>ERROR: old_string must not be empty</code>.</li>
+<li>Count exact occurrences.</li>
+<li>0 occurrences → <code>ERROR: old_string not found in &lt;rel&gt;. Read the file and copy the snippet exactly, including whitespace.</code></li>
+<li>&gt;1 and no <code>replace_all</code> → <code>ERROR: old_string appears N times in &lt;rel&gt;. Add surrounding context to make it unique, or pass replace_all: true.</code></li>
+<li>Replacement must be literal: use <code>source.replace(oldStr, () =&gt; newStr)</code> or <code>split().join()</code> so <code>$1</code>, <code>$&amp;</code> etc. are not interpreted.</li>
+<li>Return <code>edited &lt;rel&gt;: &lt;n&gt; replacement(s), first at line &lt;line&gt;</code>.</li>
+</ul>
+
+<h4><code>run_command</code></h4>
+
+<p>Parameter: <code>command</code> (required string).</p>
+
+<ul>
+<li>Trim; empty → <code>ERROR: command is required</code>.</li>
+<li>Apply a hard deny-list <strong>before</strong> policy and approval. Return <code>DENIED: blocked by policy (&lt;why&gt;). Command: &lt;command&gt;</code>.</li>
+<li>Call <code>sandbox.checkCommand(command)</code> before asking a human, so no one approves an impossible write.</li>
+<li>Policy:</li>
+<li><code>deny</code> → <code>DENIED: command execution is disabled (CMD_POLICY=deny).</code></li>
+<li><code>allow</code> → proceed.</li>
+<li><code>ask</code> → <code>await ctx.confirm(command)</code>; anything other than <code>'allow'</code> → <code>DENIED: the user did not approve this command. Command: &lt;command&gt;</code>.</li>
+<li>Execute with <code>node:child_process.exec</code> in <code>workspace.root</code>, <code>timeout: 30_000</code>, <code>maxBuffer: 1 MB</code>, <code>windowsHide: true</code>, <code>encoding: 'utf8'</code>, and <strong>only the allow-listed environment</strong>.</li>
+<li>Result format:</li>
+</ul>
+
+<figure class="code"><pre>exit code &lt;n&gt;
+stdout:
+&lt;clipped stdout&gt;
+
+stderr:
+&lt;clipped stderr&gt;</pre></figure>
+
+<p>  Add only non-empty streams; if both are empty, add <code>(no output)</code>.</p>
+
+<ul>
+<li>Clip each stream to 6,000 characters and append <code>... [&lt;n&gt; chars truncated]</code>.</li>
+<li>Timed-out commands must append <code>[tool] command timed out after 30s</code> to stderr and return a non-zero code.</li>
+</ul>
+
+<h4>Hard deny-list</h4>
+
+<p>At least these patterns, with these explanations:</p>
+
+<div class="table-wrap"><table>
+<tr><th>Pattern</th><th>Why</th></tr>
+<tr><td>recursive delete of a root path</td><td><code>recursive delete of a root path</code></td></tr>
+<tr><td><code>del /...s</code> or <code>/q</code></td><td><code>recursive/quiet Windows delete</code></td></tr>
+<tr><td><code>format</code>, <code>diskpart</code></td><td><code>disk formatting</code></td></tr>
+<tr><td><code>shutdown</code>, <code>reboot</code></td><td><code>machine power control</code></td></tr>
+<tr><td><code>git push --force</code> / <code>-f</code></td><td><code>force push</code></td></tr>
+<tr><td><code>curl</code>/<code>wget</code> piped into <code>sh</code>/<code>bash</code></td><td><code>piping the internet into a shell</code></td></tr>
+<tr><td><code>:(){ ...};:</code></td><td><code>fork bomb</code></td></tr>
+<tr><td><code>&gt; /dev/sd...</code></td><td><code>raw disk write</code></td></tr>
+</table></div>
+
+<p>The deny-list applies regardless of <code>CMD_POLICY</code>, including <code>allow</code>.</p>
+
+<h4>Environment allow-list</h4>
+
+<p>A child process must not inherit the harness environment; otherwise <code>node -e "console.log(process.env.OPENROUTER_API_KEY)"</code> leaks the key. <code>safeEnv(source)</code> keeps only:</p>
+
+<figure class="code"><pre>PATH, PATHEXT, HOME, USERPROFILE, TMPDIR, TEMP, TMP,
+SYSTEMROOT, COMSPEC, SHELL, LANG, LC_ALL, TERM</pre></figure>
+
+<p>Export <code>safeEnv</code> and test it directly.</p>
+
+<h4><code>remember</code></h4>
+
+<p>Parameters: <code>text</code> (required), <code>tag</code> (optional; one of <code>fact</code>, <code>pref</code>, <code>fix</code>, <code>gotcha</code>).</p>
+
+<ul>
+<li>If <code>ctx.memory</code> is null: <code>ERROR: no memory store in this run (started with --no-memory)</code>.</li>
+<li>Delegate to <code>memory.remember()</code>.</li>
+<li>Empty → <code>ERROR: &lt;reason&gt;</code>.</li>
+<li>Duplicate → <code>already remembered in &lt;label&gt; (&lt;total&gt; total), date refreshed: &lt;formatted entry&gt;</code>.</li>
+<li>New → <code>remembered in &lt;label&gt; (&lt;total&gt; total[, dropped the N oldest]): &lt;formatted entry&gt;</code>.</li>
+</ul>
+
+<h4><code>recall</code></h4>
+
+<p>Parameters: <code>query</code> (string, optional), <code>limit</code> (integer, default 20).</p>
+
+<ul>
+<li>No memory → same error as <code>remember</code>.</li>
+<li>No hits → <code>no memories in &lt;label&gt; match "&lt;query&gt;" (&lt;size&gt; stored)</code>.</li>
+<li>One hit → <code>&lt;n&gt; of &lt;size&gt; memories in &lt;label&gt;: &lt;formatted entry&gt;</code> on one line.</li>
+<li>Multiple hits → header line, then one formatted entry per line.</li>
+</ul>
+
+<h3>Argument validation and dispatch</h3>
+
+<ul>
+<li>Build a parameter metadata map from the schemas: name → <code>{ argName: type }</code>.</li>
+<li><code>validate(name, raw)</code>:</li>
+<li>raw may be a JSON string or an object;</li>
+<li>invalid JSON → <code>ERROR: could not parse arguments for &lt;name&gt;: &lt;message&gt;</code>;</li>
+<li>non-object / array / null → <code>ERROR: arguments for &lt;name&gt; must be a JSON object</code>;</li>
+<li>for each provided value, check JavaScript type; integers must satisfy <code>Number.isInteger</code>; return <code>ERROR: "&lt;key&gt;" must be a &lt;type&gt;, got &lt;actual&gt;</code>.</li>
+<li>Missing values are allowed (handler defaults apply).</li>
+<li><code>runTool(name, rawArgs, ctx)</code>:</li>
+<li>unknown tool → <code>ERROR: unknown tool "&lt;name&gt;". Available: &lt;list&gt;</code>;</li>
+<li>validation error returned as text;</li>
+<li>handler exceptions become text:</li>
+<li><code>ForbiddenError</code> → <code>FORBIDDEN: &lt;message&gt;</code>;</li>
+<li><code>PathError</code> → <code>ERROR: &lt;message&gt;</code>;</li>
+<li>other → <code>ERROR: &lt;code|failed&gt;: &lt;message&gt;</code>.</li>
+<li>Every handler is <code>(workspace, args, ctx)</code> and returns a string or a promise of one.</li>
+</ul>
+
+</section>
+
+<hr>
+
+<section id="s05">
+<h2><span class="num">05</span><span>4. <code>llm.js</code> — the model call</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🔌</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; model call</p>
+    <p class="teach-title">The model is a function with failure modes</p>
+    <p>The model call is not magic; it is an HTTP-shaped dependency that can time out, truncate, return malformed JSON, or produce no tool calls. <code>llm.js</code> should normalise providers and surface those states clearly so the loop can decide what to do next.</p>
+    <p class="teach-ask"><strong>Core question:</strong> What should the loop do when the response is cut off by the token limit?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Do not treat a truncated response as a complete one. Inspect the finish reason or length signal, discard or repair incomplete tool arguments, and either retry with a clear instruction or stop with an honest message. Never invent the missing arguments.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Why inject the chat function instead of importing a provider client directly?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The loop should depend on an interface, not a vendor. Injecting the function makes it easy to swap providers, run offline with a fake model, and assert exactly which messages were sent without making a network request.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What are <code>llm.js</code> responsibilities, and what are they not?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>It builds the request, calls the provider, handles timeouts and HTTP failures, and normalises the response shape. It does not orchestrate the loop, execute tools, or format terminal output.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why normalise provider responses?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Providers differ in field names and tool-call representation. The loop should consume one stable shape, which reduces provider-specific branching and keeps the agent contract clear.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> On a timeout, should <code>llm.js</code> retry silently?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>No. Retry policy should be explicit and bounded at the caller. Silent retries can duplicate cost or side effects and hide latency; return a clear failure instead.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export <code>chat</code> and <code>sanitizeAssistant</code>.</p>
+
+<h3><code>chat</code></h3>
+
+<figure class="code"><pre>chat({ apiKey, model, messages, tools, signal, timeoutMs = 90_000 })</pre></figure>
+
+<ul>
+<li>Endpoint: <code>https://openrouter.ai/api/v1/chat/completions</code>.</li>
+<li>Missing key → throw <code>OPENROUTER_API_KEY is not set (put it in .env or the environment)</code>.</li>
+<li>Combine an optional caller <code>signal</code> with <code>AbortSignal.timeout(timeoutMs)</code> using <code>AbortSignal.any</code>.</li>
+<li>POST JSON with headers:</li>
+<li><code>Authorization: Bearer &lt;key&gt;</code></li>
+<li><code>Content-Type: application/json</code></li>
+<li><code>X-Title: min-coding-js</code></li>
+<li>Body: <code>{ model, messages, tools, max_tokens: 2048 }</code>.</li>
+<li>On fetch timeout, throw <code>request timed out after &lt;seconds&gt;s - OpenRouter did not answer</code>.</li>
+<li>Non-2xx: throw <code>OpenRouter &lt;status&gt;&lt;hint&gt;: &lt;first 400 chars of body&gt;</code>, where hint is:</li>
+<li>401 → <code> (bad or revoked key)</code></li>
+<li>402 → <code> (out of credits)</code></li>
+<li>Non-JSON body → <code>OpenRouter returned non-JSON: &lt;first 200 chars&gt;</code>.</li>
+<li>JSON containing <code>.error</code> → <code>OpenRouter error: &lt;serialised, first 400 chars&gt;</code>.</li>
+<li>Return the parsed JSON.</li>
+</ul>
+
+<h3><code>sanitizeAssistant</code></h3>
+
+<p>Rebuild the assistant message with only <code>role: 'assistant'</code>, <code>content</code>, and — only when non-empty — <code>tool_calls</code>. Delete <code>content</code> when it is null and tool calls exist. Drop <code>reasoning</code> / <code>reasoning_content</code> so old traces are not re-sent on every later step.</p>
+
+</section>
+
+<hr>
+
+<section id="s06">
+<h2><span class="num">06</span><span>5. <code>prompt.js</code> — the system prompt</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">📝</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; prompt</p>
+    <p class="teach-title">The system prompt is rebuilt every turn</p>
+    <p>The system prompt is not a one-time greeting. It carries the rules, the current memory digest, and the contract for tool use. Keeping it in <code>prompt.js</code> makes it reviewable and testable, and lets memory changes appear without restarting the process.</p>
+    <p class="teach-ask"><strong>Core question:</strong> What belongs in the prompt, and what belongs in code that the model cannot edit?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The prompt carries instructions, rules, the memory digest, and the tool contract. Code carries enforcement: path containment, command policy, step limits, output caps. Anything that must be guaranteed belongs in code, not in a request the model can ignore.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> What happens when memory changes in the middle of a session?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The system prompt is rebuilt for each request, so a memory change can appear on the next model call without restarting the session. Conversation history remains, but the fresh prompt carries the current memory digest and rules.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why is the system prompt not a security boundary?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>It is text the model may ignore or be manipulated into overriding. Guarantees belong in code: path policy, command policy, limits, and validation. The prompt guides behaviour; it does not enforce it.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What is prompt injection in this agent?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Untrusted content such as file text or tool output contains instructions that try to override the system rules. Treat that content as data, keep least privilege, and enforce decisions outside the prompt.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why keep tool schemas separate from the prompt text?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The schemas are a structured API contract sent with the request; the prompt describes behaviour. Mixing them duplicates information and lets the two definitions drift apart.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export <code>systemRules</code>, <code>buildSystemPrompt</code>.</p>
+
+<p><code>systemRules(tools = TOOL_NAMES)</code> must produce prose close to this (exact wording is part of the behaviour):</p>
+
+<figure class="code"><pre>You are a small coding agent working inside a sandboxed folder.
+
+You have tools: &lt;comma-separated tool names&gt;. Reads may use any path (relative paths start at your workspace root; absolute paths are allowed). Writing is fenced: save, edit and delete only work inside the workspace, and anything else is refused with FORBIDDEN - do not retry it, work inside the workspace instead.
+
+How to work:
+1. Look before you write: list_files / read_file before editing.
+2. Prefer create_file for new files, edit_file for small changes, write_file only when replacing a whole file.
+3. Every edit must use an old_string copied exactly from read_file output.
+4. Run what you wrote with run_command and check the exit code. If it fails, read the error, fix it, run again.
+5. Do not invent tool results. Stop calling tools when the task is done and reply with a short summary of what you changed.
+6. If you learn something that will still be true next week - a command this repo needs, a preference the user stated, a trap you fell into - save it with remember. Never save task progress: "step 3 of 5" is not a memory, and it is worthless to the next run.
+
+Be concise. One tool call per step where possible.</pre></figure>
+
+<p><code>buildSystemPrompt({ memory, log })</code>:</p>
+
+<ul>
+<li>Always return the rules if no memory instance or no digest.</li>
+<li>Otherwise append the memory digest after a blank line.</li>
+<li>Count injected lines that start with <code>- [</code> and, when <code>log</code> is supplied, emit exactly one <code>ui.memory(...)</code> line: <code>&lt;label&gt; - N memory/memories added to the system prompt</code>.</li>
+</ul>
+
+<p>Keeping this prose out of <code>agent.js</code> is deliberate: the loop should read as control flow, not three screens of prompt engineering.</p>
+
+</section>
+
+<hr>
+
+<section id="s07">
+<h2><span class="num">07</span><span>6. <code>agent.js</code> — the loop</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🔁</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; the loop</p>
+    <p class="teach-title">The loop is the agent</p>
+    <p>Messages are the state. If something is not in the array, the model does not know it. No tool calls means the reply is the final answer. Tool calls mean append each result and go round again. A step limit turns an endless loop into a bounded failure.</p>
+    <p class="teach-ask"><strong>Core question:</strong> Why must every <code>tool_call_id</code> get a matching tool result before the next model call?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The provider protocol expects each assistant <code>tool_call</code> to be followed by a tool message carrying the same <code>tool_call_id</code>. Without that pairing the next request is malformed, and the model sees an incomplete record of what it asked for and what happened.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Why does the loop need a step limit?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Without a limit, a confused model can loop forever, spend money, or flood the transcript. A step limit turns that into a bounded, observable failure with a clear reason, and it makes loop tests deterministic.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why append the assistant reply before executing its tools?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The history must show what the model requested. Tool results then attach to that assistant turn through their ids. Without the assistant message, the tool messages have no preceding call.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What if the model returns text and tool calls together?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Preserve the text in the assistant message and process the tool calls. The text may be commentary; the reply is not final until a model response contains no tool calls.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why not automatically retry a failed tool?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The failure is an observation for the model to reason about. Blind retries can repeat side effects. Any retry policy should be explicit, bounded, and owned by the caller.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export exactly one main function:</p>
+
+<figure class="code"><pre>runTask({
+  task,
+  workspace,
+  sandbox = null,
+  commandPolicy,
+  maxSteps,
+  chatFn,
+  confirm,
+  hooks = null,
+  memory = null,
+  history = [],
+  log = console.log,
+  heartbeatMs = 5000,
+})</pre></figure>
+
+<p>Return shape:</p>
+
+<figure class="code"><pre>{ ok: true,  answer, messages, steps }
+{ ok: false, reason: 'blocked_by_hook' | 'request_failed' | 'max_steps', messages }</pre></figure>
+
+<h3>Message assembly</h3>
+
+<p>At the start of every task:</p>
+
+<figure class="code"><pre>const messages = [
+  { role: 'system', content: buildSystemPrompt({ memory, log }) },
+  ...history.filter((m) =&gt; m.role !== 'system'),
+  { role: 'user', content: task },
+];
+const taskIndex = messages.length - 1;</pre></figure>
+
+<ul>
+<li>The system prompt is always rebuilt; it is never carried in history. A memory written by the previous task therefore appears before the next task.</li>
+<li><code>history</code> is the previous task's conversation, excluding system messages.</li>
+<li>Build a tool context:</li>
+</ul>
+
+<figure class="code"><pre>const ctx = {
+  workspace,
+  sandbox: sandbox ?? new Sandbox({ workspace, log }),
+  commandPolicy,
+  memory,
+  confirm: confirm ?? (async () =&gt; 'deny'),
+};</pre></figure>
+
+<ul>
+<li>Record a start timestamp and a duration helper.</li>
+<li>Use <code>hooks ?? new Hooks()</code> so every call site can call <code>hook.run(...)</code> unconditionally.</li>
+</ul>
+
+<h3>The seven beats, once per step</h3>
+
+<p>For <code>step = 1..maxSteps</code>:</p>
+
+<ol>
+<li>Print a blank line and <code>ui.step(step, maxSteps)</code>.</li>
+<li>Fire <code>PreModel</code> with <code>{ step, maxSteps, messages, tools: TOOL_SCHEMAS }</code>.</li>
+<li>Start <code>heartbeat(log, heartbeatMs)</code> and call <code>chatFn({ messages, tools: TOOL_SCHEMAS })</code>.</li>
+</ol>
+
+<ul>
+<li>On throw: stop the heartbeat, print <code>ui.error('request failed: ...')</code>, fire <code>SessionEnd</code> with <code>ok: false, reason: 'request_failed', steps: step, durationMs, messages</code>, return <code>{ ok: false, reason: 'request_failed', messages }</code>.</li>
+<li>On success: stop the heartbeat.</li>
+</ul>
+
+<ol>
+<li>Extract <code>choice = reply?.choices?.[0] ?? {}</code> and <code>message = choice.message ?? {}</code>. Fire <code>PostModel</code> with <code>{ step, message, finishReason: choice.finish_reason }</code>.</li>
+<li><strong>Truncation guard:</strong> if <code>finish_reason === 'length'</code> and there are no tool calls:</li>
+</ol>
+
+<ul>
+<li>append <code>{ role: 'assistant', content: message.content ?? '' }</code>;</li>
+<li>append <code>{ role: 'user', content: 'You were cut off by the length limit. Continue with smaller tool calls.' }</code>;</li>
+<li>print <code>ui.warn('reply was truncated - asking the model to continue smaller')</code>;</li>
+<li><code>continue</code> to the next step. Never dispatch a truncated tool call.</li>
+</ul>
+
+<ol>
+<li>Append <code>sanitizeAssistant(message)</code> to messages. If <code>message.content</code> is non-empty, print <code>ui.think(...)</code>.</li>
+<li>Get <code>calls = Array.isArray(message.tool_calls) ? message.tool_calls : []</code>.</li>
+</ol>
+
+<ul>
+<li><strong>No calls:</strong> print a blank line, <code>ui.answerRule()</code>, and <code>ui.answer((message.content ?? '(no answer)').trim())</code>. Fire <code>Stop</code> with <code>{ answer, steps: step, messages }</code>, then <code>SessionEnd</code> with <code>{ ok: true, reason: 'answer', steps: step, durationMs, messages }</code>. Return <code>{ ok: true, answer: message.content ?? '', messages, steps: step }</code>.</li>
+<li><strong>Calls:</strong> dispatch each call in order:</li>
+</ul>
+
+<ol>
+<li><code>name = call.function?.name ?? '(unnamed)'</code>; <code>rawArgs = call.function?.arguments ?? '{}'</code>.</li>
+<li>Print <code>ui.tool(name, rawArgs)</code>.</li>
+<li>Fire <code>PreToolUse</code> with <code>{ name, args: rawArgs, step }</code>.</li>
+</ol>
+
+<ul>
+<li>If blocked, do not run the tool. The observation is exactly: <code>DENIED: a PreToolUse hook blocked this call (&lt;reason&gt;). Try another approach.</code></li>
+<li>Otherwise <code>await runTool(name, rawArgs, ctx)</code>.</li>
+</ul>
+
+<ol>
+<li>Print <code>ui.result(result)</code>.</li>
+<li>Fire <code>PostToolUse</code> with <code>{ name, result, step, ok: !/^(ERROR|DENIED)\b/.test(result) }</code>.</li>
+</ol>
+
+<ul>
+<li>If <code>post.replace !== null</code>, print a dim annotation and use the replacement as the observation.</li>
+</ul>
+
+<ol>
+<li>Append exactly one <code>{ role: 'tool', tool_call_id: call.id, content: String(post.replace ?? result) }</code>. Every <code>tool_call_id</code> must get a matching reply, or the next request is invalid.</li>
+</ol>
+
+<p>After the loop exhausts <code>maxSteps</code>:</p>
+
+<ul>
+<li>Print <code>ui.error('stopped: hit the &lt;maxSteps&gt;-step limit')</code>.</li>
+<li>Fire <code>StepLimit</code> with <code>{ steps: maxSteps, messages }</code>.</li>
+<li>Fire <code>SessionEnd</code> with <code>{ ok: false, reason: 'max_steps', steps: maxSteps, durationMs, messages }</code>.</li>
+<li>Return <code>{ ok: false, reason: 'max_steps', messages }</code>.</li>
+</ul>
+
+<h3>Entry guard</h3>
+
+<p>If <code>agent.js</code> is executed directly, print:</p>
+
+<figure class="code"><pre>agent.js is the loop, not the program.
+Run the CLI instead:  node src/cli.js --help</pre></figure>
+
+<p>Do not import <code>cli.js</code> from <code>agent.js</code>.</p>
+
+<h3>Nine hook call sites</h3>
+
+<p><code>agent.js</code> must contain exactly these <code>hook.run</code> moments, in this order:</p>
+
+<ol>
+<li><code>SessionStart</code> — before the first model call.</li>
+<li><code>UserPromptSubmit</code> — before the loop.</li>
+<li><code>PreModel</code></li>
+<li><code>PostModel</code></li>
+<li><code>PreToolUse</code></li>
+<li><code>PostToolUse</code></li>
+<li><code>Stop</code> — happy ending.</li>
+<li><code>StepLimit</code> — budget exhausted.</li>
+<li><code>SessionEnd</code> — every exit path, including hook blocks and request failures.</li>
+</ol>
+
+<p>Blocked <code>SessionStart</code> / <code>UserPromptSubmit</code> paths must:</p>
+
+<ul>
+<li>print <code>ui.error('stopped before the first request: ...')</code> / <code>ui.error('stopped: ...')</code>;</li>
+<li>fire <code>SessionEnd</code> with <code>ok: false, reason: 'blocked', steps: 0, durationMs, messages</code>;</li>
+<li>return <code>{ ok: false, reason: 'blocked_by_hook', messages }</code>.</li>
+</ul>
+
+<p>For a rewritten <code>UserPromptSubmit</code>, print <code>ui.dim('  UserPromptSubmit hook rewrote the task: &lt;task&gt;')</code> and replace <code>messages[taskIndex]</code>.</p>
+
+<p>On <code>PostModel</code>, a <code>PreModel</code> or <code>PostModel</code> hook cannot change the run, but may observe.</p>
+
+</section>
+
+<hr>
+
+<section id="s08">
+<h2><span class="num">08</span><span>7. <code>hooks.js</code> — lifecycle extension points</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🪝</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; hooks</p>
+    <p class="teach-title">Hooks are observability seams</p>
+    <p>Lifecycle hooks let the program observe or intervene without putting policy inside the loop. A hook can post a note, refuse to start, or annotate a tool call. The trace is the teaching tool: students can see exactly when each moment fires.</p>
+    <p class="teach-ask"><strong>Core question:</strong> Which hook would you use to log every model request, and which would you use to block a dangerous tool?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Log every request with <code>PreModel</code> or <code>PostModel</code>; both observe the model boundary. Block a dangerous action with <code>PreToolUse</code>, because that fires after the model has chosen a tool but before the dispatcher executes it.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> What does "first block wins" mean for hook handlers?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The first handler that returns a block stops the action. Later handlers for that moment are skipped, and the tool or run does not proceed. The first refusal is the decision, which keeps policy order predictable.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What can <code>PostToolUse</code> change that <code>PreToolUse</code> cannot?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p><code>PostToolUse</code> sees the result and may replace the observation text. <code>PreToolUse</code> sees the proposed call and may block it before execution. They run at different times for different purposes.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why inject hooks instead of importing a global hook registry?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Injected hooks are scoped to a run, easy to test, and free of cross-test global state. A global registry makes behaviour depend on registration order and hidden setup.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What is the danger of putting policy only in hooks?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Hooks are optional and can be missing or misconfigured. Safety must hold by default in the core. Hooks are for observation and extension, not the only enforcement layer.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export:</p>
+
+<figure class="code"><pre>HOOK_EVENTS, HOOK_NAMES, hookMeta, Hooks, hookDetail,
+traceHooks, printHookCatalogue, HOOK_SUMMARY</pre></figure>
+
+<h3>Contract</h3>
+
+<p>A hook is a function attached to a named moment. It receives <code>(payload, { event })</code>. Its return value:</p>
+
+<ul>
+<li><code>undefined</code> / nothing → observe only.</li>
+<li><code>{ note: 'text' }</code> → print <code>ui.hookNote(name, text)</code> and collect the note.</li>
+<li><code>{ task: 'new text' }</code> → only meaningful for <code>UserPromptSubmit</code>; rewrite the task.</li>
+<li><code>{ replace: 'text' }</code> → only meaningful for <code>PostToolUse</code>; replace the observation.</li>
+<li><code>{ block: true, reason }</code> → block the call/run. First block wins; later handlers are skipped.</li>
+<li>A thrown hook is reported (<code>hook &lt;name&gt; (&lt;id&gt;) threw: &lt;message&gt; - ignored</code>) and never fatal.</li>
+</ul>
+
+<p>Hooks do not call the model and do not run tools. They are pure payload functions.</p>
+
+<h3>The nine events</h3>
+
+<p>Each event metadata entry must contain: <code>name</code>, <code>icon</code>, <code>color</code> (a chalk mode name), <code>when</code>, <code>gets</code>, <code>may</code>, <code>why</code>. Use these exact names, icons, colours, and meanings:</p>
+
+<div class="table-wrap"><table>
+<tr><th>#</th><th>Name</th><th>Icon</th><th>Colour</th><th>When</th><th>Gets</th><th>May</th><th>Why</th></tr>
+<tr><td>1</td><td><code>SessionStart</code></td><td>🚀</td><td>cyan</td><td>once, before the first model call</td><td>task, workspace, config, log</td><td>refuse to start, or post a note</td><td>run exists but nothing sent; load rules, open transcript, check budget</td></tr>
+<tr><td>2</td><td><code>UserPromptSubmit</code></td><td>✍️</td><td>blue</td><td>once, as the task enters the loop</td><td>task</td><td>rewrite the task or block</td><td>last moment before the model sees the user's words</td></tr>
+<tr><td>3</td><td><code>PreModel</code></td><td>🧠</td><td>magenta</td><td>before every model call</td><td>step, maxSteps, messages, tools</td><td>observe</td><td>whole conversation about to go over the wire; context management starts here</td></tr>
+<tr><td>4</td><td><code>PostModel</code></td><td>💬</td><td>cyan</td><td>after every reply, before dispatch</td><td>step, message, finishReason</td><td>observe</td><td>text came back; useful for token counts, transcripts, loop detection</td></tr>
+<tr><td>5</td><td><code>PreToolUse</code></td><td>🛠️</td><td>yellowBright</td><td>before every tool call</td><td>name, args, step</td><td><strong>block</strong></td><td>the one hook that changes what the agent may do; permission layer</td></tr>
+<tr><td>6</td><td><code>PostToolUse</code></td><td>📦</td><td>green</td><td>after every tool call</td><td>name, result, ok, step</td><td><strong>replace observation</strong></td><td>redact a secret, cap output, annotate failure</td></tr>
+<tr><td>7</td><td><code>Stop</code></td><td>🏁</td><td>greenBright</td><td>model answered, loop ending</td><td>answer, steps, messages</td><td>observe</td><td>happy ending; summary, cost report, notification</td></tr>
+<tr><td>8</td><td><code>StepLimit</code></td><td>⏳</td><td>yellow</td><td>maxSteps reached without an answer</td><td>steps, messages</td><td>observe</td><td>failures need a lifecycle too; escalate/dump transcript</td></tr>
+<tr><td>9</td><td><code>SessionEnd</code></td><td>🔒</td><td>red</td><td>always, finished or not</td><td>ok, reason, steps, durationMs, messages</td><td>observe</td><td>finally block: cleanup, timing, audit logging</td></tr>
+</table></div>
+
+<p><code>DECIDING</code> is <code>SessionStart</code>, <code>UserPromptSubmit</code>, <code>PreToolUse</code>, <code>PostToolUse</code>.</p>
+
+<h3><code>Hooks</code> registry</h3>
+
+<figure class="code"><pre>const hooks = new Hooks({ log, catalog = false });
+hooks.on(name, fn, { id, once = false }) // returns id; unknown name throws
+hooks.off(name, id)                      // boolean
+hooks.count(name)
+hooks.has(name)
+hooks.attached()                         // event names with handlers, in HOOK_NAMES order
+await hooks.run(name, payload)</pre></figure>
+
+<ul>
+<li>Uniqueness/id: default id is <code>"&lt;event&gt;#&lt;n&gt;"</code>.</li>
+<li><code>on</code> throws on unknown event or non-function.</li>
+<li><code>run</code> returns:</li>
+</ul>
+
+<figure class="code"><pre>{
+  event, ran, blocked, reason,
+  task, replace, notes: [], errors: []
+}</pre></figure>
+
+<ul>
+<li>Run handlers in registration order. Remove <code>once</code> handlers before calling. Await async handlers.</li>
+<li>The first <code>block</code> sets <code>blocked</code> and <code>reason</code> and breaks.</li>
+<li>Do not use an EventEmitter: a hook that can change the run must be asked, not merely notified.</li>
+</ul>
+
+<h3>Tracing and catalogue</h3>
+
+<p><code>hookDetail(event, payload)</code> provides one useful line per event:</p>
+
+<ul>
+<li>SessionStart/UserPromptSubmit → task, 72 chars.</li>
+<li>PreModel → <code>step X/Y - N messages</code>.</li>
+<li>PostModel → <code>step X - &lt;finishReason|stop&gt;</code>.</li>
+<li>PreToolUse → <code>&lt;name&gt; &lt;args first 60&gt;</code>.</li>
+<li>PostToolUse → <code>&lt;name&gt; - &lt;first line of result, 60&gt;</code>.</li>
+<li>Stop → <code>&lt;steps&gt; step(s) - &lt;first line of answer, 56&gt;</code>.</li>
+<li>StepLimit → <code>stopped at N step(s)</code>.</li>
+<li>SessionEnd → <code>ok|failed (&lt;reason&gt;) in &lt;durationMs&gt;ms</code>.</li>
+</ul>
+
+<p><code>traceHooks({ log, detail = hookDetail, explain = true })</code> returns a <code>Hooks</code> with one tracer per event, with ids <code>trace:&lt;Event&gt;</code>. Each firing prints exactly one line:</p>
+
+<figure class="code"><pre>  &lt;icon&gt;  [HOOK:&lt;Name&gt;] &lt;when&gt; - &lt;detail&gt;</pre></figure>
+
+<p>Use <code>ui.hookTrace</code> so the tag has the event's colour. This is on by default in the CLI.</p>
+
+<p><code>printHookCatalogue({ log, hooks })</code> prints:</p>
+
+<ul>
+<li>a title: <code>lifecycle hooks - 9 moments in one run</code>;</li>
+<li>an explanation that hooks may observe, rewrite, or block;</li>
+<li>for each event: icon, padded name, when, <code>receives</code>, <code>may</code>, wrapped <code>why</code>, and <code>← attached</code> if live;</li>
+<li>the firing order:</li>
+</ul>
+
+<figure class="code"><pre>SessionStart
+UserPromptSubmit
+[ PreModel → PostModel → PreToolUse → PostToolUse ]
+Stop | StepLimit
+SessionEnd</pre></figure>
+
+<ul>
+<li>a closing sentence: 9 hooks, 4 can change the run, the rest only watch.</li>
+</ul>
+
+<p><code>HOOK_SUMMARY = { total: 9, deciding: 4, names: HOOK_NAMES }</code>.</p>
+
+</section>
+
+<hr>
+
+<section id="s09">
+<h2><span class="num">09</span><span>8. <code>memory.js</code> — long-term memory</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🧠</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; memory</p>
+    <p class="teach-title">Memory is a file you can read and diff</p>
+    <p>This is deliberately not a vector store. Memory is a bounded markdown file with entries that can be searched, refreshed, and audited. The prompt budget prevents memory from swallowing the context window. Durable notes should survive a restart without hiding state in an index.</p>
+    <p class="teach-ask"><strong>Core question:</strong> What deserves a durable memory entry, and what should the agent rediscover each run?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Store durable facts: project decisions, stable preferences, constraints that should survive a restart. Rediscover transient things such as directory listings, file contents, test output, and today's task details. Memory is for what is expensive to lose, not for everything the agent has seen.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Why not simply store everything the agent sees in memory?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Memory is for durable, reusable facts, not a transcript copy. Storing everything makes the file stale and expensive to inject, hides the current truth among old observations, and turns memory into an unbounded second context window.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> How does memory avoid duplicate entries?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Use a stable key, slug, or normalised comparison and refresh the existing entry instead of appending another. Deduplicate on write and keep the file bounded.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What happens when memory exceeds the prompt budget?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Select the most relevant or recent entries within the configured character or token budget, and state what was omitted. The file may hold more than the prompt injects.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why search or query memory instead of injecting everything?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Large memory bloats the context, distracts the model, and may exceed the window. Retrieval keeps the prompt focused on what the current task needs.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export <code>MEMORY_FILE</code>, <code>MEMORY_TAGS</code>, <code>parseMemory</code>, <code>formatEntry</code>, <code>Memory</code>.</p>
+
+<h3>Store format</h3>
+
+<p>Memory is a plain markdown file, default <code>src/memory.md</code>, outside the sandbox. The file <strong>is</strong> the store: no database, no index, no cache. Every method reads from disk, so hand edits are picked up immediately and cannot drift.</p>
+
+<p>One bullet per memory:</p>
+
+<figure class="code"><pre>- [fact] The sandbox demo script lives at demo/hello.js and is safe to regenerate with create_file. _(2026-10-28)_</pre></figure>
+
+<ul>
+<li>Tags: <code>fact</code>, <code>pref</code>, <code>fix</code>, <code>gotcha</code>; unknown tags become <code>fact</code>.</li>
+<li>The date is local <code>YYYY-MM-DD</code>.</li>
+<li>Parsing must accept <code>-</code> or <code>*</code>, optional date, and ignore all prose/headings/comments.</li>
+<li>Normalise whitespace so duplicate text with different spacing is the same memory.</li>
+</ul>
+
+<p>The initial <code>src/memory.md</code> must contain the header:</p>
+
+<figure class="code"><pre># memory
+
+Long-term notes this agent keeps between runs. One bullet per memory:
+`- [tag] text _(YYYY-MM-DD)_` where tag is fact | pref | fix | gotcha.
+
+This file IS the store - edit it by hand, delete a wrong line, or commit it.
+The agent reads a bounded slice at the start of a run and can search the rest
+with the `recall` tool.</pre></figure>
+
+<p>Seed it with a few plausible example memories. Useful initial entries include:</p>
+
+<figure class="code"><pre>- [pref] The user's name is Craig. _(2026-10-28)_
+- [pref] The user lives in Brighton, UK. _(2026-10-28)_
+- [gotcha] The run_command shell in this sandbox is Windows cmd.exe, so Unix tools like `cat`, `ls` may fail; use `type`, `dir` etc. instead. _(2026-10-28)_
+- [pref] The user is a Python developer. _(2026-10-28)_
+- [pref] The user has two dogs. _(2026-10-28)_</pre></figure>
+
+<h3>Defaults</h3>
+
+<figure class="code"><pre>{
+  maxEntries: 60,
+  maxEntryChars: 300,
+  rememberChars: 2000,
+  promptChars: 1200,
+  promptEntries: 12,
+}</pre></figure>
+
+<h3><code>Memory</code> API</h3>
+
+<figure class="code"><pre>new Memory({ root = process.cwd(), file = MEMORY_FILE, maxEntries, maxEntryChars,
+             promptChars, promptEntries, now = () =&gt; new Date() })
+memory.label      // path relative to root when possible, else absolute
+memory.exists
+memory.entries()  // always parse the current file
+memory.size
+memory.save(entries)
+memory.remember(text, { tag })
+memory.forget(match)
+memory.search(query, { limit = 20 })
+memory.digest({ entries, chars })
+memory.summary()</pre></figure>
+
+<h4><code>remember</code></h4>
+
+<ul>
+<li>Normalise and truncate the raw note to <code>rememberChars</code>.</li>
+<li>Empty → <code>{ ok: false, reason: 'nothing to remember - the note was empty', total }</code>.</li>
+<li>Truncate to <code>maxEntryChars</code>.</li>
+<li>Duplicate detection is case-insensitive on normalised text. On duplicate: refresh date and tag, save, return <code>{ ok: true, duplicate: true, entry, total }</code>. Do <strong>not</strong> append a second bullet.</li>
+<li>New entry: append, drop the oldest if over <code>maxEntries</code>, save, return <code>{ ok: true, entry, dropped, total }</code>.</li>
+</ul>
+
+<h4><code>forget</code></h4>
+
+<p>Delete every entry whose text contains the match (case-insensitive). Return <code>{ removed, total }</code>.</p>
+
+<h4><code>search</code></h4>
+
+<p>The lazy path behind <code>recall</code>. Split the query into words; every word must match the entry text or equal its tag. Empty query means all entries. Return newest first, then apply <code>limit</code> (minimum 1, default 20).</p>
+
+<h4><code>digest</code></h4>
+
+<p>The eager path injected into the system prompt.</p>
+
+<ul>
+<li>No entries or <code>chars &lt;= 0</code> → <code>''</code> (no header, no noise).</li>
+<li>Take the newest <code>promptEntries</code>, newest first.</li>
+<li>Add formatted lines while they fit <code>promptChars</code>.</li>
+<li>If any are hidden, append:</li>
+</ul>
+
+<figure class="code"><pre>(&lt;n&gt; older memory/memories not shown - search &lt;label&gt; with the recall tool)</pre></figure>
+
+<ul>
+<li>Return:</li>
+</ul>
+
+<figure class="code"><pre>## What you remember from earlier runs
+These notes live in &lt;label&gt; and were learned before this task started.
+Treat them as strong hints, not facts to trust blindly: the code may have moved on since.
+- [tag] text _(date)_
+...</pre></figure>
+
+<p>The digest is bounded twice (count and characters), so a growing file cannot quietly eat the context window.</p>
+
+<h4><code>summary</code></h4>
+
+<p>One line: <code>&lt;label&gt; (&lt;n&gt; memory/memories[, newest YYYY-MM-DD])</code>.</p>
+
+<p>Memory must be harness-owned. The agent reaches it only through <code>remember</code>/<code>recall</code>, never through <code>read_file</code>/<code>write_file</code> (those are fenced to the workspace), so it cannot be clobbered mid-run.</p>
+
+</section>
+
+<hr>
+
+<section id="s10">
+<h2><span class="num">10</span><span>9. <code>config.js</code> — environment resolution</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">⚙️</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; config</p>
+    <p class="teach-title">Resolve the world once, then pass it down</p>
+    <p>Configuration has a precedence order: explicit CLI overrides beat <code>.env</code>, which beats the shell, which beats defaults. Resolve it once at the edge and pass a plain object inward. If a tool reads environment variables directly, the system has a hidden second configuration path.</p>
+    <p class="teach-ask"><strong>Core question:</strong> Why is a config object easier to test than a module that reads <code>process.env</code> whenever it is called?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A config object can be injected, asserted, and varied in tests. A module that reads <code>process.env</code> at call time is global hidden state: two tests share it, production can differ silently, and changing one value can affect unrelated code paths.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Why normalise the model name during configuration?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Providers accept different names and slugs for the same model. Normalising once in config produces one canonical value, so tools and logs do not disagree and a bare name is not silently treated as a different model.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why search upward for <code>.env</code> instead of only checking the current directory?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Project commands often run from subdirectories. The nearest <code>.env</code> matches the project context. Search stops at the filesystem root, and an explicit path can override it.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why should tools not read <code>process.env</code> directly?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>That bypasses resolved configuration and creates hidden global state. Pass the needed values through the config or tool context so tests and production see the same source of truth.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What is the configuration fingerprint used for?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>It is a safe summary of effective settings, with no secrets, for logs and the startup banner. It helps reproduce and debug an environment without exposing keys.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export <code>findEnvFile</code>, <code>loadDotEnv</code>, <code>fingerprint</code>, <code>normalizeModel</code>, <code>loadConfig</code>.</p>
+
+<p><code>PROJECT_ROOT</code> is <code>path.resolve(import.meta.dirname, '..')</code>.</p>
+
+<h3><code>.env</code> discovery</h3>
+
+<p><code>findEnvFile(startDir = PROJECT_ROOT)</code> checks <code>startDir/.env</code>; if absent, walks up parent directories to the filesystem root. Nearest file wins.</p>
+
+<h3><code>.env</code> loading</h3>
+
+<p><code>loadDotEnv(file)</code> supports:</p>
+
+<ul>
+<li><code>KEY=VALUE</code>;</li>
+<li>optional <code>export </code> prefix;</li>
+<li><code>#</code> comment lines;</li>
+<li>quoted values (strip surrounding single/double quotes);</li>
+<li>blank values are ignored.</li>
+</ul>
+
+<p><strong>Precedence is deliberate:</strong> values in <code>.env</code> <strong>override</strong> inherited shell variables. A stale key exported in <code>~/.bashrc</code> must not silently outrank the project's key. Shell values are used only for names <code>.env</code> does not define.</p>
+
+<h3>Fingerprinting</h3>
+
+<p>Never log a key. <code>fingerprint(secret)</code>:</p>
+
+<ul>
+<li>unset → <code>not set</code>;</li>
+<li>length &lt;= 12 → all <code>*</code> plus <code> (&lt;n&gt; chars)</code>;</li>
+<li>otherwise <code>&lt;first 5&gt;...&lt;last 4&gt; (&lt;n&gt; chars)</code>.</li>
+</ul>
+
+<h3>Model normalisation</h3>
+
+<p>OpenRouter requires <code>vendor/model</code>. If the value already contains <code>/</code>, leave it.</p>
+
+<p>Accepted aliases:</p>
+
+<ul>
+<li>key: <code>OPENROUTER_API_KEY</code> or <code>OPENROUTER_KEY</code>;</li>
+<li>model: <code>OPENROUTER_MODEL</code> or <code>MODEL</code>.</li>
+</ul>
+
+<p>For bare names, use <code>OPENROUTER_PROVIDER_PREFIX</code> if set. Otherwise map prefixes:</p>
+
+<div class="table-wrap"><table>
+<tr><th>Prefix</th><th>Vendor</th></tr>
+<tr><td><code>deepseek</code></td><td>deepseek</td></tr>
+<tr><td><code>claude</code></td><td>anthropic</td></tr>
+<tr><td><code>gpt</code>, <code>o1</code>, <code>o3</code>, <code>o4</code>, <code>o5</code>, <code>o8</code>, <code>chatgpt</code></td><td>openai</td></tr>
+<tr><td><code>gemini</code></td><td>google</td></tr>
+<tr><td><code>grok</code></td><td>x-ai</td></tr>
+<tr><td><code>llama</code></td><td>meta-llama</td></tr>
+<tr><td><code>qwen</code></td><td>qwen</td></tr>
+<tr><td><code>mistral</code>, <code>mixtral</code></td><td>mistralai</td></tr>
+</table></div>
+
+<p>Return <code>{ model, normalised }</code>.</p>
+
+<h3><code>loadConfig(overrides = {}, { envFile, startDir })</code></h3>
+
+<p>Remember the inherited shell values before loading <code>.env</code>, then return:</p>
+
+<figure class="code"><pre>{
+  apiKey,
+  apiKeySource,           // 'override' | '.env' | 'environment' | 'not set'
+  apiKeyOverrodeShell,    // boolean: .env replaced a different inherited value
+  model,
+  modelSource,            // 'flag' | '.env' | 'environment' | 'not set'
+  modelOverrodeShell,
+  modelNormalised,
+  workspaceRoot,
+  commandPolicy,
+  maxSteps,
+  requestTimeoutMs,
+  memoryFile,
+  projectRoot,
+  memoryMaxEntries,
+  memoryPromptChars,
+  envFile,
+}</pre></figure>
+
+<p>Defaults:</p>
+
+<ul>
+<li>model: <code>deepseek/deepseek-v4.1-flash-1017</code></li>
+<li><code>CMD_POLICY</code>: <code>ask</code> (<code>allow</code> | <code>ask</code> | <code>deny</code>)</li>
+<li><code>MAX_STEPS</code>: 12</li>
+<li><code>REQUEST_TIMEOUT_MS</code>: 90000</li>
+<li><code>WORKSPACE_DIR</code>: <code>workspace</code> (resolved against project root)</li>
+<li><code>MEMORY_FILE</code>: <code>src/memory.md</code> (relative resolves against project root; absolute is honoured)</li>
+<li><code>MEMORY_MAX_ENTRIES</code>: 60</li>
+<li><code>MEMORY_PROMPT_CHARS</code>: 1200; an explicit <code>0</code> disables injection but leaves <code>recall</code> working.</li>
+</ul>
+
+<p>CLI overrides (<code>--model</code>, explicit <code>loadConfig</code> overrides) win over <code>.env</code>, which wins over the shell, which wins over defaults.</p>
+
+</section>
+
+<hr>
+
+<section id="s11">
+<h2><span class="num">11</span><span>10. <code>ui.js</code> — all terminal styling</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🎨</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; presentation</p>
+    <p class="teach-title">Keep terminal styling at the boundary</p>
+    <p>All colour and formatting live in <code>ui.js</code>. The agent loop should not know about chalk, ANSI codes, or banners. This keeps output testable, lets the UI change without touching logic, and makes the log readable when colour is disabled.</p>
+    <p class="teach-ask"><strong>Core question:</strong> What breaks when formatting code is scattered through the agent loop?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Formatting and logic become entangled. Tests must match colour codes and spacing, logs contain ANSI escapes when redirected, and the loop cannot run without the presentation layer. Keeping output in <code>ui.js</code> makes both layers easier to change.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> How does keeping presentation in one file make testing easier?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The UI layer can be tested or disabled independently, colour can be stripped for logs, and the loop can be tested without matching ANSI codes. It also prevents presentation changes from forcing changes in agent logic.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why should UI helpers own formatting rather than embed decisions?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Formatting should be deterministic and testable, separate from logic. Central helpers make output consistent, allow colour stripping, and keep decisions in the agent rather than the printer.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What should happen when stdout is not a TTY?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Disable colour and interactive prompts, emit plain text, and deny confirmation rather than hang. Redirected logs must remain readable and machine-friendly.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why format tool results in the UI instead of inside <code>tools.js</code>?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Tools produce data and result strings; the UI decides presentation. Mixing them makes tools depend on a terminal and harder to reuse or test.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export <code>ui</code> and <code>explainExit</code>. Use <code>chalk</code> only here.</p>
+
+<p>Every helper returns a string and writes nothing. This keeps <code>runTask</code> logger-injectable. Chalk handles TTY/<code>NO_COLOR</code>/<code>FORCE_COLOR</code> itself.</p>
+
+<h3>Palette/API</h3>
+
+<figure class="code"><pre>ui.title(text)                 // bold cyan
+ui.field(label)                // green label, white ›
+ui.kv(label, value)            // blue padded label + white value
+ui.step(step, max, width=40)   // blue "── step X/Y ────"
+ui.think(text)                 // "think:" cyan + text
+ui.tool(name, args)            // "tool →" white, name yellow, args white
+ui.result(text)                // green/red result line, with details below
+ui.forbidden(action, requested, reason)
+ui.pass(text) / ui.fail(text)
+ui.rule(label, width=44)       // bold magenta divider
+ui.hookTitle(label)
+ui.hookLine(icon, name, colour, when, live)
+ui.hookField(label, value, colour)
+ui.hookLive()
+ui.hookNote(name, text)
+ui.hookTrace(icon, name, colour, explanation, detail)
+ui.hookFlow(steps)
+ui.memory(text)
+ui.exitNote(code, meaning)
+ui.answerRule()                // bold green "── final answer ────"
+ui.answer(text)
+ui.warn / waiting / error / note / prompt / dim</pre></figure>
+
+<h3>Result rendering</h3>
+
+<p><code>ui.result(text)</code> classifies failure when the first line starts with <code>ERROR</code>, <code>DENIED</code>, or <code>FORBIDDEN</code>, or contains a non-zero <code>exit code N</code>.</p>
+
+<ul>
+<li>Success: green <code>result ← &lt;first line, 300 chars&gt;</code>; if <code>exit code 0</code> includes a <code>stdout:</code> block, add a dim second line <code>↳ stdout: &lt;first non-empty stdout line, 160 chars&gt;</code>.</li>
+<li>Failure: red <code>result ← &lt;first line&gt;</code>; if it contains <code>exit code N</code> with N ≠ 0, add dim <code>↳ exit N: &lt;meaning&gt;</code>.</li>
+</ul>
+
+<h3><code>explainExit(code)</code></h3>
+
+<p>Return plain-English meanings for at least:</p>
+
+<ul>
+<li>1: general failure; cause in stderr, fix it.</li>
+<li>2: usage error / bad arguments or missing file.</li>
+<li>3: Python argparse invalid arguments; bash bad builtin.</li>
+<li>126: not executable / permission denied.</li>
+<li>127: command not found / not on PATH.</li>
+<li>128: invalid exit status outside 0–255.</li>
+<li>129: SIGHUP.</li>
+<li>130: SIGINT / Ctrl-C.</li>
+<li>137: SIGKILL / OOM / timeout.</li>
+<li>143: SIGTERM / killed politely.</li>
+<li>9009: Windows cmd "not recognized as a program or batch file".</li>
+<li>129–164: killed by signal <code>n - 128</code>.</li>
+<li>Else: non-zero exit; stdout/stderr say why.</li>
+</ul>
+
+<p><code>ui.forbidden</code> must be conspicuous:</p>
+
+<figure class="code"><pre>  ⛔ FORBIDDEN SAVE ../escape.txt - path escapes the workspace: ../escape.txt</pre></figure>
+
+<p>Bold red <code>FORBIDDEN</code>, bold white action in caps, red requested path, dim reason. It must be findable in a long transcript and greppable in a log.</p>
+
+<p>Because chalk styles exact strings, model output containing colour-looking tags or Windows backslashes must print verbatim.</p>
+
+</section>
+
+<hr>
+
+<section id="s12">
+<h2><span class="num">12</span><span>11. <code>heartbeat.js</code> — liveness</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">💓</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; heartbeat</p>
+    <p class="teach-title">Liveness is not progress</p>
+    <p>A heartbeat says the process is still alive; it does not say the work is advancing. That distinction matters for watchdogs and for honest status messages. A heartbeat that keeps firing during a stuck model call is still useful information: it tells you where the stall is.</p>
+    <p class="teach-ask"><strong>Core question:</strong> What can a heartbeat prove, and what can it never prove?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A heartbeat proves the process is alive and still scheduling work. It cannot prove progress, correctness, or that a remote call is healthy. A heartbeat during a hung model request still tells you the process has not died, which is useful for locating the stall.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> What should an external watchdog do if the heartbeat stops?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A watchdog can treat the process as stalled or dead and restart or report it. The process itself may be unable to announce failure if its event loop is blocked, which is exactly why the heartbeat is external evidence, not a self-certification.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why update a timestamp instead of printing a heartbeat line every interval?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A timestamp is cheap, machine-readable, and does not flood the transcript. An external watchdog can poll it while the real output stays readable.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Can a heartbeat keep a hung operation alive?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>No. It reports liveness; it cannot unblock a hung call. Timeouts, cancellation, or an external watchdog must handle the actual stall.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Where should heartbeat logic live?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>At the process or CLI boundary, or injected into a long-running loop as a dependency. The core agent should not depend on a specific heartbeat transport.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export <code>heartbeat(log, everyMs = 5000)</code>.</p>
+
+<ul>
+<li>Record a start time.</li>
+<li>Every interval, print <code>ui.waiting('  … still waiting for the model (&lt;seconds&gt;s)')</code>.</li>
+<li>Return <code>{ stop }</code> which clears the interval.</li>
+<li>Call <code>timer.unref?.()</code> so the timer never holds the process open for an extra interval.</li>
+<li>The loop must stop the heartbeat on both the success and failure paths.</li>
+</ul>
+
+</section>
+
+<hr>
+
+<section id="s13">
+<h2><span class="num">13</span><span>12. <code>demo.js</code> — offline scripted model</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🎬</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; demo</p>
+    <p class="teach-title">A demo that reads its own results</p>
+    <p>The offline demo uses a scripted model so the guards can be shown without a network key. The scorecard reads the tool results back and reports what actually happened. That is stronger than claiming "it works": the demo produces evidence that the fence, the loop, and the memory behaved.</p>
+    <p class="teach-ask"><strong>Core question:</strong> What is the difference between a demo that runs successfully and a demo that proves a guard held?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A successful run only shows that a path executed. A proof checks the expected observation: the forbidden write returns <code>FORBIDDEN</code>, the file is absent on disk, the denied command does not run, and the scorecard records that result. Evidence beats a green checkmark.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Why is a scripted model preferable to mocking the HTTP layer in the demo?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A scripted model returns the exact assistant messages and tool calls the demo needs, so the loop and dispatcher are exercised directly. Mocking HTTP still forces the learner to reason through transport details that are irrelevant to the demo’s purpose.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What should the scripted model return first in the demo?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A tool call that exercises a teaching point, such as listing, writing, or running. Later calls react to those results and end with a final answer. The demo should show the loop, not just print text.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why should the demo deliberately attempt a forbidden write or denied command?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>It produces a real observation from the guard: a <code>FORBIDDEN</code> or <code>DENIED</code> result, no file or command side effect, and a scorecard entry. The demo proves the refusal path works instead of only showing successful actions.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What should the scorecard not claim?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>It should not claim full security, container isolation, or live-model correctness. It reports only what the scripted run observed, and its limits should be stated honestly.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Export <code>DEMO_TASK</code>, <code>DEMO_SCRIPT</code>, <code>demoChat</code>, <code>sandboxScorecard</code>.</p>
+
+<p><code>demoChat()</code> returns an async <code>chatFn</code> with the real shape <code>{ choices: [{ finish_reason, message }] }</code>. It walks <code>DEMO_SCRIPT</code> once, then repeats the final answer so the loop can exit via the no-tool-calls path. Tool calls are <code>{ id, type: 'function', function: { name, arguments: JSON.stringify(args) } }</code>.</p>
+
+<h3>Demo script: 14 tool steps, then a final answer</h3>
+
+<p>The demo must exercise ordinary work <strong>and</strong> every important guard. Use this sequence:</p>
+
+<ol>
+<li><strong>s1</strong> <code>list_files</code> <code>{ path: '.' }</code> — look first.</li>
+<li><strong>s2</strong> <code>create_file</code> <code>{ path: 'demo/hello.js', content: "const agent = 'tiny agent';\\nconsole.log(</code>Hello from a ${agent}<code>);\\n" }</code>.</li>
+<li><strong>s3</strong> <code>run_command</code> <code>{ command: 'node demo/hello.js' }</code>.</li>
+<li><strong>s4</strong> <code>edit_file</code> <code>{ path: 'demo/hello.js', old_string: 'Hello from a ${agent}', new_string: 'Hello from a ${agent}, edited by a tool call' }</code>.</li>
+<li><strong>s5</strong> <code>run_command</code> <code>{ command: 'node demo/hello.js' }</code>.</li>
+<li><strong>s6</strong> <code>write_file</code> <code>{ path: '../escape.txt', content: 'this file must never be written' }</code> → expect FORBIDDEN.</li>
+<li><strong>s7</strong> <code>read_file</code> <code>{ path: '../package.json', limit: 5 }</code> → allowed; reads are open.</li>
+<li><strong>s8</strong> <code>write_file</code> <code>{ path: '~/Desktop/pwned.txt', content: 'the sandbox should have stopped this' }</code> → expect FORBIDDEN.</li>
+<li><strong>s9</strong> <code>run_command</code> <code>{ command: 'copy demo/hello.js %USERPROFILE%\\Desktop\\hello-copy.js' }</code> → expect FORBIDDEN for the shell write target.</li>
+<li><strong>s10</strong> <code>run_command</code> <code>{ command: 'git push --force origin main' }</code> → expect hard DENIED.</li>
+<li><strong>s11</strong> <code>run_command</code> <code>{ command: 'node -e "console.log(\'OPENROUTER_API_KEY=\' + (process.env.OPENROUTER_API_KEY ?? \'absent\'))"' }</code> → expect key absent from child environment.</li>
+<li><strong>s12</strong> <code>run_command</code> <code>{ command: 'node -e "process.exit(1)"' }</code> → expect exit code 1.</li>
+<li><strong>s13</strong> <code>remember</code> <code>{ text: 'The sandbox demo script lives at demo/hello.js and is safe to regenerate with create_file.', tag: 'fact' }</code>.</li>
+<li><strong>s14</strong> <code>recall</code> <code>{ query: 'demo' }</code>.</li>
+</ol>
+
+<p>Then a final assistant message summarizing: created and ran <code>demo/hello.js</code>, edited and re-ran it with exit 0; the escape/home writes and shell copy were refused with FORBIDDEN before touching disk; the read one level up worked because reads are open; force push denied; child process could not see the API key; failing command returned exit 1 with an explanation; the scorecard is checkable.</p>
+
+<p>Every assistant step should have a short natural-language <code>content</code> before its tool call, so the console shows the model "thinking" in prose.</p>
+
+<p>The demo's <code>maxSteps</code> is <code>DEMO_SCRIPT.length + 1</code> (15), enough for all steps plus the final answer.</p>
+
+<h3>Scorecard</h3>
+
+<p><code>DEMO_CHECKS</code> must verify at least:</p>
+
+<div class="table-wrap"><table>
+<tr><th>Call</th><th>Check</th></tr>
+<tr><td>s6</td><td><code>/^FORBIDDEN: SAVE \.\.\/escape\.txt/</code></td></tr>
+<tr><td>s7</td><td><code>/^\.\.\/package\.json \(\d+ lines\)/</code></td></tr>
+<tr><td>s8</td><td><code>/^FORBIDDEN: SAVE ~\/Desktop\/pwned\.txt/</code></td></tr>
+<tr><td>s9</td><td><code>/^FORBIDDEN: COMMAND COPY /</code></td></tr>
+<tr><td>s10</td><td><code>/^DENIED: blocked by policy/</code></td></tr>
+<tr><td>s11</td><td><code>/OPENROUTER_API_KEY=absent/</code>, display <code>/OPENROUTER_API_KEY=\S+/</code></td></tr>
+<tr><td>s12</td><td><code>/^exit code 1\b/</code></td></tr>
+</table></div>
+
+<p><code>sandboxScorecard(messages)</code> maps <code>tool_call_id</code> → tool content, runs each regex, and returns <code>{ rows: [{ ok, label, seen }], passed, total }</code>. <code>seen</code> is the matched evidence or the first line, max 120 chars.</p>
+
+<p>The scorecard is printed after a demo run. If any check fails, print the failing rows in red and set <code>process.exitCode = 1</code>.</p>
+
+</section>
+
+<hr>
+
+<section id="s14">
+<h2><span class="num">14</span><span>13. <code>cli.js</code> — the program around the loop</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🖥️</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; the CLI</p>
+    <p class="teach-title">The CLI is the program; the agent is the library</p>
+    <p>Flags, sessions, exit codes, TTY detection, and one-shot versus interactive mode are process concerns. They belong in <code>cli.js</code>, not in the loop. Keeping the loop unaware of flags is what makes it reusable and testable.</p>
+    <p class="teach-ask"><strong>Core question:</strong> Where should <code>/new</code> and <code>/quit</code> live, and why not inside <code>agent.js</code>?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p><code>/new</code> and <code>/quit</code> belong in <code>cli.js</code> because they control the session: clearing conversation history, preserving workspace and memory, and ending the process. <code>agent.js</code> should run one task and remain unaware of interactive commands.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Why distinguish a one-shot task from an interactive session?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>They have different lifecycles. A one-shot run accepts a task, executes it, and exits. A session keeps history, reads commands such as <code>/new</code> and <code>/quit</code>, and preserves workspace and memory across tasks. Mixing them makes exit codes and tests confusing.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why does no TTY mean deny for confirmation?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>There is no human to answer. Defaulting to allow would be unsafe for an unattended process. Deny is conservative, predictable, and works in CI.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What should Ctrl+C do in an interactive session?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Cancel the current task or command gracefully, preserve the session where sensible, and print a clear status. It should not corrupt memory or the workspace or exit silently.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why is <code>cli.js</code> responsible for exit codes?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Exit codes are part of the process contract. The agent returns a result object; the CLI maps success, failure, usage, and signals to codes and owns streams and terminal behaviour.</p></div>
+</details>
+  </div>
+</div>
+
+<p>This is the only file that knows about flags, the banner, prompts, sessions, <code>.env</code> presence, and exit codes.</p>
+
+<h3><code>makeConfirm()</code></h3>
+
+<p>Returns <code>async (command) =&gt; 'allow' | 'deny'</code>.</p>
+
+<ul>
+<li>If <code>process.stdin.isTTY</code> is false → <code>'deny'</code>. An unanswerable prompt must never become an approval.</li>
+<li>Otherwise use <code>readline</code> to ask:</li>
+</ul>
+
+<figure class="code"><pre>  run? &lt;command&gt; [y/N]</pre></figure>
+
+<ul>
+<li>Only <code>/^y(es)?$/i</code> on the trimmed answer is allow; everything else (including empty) is deny.</li>
+</ul>
+
+<h3><code>askTask({ input, output })</code></h3>
+
+<ul>
+<li>Create <code>readline</code> with <code>terminal: Boolean(output.isTTY)</code>.</li>
+<li><code>rl.on('SIGINT', () =&gt; rl.close())</code>.</li>
+<li>Prompt: <code>  &lt;green task&gt; &lt;white ›&gt;</code>.</li>
+<li>Use <code>for await (const raw of rl)</code> rather than <code>rl.question()</code>, so multiple lines arriving in one chunk are queued, not dropped.</li>
+<li>Trim. Blank lines print <code>nothing entered - type a task, or press Ctrl-C to quit</code> and prompt again.</li>
+<li>Return <code>null</code> on closed input / Ctrl-C.</li>
+<li>Always close the interface in <code>finally</code>.</li>
+</ul>
+
+<h3>Argument parsing</h3>
+
+<p>Flags:</p>
+
+<figure class="code"><pre>--demo
+--yes | -y
+--model &lt;slug&gt;
+--max-steps &lt;n&gt;
+--allow-commands
+--hooks
+--memory
+--no-memory
+--trace-hooks
+--no-hooks
+--help | -h</pre></figure>
+
+<ul>
+<li>All non-flags are joined with spaces into <code>task</code>, so quoting is optional.</li>
+<li>Unknown flags are not treated as errors; they become task text.</li>
+<li><code>--max-steps</code> uses <code>Number(...)</code>.</li>
+</ul>
+
+<h3>Help/usage</h3>
+
+<p>Print a concise usage covering:</p>
+
+<figure class="code"><pre>node src/cli.js                          interactive session
+node src/cli.js "task"                   one shot
+node src/cli.js --demo                   scripted run, no network
+node src/cli.js "..." --yes              auto-approve commands
+node src/cli.js "..." --allow-commands
+node src/cli.js "..." --max-steps 6
+node src/cli.js "..." --model anthropic/claude-sonnet-4.5
+node src/cli.js --hooks
+node src/cli.js "..." --no-hooks
+node src/cli.js --memory
+node src/cli.js "..." --no-memory</pre></figure>
+
+<p>List environment variables:</p>
+
+<figure class="code"><pre>OPENROUTER_API_KEY, OPENROUTER_MODEL, CMD_POLICY=allow|ask|deny, MAX_STEPS,
+REQUEST_TIMEOUT_MS, MEMORY_FILE=src/memory.md, MEMORY_MAX_ENTRIES=60,
+MEMORY_PROMPT_CHARS=1200</pre></figure>
+
+<p>State that files are confined to <code>./workspace</code>, memory lives in <code>./src/memory.md</code>, and <code>npm test</code> is the offline suite. Explain session commands (<code>/new</code>, <code>/quit</code>) and exit codes 0/1/2/3.</p>
+
+<h3>Side doors</h3>
+
+<ul>
+<li><code>--hooks</code>: print the hook catalogue and a hint to attach handlers with <code>hooks.on(...)</code>; exit 0. Needs no config or key.</li>
+<li><code>--memory</code>: load config and memory, then print:</li>
+<li>title;</li>
+<li><code>file</code>, <code>exists</code>, <code>entries N (cap X, 300 chars each)</code>;</li>
+<li><code>injected</code> — either disabled by <code>MEMORY_PROMPT_CHARS=0</code>, or <code>&lt;n&gt; newest, &lt;digest.length&gt; of &lt;budget&gt; chars</code>;</li>
+<li>the digest under <code>what the system prompt gets</code>;</li>
+<li>the whole raw file under <code>the whole file - &lt;label&gt;</code>;</li>
+<li>a note about <code>remember</code>/<code>recall</code>, hand editing, and <code>--no-memory</code>.</li>
+</ul>
+
+<p>  Exit 0.</p>
+
+<h3>Banner</h3>
+
+<p>Print before step 1:</p>
+
+<figure class="code"><pre>min-coding-js
+workspace : &lt;root&gt;
+sandbox   : save, edit, delete - only inside &lt;root&gt; (reads: anywhere)
+model     : &lt;model&gt; (from &lt;source&gt;) | scripted (no network)
+key       : &lt;fingerprint&gt; from &lt;source&gt; | - in demo
+env file  : &lt;path&gt; | &lt;path&gt; (missing)
+commands  : allow | ask | deny
+timeout   : &lt;seconds&gt;s per model call
+tools     : &lt;comma-separated TOOL_NAMES&gt;
+memory    : &lt;summary&gt; | off (--no-memory)
+hooks     : on: each of 9 prints as [HOOK:name] ... | 9 available, not printed (--no-hooks)</pre></figure>
+
+<p>Warnings:</p>
+
+<ul>
+<li>live mode and model lacks <code>/</code> → <code>warning: model "&lt;model&gt;" is not an OpenRouter slug (needs vendor/model). Set OPENROUTER_MODEL in .env.</code></li>
+<li>config normalised a bare name → a dim note with the final slug.</li>
+</ul>
+
+<h3>Wiring</h3>
+
+<ol>
+<li>Parse args; <code>--help</code> prints usage and returns.</li>
+<li><code>--hooks</code> prints catalogue and returns.</li>
+<li><code>loadConfig({ model: opts.model })</code>.</li>
+<li><code>new Workspace(config.workspaceRoot)</code>.</li>
+<li><code>new Sandbox({ workspace, log: console.log })</code> — one fence per run.</li>
+<li><code>new Memory({ root: config.projectRoot, file: config.memoryFile, maxEntries, promptChars })</code>.</li>
+<li><code>--memory</code> prints and returns.</li>
+<li>Command policy: <code>opts.yes || opts.demo ? 'allow' : (opts.policy ?? config.commandPolicy)</code>.</li>
+<li>Print banner.</li>
+<li><code>chatFn = opts.demo ? demoChat() : (args) =&gt; chat({ apiKey, model, timeoutMs, ...args })</code>.</li>
+<li>Live mode with no key: print <code>OPENROUTER_API_KEY is not set. Copy .env.example to .env, or run --demo.</code>, set exit code 1, return.</li>
+<li>Decide one-shot versus session:</li>
+</ol>
+
+<ul>
+<li>task on command line, or demo → one task (<code>DEMO_TASK</code> for demo);</li>
+<li>otherwise session.</li>
+</ul>
+
+<ol>
+<li>Print <code>task      : &lt;task&gt;</code> before a one-shot/demo.</li>
+<li>Hooks: <code>opts.noHooks ? null : traceHooks({ log: console.log })</code>. When tracing:</li>
+</ol>
+
+<ul>
+<li>print <code>&lt;n&gt; lifecycle hooks attached - each prints as it fires, e.g.</code>;</li>
+<li>print one example <code>ui.hookTrace('🛠️', 'PreToolUse', 'yellowBright', 'before every tool call', 'run_command {"command":"ls"}')</code>;</li>
+<li>print <code>(--no-hooks hides these; --hooks explains them)</code>.</li>
+</ul>
+
+<ol>
+<li>Build <code>base</code>:</li>
+</ol>
+
+<figure class="code"><pre>{
+  workspace, sandbox, commandPolicy,
+  maxSteps: opts.maxSteps ?? (opts.demo ? DEMO_SCRIPT.length + 1 : config.maxSteps),
+  chatFn,
+  confirm: makeConfirm(),
+  hooks,
+  memory: opts.noMemory ? null : memory,
+}</pre></figure>
+
+<ol>
+<li>One-shot: <code>runTask({ ...base, task })</code>; set exit code; print sandbox scorecard for demo; return.</li>
+<li>No task and stdin not a TTY: print <code>stopped: cannot ask for a task because stdin is not a terminal.</code>, a dim hint to pass a task argument, set exit code 2, return.</li>
+<li>Session: <code>runSession({ base, opts })</code>.</li>
+</ol>
+
+<h3>Sessions</h3>
+
+<p>Export <code>MAX_HISTORY = 24</code>, <code>interpretCommand</code>, <code>trimHistory</code>, <code>runSession</code>.</p>
+
+<h4>Commands</h4>
+
+<ul>
+<li><code>/quit</code> or <code>/exit</code> → quit.</li>
+<li><code>/new</code> → new conversation (clear history; workspace and memory untouched).</li>
+<li>Anything else → task.</li>
+</ul>
+
+<h4><code>trimHistory(messages, max = MAX_HISTORY)</code></h4>
+
+<ul>
+<li>Drop system messages.</li>
+<li>Keep at most the last <code>max</code> messages.</li>
+<li>Move <code>start</code> forward until it lands on a <code>user</code> message. Providers reject a history that starts with a <code>tool</code> result or ends with an unanswered assistant <code>tool_calls</code>.</li>
+<li>If no safe boundary exists, return <code>[]</code>.</li>
+</ul>
+
+<h4><code>runSession</code></h4>
+
+<ul>
+<li>Print <code>interactive session - type a task below (/new clears, /quit exits)</code>.</li>
+<li>Loop:</li>
+<li><code>askTask()</code>; <code>null</code> → break.</li>
+<li>Handle command; <code>/new</code> clears history and says the workspace and memory are untouched.</li>
+<li>Print <code>task      : &lt;line&gt;</code>.</li>
+<li><code>runTask({ ...base, task: line, history })</code>.</li>
+<li><code>history = trimHistory(result.messages)</code>.</li>
+<li>For demo, print sandbox scorecard.</li>
+<li>Print a summary:</li>
+<li>divider <code>task finished</code>;</li>
+<li>green pass <code>&lt;answer in N step(s)&gt;</code> or red fail <code>&lt;stopped (&lt;reason&gt;)&gt;</code>;</li>
+<li>note: success → <code>&lt;n&gt; message(s) carried into the next task</code>; max steps → <code>raise it with --max-steps N, or /new for a fresh conversation</code>; otherwise → <code>check the red line above - the session is still alive, so you can try again</code>;</li>
+<li>hint: <code>type another task, /new to clear the conversation, /quit to exit</code>.</li>
+<li>On exit: <code>session over - N task(s) run. The workspace and src/memory.md keep everything.</code></li>
+<li>Every task gets a fresh step budget because every task is a fresh <code>runTask</code> call. History resets the step counter by construction.</li>
+</ul>
+
+<h3>Exit codes</h3>
+
+<div class="table-wrap"><table>
+<tr><th>Code</th><th>Meaning</th></tr>
+<tr><td>0</td><td>Finished / model gave a final answer / session ended normally</td></tr>
+<tr><td>1</td><td>Model request failed (network/timeout/key/model) or a fatal error; nothing retried</td></tr>
+<tr><td>2</td><td>No task and stdin is not a terminal, so the prompt cannot be shown</td></tr>
+<tr><td>3</td><td>Step limit reached before the model answered</td></tr>
+</table></div>
+
+<p><code>taskExitCode(result)</code>:</p>
+
+<ul>
+<li><code>!ok &amp;&amp; reason === 'request_failed'</code> → 1;</li>
+<li><code>!ok &amp;&amp; reason === 'max_steps'</code> → 3;</li>
+<li>otherwise 0.</li>
+</ul>
+
+<p><code>main()</code> catches fatal errors, prints <code>fatal: &lt;stack&gt;</code>, sets exit code 1. If the final code is non-zero, print a blank line and <code>ui.exitNote(code, meaning)</code> with plain-English meanings:</p>
+
+<ul>
+<li>1: run did not finish; a model request failed or a fatal error was caught; the red line above says which, nothing retried.</li>
+<li>2: no task given; nothing ran.</li>
+<li>3: step limit reached; raise <code>--max-steps</code>/<code>MAX_STEPS</code> or give a smaller task.</li>
+</ul>
+
+<p>Only call <code>main()</code> when <code>cli.js</code> is the entry file (<code>import.meta.url === pathToFileURL(process.argv[1]).href</code>).</p>
+
+</section>
+
+<hr>
+
+<section id="s15">
+<h2><span class="num">15</span><span>14. Testing requirements</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🧪</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; testing</p>
+    <p class="teach-title">Test the seams, not just the output</p>
+    <p>The design is testable because the dependencies are injectable: model, clock, logger, confirmation function, hooks, memory, and workspace. A fake model can drive the loop deterministically. If a feature cannot be tested offline, the boundary is probably in the wrong place.</p>
+    <p class="teach-ask"><strong>Core question:</strong> Which dependency would you inject first to test the loop without a real model?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Inject the model first. A fake model can return a scripted tool call followed by a final answer, which drives the loop deterministically without a network key. The clock, logger, confirmation function, hooks, memory, and workspace can then be added as needed.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> What is a fake model, and what should it record?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A fake model is a function with the same interface as the real chat call, returning canned responses. It should record the messages it received and the order of calls so tests can assert what the loop sent and when.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What should be tested with a fake model versus a real temporary filesystem?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Use a fake model for loop protocol, ordering, and termination. Use real temporary directories for workspace resolution, sandbox writes, and memory persistence. Integration tests combine both at the boundaries.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why must the write fence and command policy have negative tests?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Refusals are the safety contract. Tests must prove that an outside write returns <code>FORBIDDEN</code> without touching disk, that a hard-denied command never runs, and that a denied confirmation has no side effect.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Which dependencies must be injected to make the agent loop deterministic?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>At minimum the model, clock, logger, confirmation function, hooks, memory, and workspace. Temporary directories and fixed inputs remove filesystem and timing variation; no test should depend on network access or shared global state.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Use <code>node:test</code> and <code>node:assert/strict</code>. Tests must be offline: no API key, no network, no live model. Use temporary directories, fake <code>chatFn</code>s, injected clocks, and fake loggers.</p>
+
+<p>Provide suites covering at least:</p>
+
+<h3><code>workspace.test.js</code></h3>
+
+<ul>
+<li>Resolves legitimate relative paths; <code>rel</code> is correct.</li>
+<li>Refuses every escape shape: <code>../</code>, <code>..\\</code>, absolute, drive-relative, UNC, <code>~</code>, <code>%USERPROFILE%</code>, <code>${HOME}</code>, home/system first segments.</li>
+<li>Allows reads outside the workspace.</li>
+<li>A symlinked folder cannot smuggle a write outside the root.</li>
+</ul>
+
+<h3><code>sandbox.test.js</code></h3>
+
+<ul>
+<li>Default sandbox is <code>workspace/</code> next to the code.</li>
+<li><code>save</code>, <code>edit</code>, <code>remove</code> work inside.</li>
+<li>A refused write prints exactly one FORBIDDEN line, increments refusals, touches nothing.</li>
+<li>FORBIDDEN is bold red capitals when colour is on.</li>
+<li>Every escape shape is refused for all three actions.</li>
+<li>Deleting the root is refused; deleting outside leaves the file intact.</li>
+<li>Unknown action throws a programming <code>TypeError</code>, not a refusal.</li>
+<li>The tool layer turns a refusal into a <code>FORBIDDEN:</code> observation.</li>
+</ul>
+
+<h3><code>tools.test.js</code></h3>
+
+<ul>
+<li><code>create_file</code> writes and refuses to clobber.</li>
+<li><code>write_file</code> overwrites.</li>
+<li><code>edit_file</code> fails on missing and ambiguous snippets.</li>
+<li><code>edit_file</code> treats <code>$1</code>/<code>$&amp;</code> literally.</li>
+<li><code>read_file</code> numbers lines and reports total.</li>
+<li><code>list_files</code> shows folders/files with counts.</li>
+<li><code>run_command</code> returns exit code, stdout, stderr.</li>
+<li><code>run_command</code> obeys deny/ask-denied/hard-blocked policies.</li>
+<li>File tools cannot be talked out of the workspace.</li>
+<li>Reads outside succeed.</li>
+<li>Child gets the allow-list, not the harness environment.</li>
+<li><code>safeEnv</code> keeps only allow-listed names.</li>
+<li>Bad arguments come back as text, not crashes.</li>
+</ul>
+
+<h3><code>shell-sandbox.test.js</code></h3>
+
+<ul>
+<li><code>shellWriteTargets</code> finds redirect, copy/move destination, delete operands, downloader output, PowerShell targets.</li>
+<li>A command writing inside the sandbox is allowed.</li>
+<li>A shell copy to the Desktop is refused before it runs.</li>
+<li>A redirect outside is refused.</li>
+<li>Quoted arguments with spaces stay one token.</li>
+</ul>
+
+<h3><code>agent.test.js</code></h3>
+
+<ul>
+<li>The loop runs tools then stops on a plain answer.</li>
+<li>A failing tool result is fed back so the model can correct itself.</li>
+<li>The loop is capped at <code>maxSteps</code>.</li>
+<li>A truncated reply is not dispatched; the model is asked to continue smaller.</li>
+<li>A slow model call prints heartbeat lines.</li>
+<li>The scripted demo tries every guard, and every guard holds.</li>
+</ul>
+
+<h3><code>hooks.test.js</code></h3>
+
+<ul>
+<li>Every hook has icon, colour, when, gets, may, why.</li>
+<li>Catalogue prints every hook with icon/colour/description.</li>
+<li>Catalogue marks attached hooks.</li>
+<li>Unknown hook name throws on <code>on</code> and on <code>run</code>.</li>
+<li>Handlers run in order; first block wins.</li>
+<li>A throwing hook is reported and ignored.</li>
+<li>Notes print; <code>once</code> handlers detach.</li>
+<li><code>off</code> by id works.</li>
+<li>Trace prints <code>[HOOK:Name]</code> and description; <code>explain: false</code> prints tag + detail only.</li>
+<li><code>hookDetail</code> gives every event something useful.</li>
+<li><code>PreToolUse</code> can block and the model sees a DENIED observation.</li>
+<li><code>PostToolUse</code> can rewrite the observation.</li>
+<li><code>UserPromptSubmit</code> can rewrite the task.</li>
+<li><code>SessionStart</code> can refuse to start without any model request.</li>
+<li>A live run fires the whole lifecycle; <code>SessionEnd</code> is always last.</li>
+<li>Step limit fires <code>StepLimit</code>, not <code>Stop</code>, before <code>SessionEnd</code>.</li>
+<li>No hooks behaves exactly as before.</li>
+</ul>
+
+<h3><code>memory.test.js</code></h3>
+
+<ul>
+<li>Write and read back.</li>
+<li>Survives a new <code>Memory</code> instance / process.</li>
+<li>Duplicate refreshes date instead of appending.</li>
+<li><code>maxEntries</code> drops oldest.</li>
+<li>Long memory truncated to per-entry cap.</li>
+<li>Empty/whitespace note refused.</li>
+<li>Digest bounded, newest first, states hidden count.</li>
+<li>Empty digest is empty.</li>
+<li>Search is AND, newest first, searches whole file.</li>
+<li><code>forget</code> removes matches.</li>
+<li>Prose and hand-written bullets parse.</li>
+<li>Hand edits picked up immediately (no cache).</li>
+<li>Label relative to root; absolute file honoured.</li>
+<li><code>remember</code> and <code>recall</code> work through the tools.</li>
+<li>No memory store returns an error instead of throwing.</li>
+<li><code>formatEntry</code> round-trips through <code>parseMemory</code>.</li>
+</ul>
+
+<h3><code>prompt.test.js</code></h3>
+
+<ul>
+<li>Rules name every tool.</li>
+<li>No memory → rules only.</li>
+<li>Memory appended; log receives exactly one memory line.</li>
+<li>Empty/disabled store adds and logs nothing.</li>
+</ul>
+
+<h3><code>llm.test.js</code></h3>
+
+<ul>
+<li>A stalled request times out instead of hanging.</li>
+<li>Provider error includes status and body.</li>
+<li><code>sanitizeAssistant</code> drops reasoning and rebuilds the message.</li>
+</ul>
+
+<h3><code>config.test.js</code></h3>
+
+<ul>
+<li><code>.env</code> beats a stale shell key.</li>
+<li>Shell used for names <code>.env</code> does not define.</li>
+<li>Missing <code>.env</code> is not an error.</li>
+<li>Quotes, <code>export</code>, and blank values handled.</li>
+<li><code>.env</code> is found in the project root when the package has none.</li>
+<li>Nearest <code>.env</code> wins.</li>
+<li>Fingerprint never exposes the whole key.</li>
+<li>Bare model names normalised to vendor/model.</li>
+<li>Config normalises <code>.env</code> model.</li>
+<li><code>.env MODEL=</code> honoured and beats inherited <code>OPENROUTER_MODEL</code>.</li>
+<li>Key from <code>.env</code> used and override reported.</li>
+<li>Identical values not reported as override.</li>
+</ul>
+
+<h3><code>session.test.js</code></h3>
+
+<ul>
+<li><code>/quit</code>, <code>/exit</code>, <code>/new</code> commands; anything else a task.</li>
+<li>History trimmed to cap and always starts on a user message.</li>
+<li>Follow-up task sees previous conversation but a fresh system prompt.</li>
+<li>Every task starts its own step budget.</li>
+<li>A hook rewriting the task rewrites the new task, not history.</li>
+</ul>
+
+<h3><code>ui.test.js</code></h3>
+
+<ul>
+<li>Styles become ANSI but read back as original text.</li>
+<li>Text that looks like a colour tag prints verbatim.</li>
+<li>Backslashes in paths/JSON untouched.</li>
+<li>Failed results red; clean results not.</li>
+<li>Exit code 1 gets a description.</li>
+<li>Successful command shows first stdout line.</li>
+<li>Every helper returns a string.</li>
+</ul>
+
+<h3><code>input.test.js</code></h3>
+
+<ul>
+<li>Input field returns trimmed task.</li>
+<li>Blank line re-asks.</li>
+<li>Closed input returns <code>null</code>.</li>
+</ul>
+
+</section>
+
+<hr>
+
+<section id="s16">
+<h2><span class="num">16</span><span>15. README and teaching material</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">📚</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; documentation</p>
+    <p class="teach-title">Docs are part of the product</p>
+    <p>A teaching project has two outputs: working code and a path for a newcomer to understand it. The README should explain the reading order, the demo should run quickly, and the build prompt should be complete enough to reproduce the design. Documentation is not decoration.</p>
+    <p class="teach-ask"><strong>Core question:</strong> What must the repository contain for the offline demo to run without external services?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Source files, a working package script, the scripted model and demo data, and a command that needs no API key or network. The demo must create its own workspace state and clean up or isolate it safely.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> What operational information must the README provide to reproduce the demo and a live run?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The install and run commands, the offline demo command, the environment variables required for live mode, where output and workspace files appear, and the known limitations of the sandbox.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> How should the build prompt relate to the implementation so the two stay accurate?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The prompt should specify the same file boundaries, exported contracts, and observable behaviours as the code. When the implementation changes, the prompt must change with it; otherwise it becomes an inaccurate second specification.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Which boundaries must an architecture diagram make explicit?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The loop and dispatcher, the workspace write fence, the sandbox boundary, hook call sites, the memory file, and the separation between CLI, UI, and agent. The diagram should show direction of control and where policy is enforced.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What limitations must the README state about the workspace fence and sandbox?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>That the fence is a path policy, not a container; that command scanning is best-effort and bypassable; that reads are deliberately open; and that strong isolation requires an external boundary such as Docker or a kernel sandbox.</p></div>
+</details>
+  </div>
+</div>
+
+<p>Write a README that a meetup attendee can follow:</p>
+
+<ul>
+<li>What the project is, in one paragraph.</li>
+<li>Quick start: <code>npm install</code>, copy <code>.env.example</code> to <code>.env</code>, set <code>OPENROUTER_API_KEY</code>, <code>npm start</code>, <code>npm run demo</code>.</li>
+<li>The loop diagram and the seven beats.</li>
+<li>File-by-file tour, with <code>agent.js</code> first.</li>
+<li>The eight tools and what each is for.</li>
+<li>The read/write asymmetry and the shell limitation.</li>
+<li>The nine lifecycle hooks, with a table.</li>
+<li>Long-term memory: file format, eager digest vs lazy recall, <code>--memory</code>.</li>
+<li>Sessions and history trimming.</li>
+<li>Configuration table with defaults and precedence.</li>
+<li>Exit codes.</li>
+<li>Safety model: workspace fence, hard denies, environment allow-list, command policy, and an explicit "this is not a container" statement.</li>
+<li>Examples, including a Desktop write that should end in FORBIDDEN, and a prompt that should end with a <code>remember</code> call.</li>
+</ul>
+
+<p><code>demo_prompt.md</code> should contain copy-pasteable prompts, including:</p>
+
+<figure class="code"><pre>create hello.js that prints today's date and time, run it and save to current folder with a random number between 100 and 999 as hellloNNN.js where NNN is that random number printing out in console location of the file and use that for the saved output as hello-output-NNN.txt</pre></figure>
+
+<figure class="code"><pre>save a file test.txt that contains 'HELLO WORLD' and save to the desktop</pre></figure>
+
+<p>The second must end in <code>FORBIDDEN: SAVE ... - the Desktop is outside the workspace</code>.</p>
+
+<p>Also include:</p>
+
+<figure class="code"><pre>npm run demo
+node src/cli.js --memory
+node src/cli.js --demo</pre></figure>
+
+<p>and:</p>
+
+<figure class="code"><pre>work out how this package is tested, run the tests, and remember the command and the Node version it needs so you do not have to rediscover them next time</pre></figure>
+
+</section>
+
+<hr>
+
+<section id="s17">
+<h2><span class="num">17</span><span>16. Acceptance criteria</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">✅</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; acceptance</p>
+    <p class="teach-title">Definition of done is behavioural</p>
+    <p>Acceptance criteria should describe observable outcomes: a refusal prints one line, a write outside the workspace returns an observation, a session survives a restart. Features are not done because they exist; they are done when the promised behaviour can be checked.</p>
+    <p class="teach-ask"><strong>Core question:</strong> Which acceptance criterion would catch a regression in the write fence?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The clearest criterion is the write-fence test: attempt a write outside <code>workspace/</code>, confirm one <code>FORBIDDEN</code> line and a returned observation, and verify that no file was created. That catches regressions in path resolution, policy, and tool behaviour together.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Why should acceptance criteria be observable at the CLI level?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The CLI is the user-facing contract. Observable criteria catch integration failures that unit tests can miss, and they can be checked without knowing internal function names. If the behaviour cannot be observed from outside, it is hard to call it done.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What exit code should a run return when it hits the step limit, and why?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The specified step-limit exit code should be distinct from success, usage errors, and missing-key failures. It lets scripts and tests distinguish "the agent stopped because it ran out of budget" from other failure modes.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What observable evidence should the acceptance suite require for a blocked command?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>A refusal line, a returned <code>DENIED</code> observation, no command side effect, and the expected hook trace or exit behaviour. The test should fail if any of those are missing.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Which sandbox failure paths must acceptance cover?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>An outside write, a hard-denied command under <code>--yes</code>, an <code>ask</code> policy with no TTY, a blocked <code>PreToolUse</code> hook, and a child environment without secrets. These are the behaviours that define the safety contract.</p></div>
+</details>
+  </div>
+</div>
+
+<p>The build is complete when all of the following are true:</p>
+
+<ol>
+<li><code>npm install</code> succeeds with only <code>chalk</code> as a runtime dependency.</li>
+<li><code>npm test</code> runs fully offline and all suites pass.</li>
+<li><code>node src/cli.js --help</code> prints usage without needing a key.</li>
+<li><code>node src/cli.js --hooks</code> prints the full nine-hook catalogue without needing a key.</li>
+<li><code>node src/cli.js --memory</code> prints the store and the exact digest that would be injected.</li>
+<li><code>node src/cli.js --demo</code> completes the 14-step script:</li>
+</ol>
+
+<ul>
+<li>creates/edits/runs <code>workspace/demo/hello.js</code>;</li>
+<li>refuses the <code>../escape.txt</code> write;</li>
+<li>allows the <code>../package.json</code> read;</li>
+<li>refuses the <code>~/Desktop/pwned.txt</code> write;</li>
+<li>refuses the shell copy to the Desktop;</li>
+<li>denies the force push;</li>
+<li>shows <code>OPENROUTER_API_KEY=absent</code> from the child;</li>
+<li>reports exit code 1 with an explanation;</li>
+<li>remembers and recalls a fact;</li>
+<li>prints a scorecard with <strong>7/7 checks held</strong>;</li>
+<li>exits 0.</li>
+</ul>
+
+<ol>
+<li>Live mode with a valid key runs a task through OpenRouter and prints step headers, tool calls, tool results, and a final answer.</li>
+<li>Live mode without a key prints the missing-key error and exits 1.</li>
+<li>A live/session run without a task and without a TTY exits 2.</li>
+<li>A task that never yields a final answer stops at the step limit and exits 3.</li>
+<li>A write outside <code>workspace/</code> prints one <code>⛔ FORBIDDEN ...</code> line and returns a <code>FORBIDDEN:</code> observation to the model without touching disk.</li>
+<li>A read outside <code>workspace/</code> succeeds.</li>
+<li><code>CMD_POLICY=deny</code> refuses all commands; hard-denied commands are refused even with <code>--yes</code>.</li>
+<li>The child shell cannot read <code>OPENROUTER_API_KEY</code>.</li>
+<li>Memory survives process restarts; duplicate notes refresh instead of duplicating; the file is bounded; a hand edit is picked up immediately.</li>
+<li>Every normal run prints the <code>[HOOK:Name]</code> trace by default; <code>--no-hooks</code> silences it.</li>
+<li><code>/new</code> clears conversation history but leaves workspace and memory untouched; <code>/quit</code> and <code>/exit</code> end the session.</li>
+<li>A follow-up task sees the previous conversation but a freshly rebuilt system prompt containing the latest memory.</li>
+<li><code>agent.js</code> executed directly prints the "this is the loop, not the program" hint and does not run the CLI.</li>
+<li>The code contains no framework, no agent SDK, no database, and no hidden global state.</li>
+</ol>
+
+</section>
+
+<hr>
+
+<section id="s18">
+<h2><span class="num">18</span><span>17. Suggested implementation order</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🧱</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; build order</p>
+    <p class="teach-title">Build the boundaries before the intelligence</p>
+    <p>The suggested order starts with path policy, presentation, sandbox, memory, prompt, tools, model, hooks, loop, demo, config, and CLI. Boundaries come first because every later file depends on them. The loop is easier to write when the world around it is already trustworthy.</p>
+    <p class="teach-ask"><strong>Core question:</strong> What goes wrong if you build the agent loop before the workspace and sandbox contracts?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>You get a loop that can act before the world around it is trustworthy. Writes, reads, command policy, and tool results are all undefined or unsafe, and tests become coupled to whatever behaviour happens to emerge. Contracts first make the loop small and predictable.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> Why build the UI early if it is not core agent logic?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The UI establishes the project's output language early: step headers, tool results, errors, and refusals. Building it first gives later code a stable presentation seam, makes demos readable, and keeps formatting tests separate from agent logic.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Which contracts must be stable before <code>agent.js</code> can be tested with a fake model?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The chat-function interface, the tool dispatcher and result format, the hook API, the memory query/update contract, and the workspace write policy. Once those seams are fixed, the loop can be driven deterministically.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What is a good checkpoint after the sandbox is complete?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Prove that an allowed write succeeds, an outside write is refused with no side effect, a denied command is blocked, and secrets are absent from the child environment. Then build on that trusted base.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why defer the CLI until the loop works?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>The CLI adds flags, sessions, streams, signals, and process exits. The core loop and its fakes should be proven first; the CLI then wires a tested library into a program.</p></div>
+</details>
+  </div>
+</div>
+
+<ol>
+<li><code>workspace.js</code> and its tests — path policy first.</li>
+<li><code>ui.js</code> and <code>ui</code> tests — establish the visual language.</li>
+<li><code>sandbox.js</code> + shell target scanner and tests.</li>
+<li><code>memory.js</code> + tests.</li>
+<li><code>prompt.js</code> + tests.</li>
+<li><code>tools.js</code> + tests.</li>
+<li><code>llm.js</code> + tests.</li>
+<li><code>hooks.js</code> + tests.</li>
+<li><code>agent.js</code> + fake-model tests.</li>
+<li><code>demo.js</code> and scorecard.</li>
+<li><code>config.js</code> + tests.</li>
+<li><code>cli.js</code> + session/input tests.</li>
+<li>README, demo prompts, final end-to-end demo run.</li>
+</ol>
+
+</section>
+
+<hr>
+
+<section id="s19">
+<h2><span class="num">19</span><span>18. Tone and design philosophy (important)</span></h2>
+
+<div class="teach-card">
+  <div class="teach-icon" aria-hidden="true">🎓</div>
+  <div>
+    <p class="teach-kicker">Teaching note &middot; philosophy</p>
+    <p class="teach-title">Small enough to explain</p>
+    <p>The final constraint is not a feature; it is a design principle. Resist additions that make the system harder to hold in your head. Put each decision in one obvious place, prefer observable behaviour over magic, bound autonomy, and be honest about safety limits.</p>
+    <p class="teach-ask"><strong>Core question:</strong> Which additions would violate the project’s bounded-autonomy constraint?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Arbitrary shell execution without policy, unbounded loops or output, automatic dependency installation, a hidden memory index, or multi-agent orchestration without explicit limits. Each adds authority or state the harness cannot reliably bound.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Follow-up:</strong> What constraints must any new feature satisfy without breaking the architecture?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>It must have one obvious place, remain testable offline, respect existing path and command policy, avoid hidden global state, stay within bounded limits, and not make the core loop harder to explain or observe.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> Why is hidden global state a problem for the agent’s behaviour and tests?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>It makes behaviour depend on prior runs or module load order, so the same messages can produce different results. Explicit state passed through <code>runTask</code> keeps behaviour reproducible and lets tests control every input.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What does bounded autonomy mean in practice?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>Limits on steps, time, output, memory, command policy, and permissions. The agent can act, but it cannot run forever, spend without bound, or escape its defined scope.</p></div>
+</details>
+
+    <p class="teach-ask teach-ask-2"><strong>Dig deeper:</strong> What safety claims must the project avoid making about its sandbox?</p>
+
+<details class="teach-answer">
+  <summary>Reveal answer</summary>
+  <div class="teach-answer-body"><p>It must not claim container-level isolation, complete command safety, or that the deny-list cannot be bypassed. It should state that the workspace fence and command scanner are best-effort and that untrusted code needs a real external boundary.</p></div>
+</details>
+  </div>
+</div>
+
+<ul>
+<li><strong>Small enough to explain.</strong> One loop, eight tools, nine hooks. Resist adding features.</li>
+<li><strong>One obvious place for each decision.</strong> Config in <code>config.js</code>, path policy in <code>workspace.js</code>, mutation gate in <code>sandbox.js</code>, prompt in <code>prompt.js</code>, presentation in <code>ui.js</code>, process concerns in <code>cli.js</code>.</li>
+<li><strong>Observability over magic.</strong> Every step, tool call, result, hook firing, and refusal is visible in the terminal.</li>
+<li><strong>Bounded autonomy.</strong> Step limits, output caps, timeouts, per-entry memory caps, prompt-memory budgets, and a deny-list all exist because "autonomous" without bounds is a bug.</li>
+<li><strong>Honest safety.</strong> The workspace fence and shell write scanner are useful but not a container. Say so in code comments and docs.</li>
+<li><strong>Human in the loop.</strong> Default command policy is <code>ask</code>; no TTY means deny; hard denies cannot be overridden.</li>
+<li><strong>Testable by construction.</strong> Inject the model, clock, logger, confirm function, hooks, memory, and workspace. If a feature cannot be tested offline, the seam is wrong.</li>
+<li><strong>Teachable error strings.</strong> A refusal, a failed exit code, and a missing key must explain what happened and what to do next.</li>
+<li><strong>No fake results.</strong> The system prompt forbids invented tool results, and every tool observation is a real string produced by the harness.</li>
+<li><strong>Memory is a file you can read and diff.</strong> No vector store, no embeddings, no hidden index. A student can open <code>src/memory.md</code> and see exactly what the agent knows.</li>
+</ul>
+
+</section>
+
+
+      <div class="colophon">
+        Built from <code>reverse-engineering.md</code> &middot; 19 sections &middot; 19 teaching cards &middot; mini-coding-js explainer series
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  var toc = document.getElementById('toc');
+  var links = toc.querySelectorAll('a');
+  var sections = [];
+  links.forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({link:a, el:el});
+  });
+  function onScroll(){
+    var y = window.scrollY + 80;
+    var active = null;
+    for (var i = 0; i < sections.length; i++){
+      if (y >= sections[i].el.offsetTop) active = sections[i];
+    }
+    sections.forEach(function(s){ s.link.classList.remove('active'); });
+    if (active) active.link.classList.add('active');
+    var bar = document.getElementById('bar');
+    var doc = document.documentElement;
+    var pct = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+    bar.style.width = Math.max(0, Math.min(1, pct || 0)) * 100 + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+<button id="stylebtn" type="button" aria-expanded="false" aria-controls="stylepanel"
+        aria-label="Site customiser" title="Site customiser">Aa</button>
+
+<aside id="stylepanel" hidden aria-label="Site customiser">
+  <div class="sp-head">
+    <h2>Site customiser</h2>
+    <select id="sp-mode" aria-label="Colour mode">
+      <option value="auto">System</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+    <button id="sp-close" type="button" aria-label="Close site customiser">&#10005;</button>
+  </div>
+  <div class="sp-body" id="sp-body"></div>
+  <div class="sp-foot">
+    <button id="sp-reset" type="button">Reset</button>
+    <span class="spacer"></span>
+    <button id="sp-copy" type="button">Copy CSS</button>
+  </div>
+</aside>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     Site customiser - Light / Dark / System only.
+     The page's CSS custom properties are the settings schema, so
+     the panel can never drift from the stylesheet. Colours are kept
+     per mode, and every control writes to both the TOC sidebar and
+     the content pane because they share the same tokens.
+     ============================================================ */
+
+  var FONT_OPTIONS = {
+    serif: [
+      { label: 'Iowan / Palatino', value: "'Iowan Old Style',Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif" },
+      { label: 'Georgia', value: "Georgia,'Times New Roman',serif" },
+      { label: 'Charter / Cambria', value: "Charter,'Bitstream Charter',Cambria,Georgia,serif" },
+      { label: 'System serif', value: "ui-serif,'New York',Times,serif" }
+    ],
+    sans: [
+      { label: 'System sans', value: "-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif" },
+      { label: 'Inter / Helvetica', value: "Inter,'Helvetica Neue',Helvetica,Arial,sans-serif" },
+      { label: 'Arial', value: "Arial,'Helvetica Neue',Helvetica,sans-serif" },
+      { label: 'Verdana', value: "Verdana,Geneva,Tahoma,sans-serif" }
+    ],
+    mono: [
+      { label: 'JetBrains Mono', value: "'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace" },
+      { label: 'SF Mono / Consolas', value: "ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace" },
+      { label: 'Consolas', value: "Consolas,'Courier New',monospace" },
+      { label: 'Courier', value: "'Courier New',Courier,monospace" }
+    ]
+  };
+
+  var SPEC = [
+    { table: 'type', title: 'Type', items: [
+      { key: 'root_size', cssVar: '--root-size', kind: 'number', unit: 'px', min: 16, max: 40, step: 0.5, def: 24, label: 'Text size' },
+      { key: 'lh_body', cssVar: '--lh-body', kind: 'number', unit: '', min: 1.2, max: 2.2, step: 0.01, def: 1.66, label: 'Line height' },
+      { key: 'fs_code', cssVar: '--fs-code', kind: 'number', unit: 'rem', min: 0.6, max: 1.2, step: 0.005, def: 0.775, label: 'Code size' }
+    ] },
+    { table: 'layout', title: 'Layout', items: [
+      { key: 'sidebar', cssVar: '--sidebar', kind: 'number', unit: 'rem', min: 12, max: 30, step: 0.25, def: 19.25, label: 'Sidebar width' },
+      { key: 'measure', cssVar: '--measure', kind: 'number', unit: 'rem', min: 30, max: 72, step: 1, def: 46, label: 'Reading column' }
+    ] },
+    { table: 'fonts', title: 'Fonts', items: [
+      { key: 'serif', cssVar: '--serif', kind: 'font', options: FONT_OPTIONS.serif, def: FONT_OPTIONS.serif[0].value, label: 'Headings (serif)' },
+      { key: 'sans', cssVar: '--sans', kind: 'font', options: FONT_OPTIONS.sans, def: FONT_OPTIONS.sans[0].value, label: 'Body (sans)' },
+      { key: 'mono', cssVar: '--mono', kind: 'font', options: FONT_OPTIONS.mono, def: FONT_OPTIONS.mono[0].value, label: 'Code (mono)' }
+    ] },
+    { table: 'colors', title: 'Colours', colors: true, items: [
+      { key: 'paper', cssVar: '--paper', kind: 'color', label: 'Page background' },
+      { key: 'surface', cssVar: '--surface', kind: 'color', label: 'Sidebar / panel' },
+      { key: 'ivory', cssVar: '--ivory', kind: 'color', label: 'Cards and inputs' },
+      { key: 'ink', cssVar: '--ink', kind: 'color', label: 'Headings' },
+      { key: 'prose', cssVar: '--prose', kind: 'color', label: 'Body text' },
+      { key: 'muted', cssVar: '--muted', kind: 'color', label: 'Secondary text' },
+      { key: 'stone', cssVar: '--stone', kind: 'color', label: 'Faint labels' },
+      { key: 'line', cssVar: '--line', kind: 'color', label: 'Borders' },
+      { key: 'line_soft', cssVar: '--line-soft', kind: 'color', label: 'Hairlines' },
+      { key: 'tint', cssVar: '--tint', kind: 'color', label: 'Active nav' },
+      { key: 'terra', cssVar: '--terra', kind: 'color', label: 'Accent' },
+      { key: 'terra_dark', cssVar: '--terra-dark', kind: 'color', label: 'Links / eyebrow' },
+      { key: 'amber', cssVar: '--amber', kind: 'color', label: 'Warnings' },
+      { key: 'code_bg', cssVar: '--code-bg', kind: 'color', label: 'Code background' },
+      { key: 'code_bar', cssVar: '--code-bar', kind: 'color', label: 'Code caption bar' },
+      { key: 'code_line', cssVar: '--code-line', kind: 'color', label: 'Code border' },
+      { key: 'code_ink', cssVar: '--code-ink', kind: 'color', label: 'Code text' },
+      { key: 'code_dim', cssVar: '--code-dim', kind: 'color', label: 'Code comments' },
+      { key: 'code_accent', cssVar: '--code-accent', kind: 'color', label: 'Code caption text' }
+    ] }
+  ];
+
+  var DEFAULTS = {
+    base: {
+      root_size: 24, lh_body: 1.66, fs_code: 0.775, sidebar: 19.25, measure: 46,
+      serif: FONT_OPTIONS.serif[0].value,
+      sans: FONT_OPTIONS.sans[0].value,
+      mono: FONT_OPTIONS.mono[0].value
+    },
+    colors: {
+      light: { paper: '#f0eee6', surface: '#fbfaf7', ivory: '#fffdfa', ink: '#1f1e1d', prose: '#33302c', muted: '#55524c', stone: '#8c877c', line: '#e0dbcf', line_soft: '#e9e4d8', tint: '#f6ede6', terra: '#d97757', terra_dark: '#c9633f', amber: '#b9862f', code_bg: '#23211e', code_bar: '#2b2823', code_line: '#3a3732', code_ink: '#f2ece1', code_dim: '#a9a294', code_accent: '#f0b49a' },
+      dark: { paper: '#14171b', surface: '#1b1f24', ivory: '#232830', ink: '#eef2f6', prose: '#c7d0d8', muted: '#9aa7b4', stone: '#7f8c99', line: '#303944', line_soft: '#263039', tint: '#252f3b', terra: '#e08a6a', terra_dark: '#eda07e', amber: '#d3a44a', code_bg: '#111418', code_bar: '#181d22', code_line: '#2b343e', code_ink: '#eef2f6', code_dim: '#8f9ba7', code_accent: '#f0b49a' }
+    }
+  };
+
+  var INIT_MODE = 'auto';
+  var STORE = 'mca-site-customiser:v2';
+
+  var root = document.documentElement;
+  var darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
+  var copy = function (target, source) {
+    Object.keys(target).forEach(function (k) { delete target[k]; });
+    Object.keys(clone(source)).forEach(function (k) { target[k] = clone(source)[k]; });
+  };
+
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { saved = {}; }
+
+  var state = {
+    mode: saved.mode === 'light' || saved.mode === 'dark' || saved.mode === 'auto' ? saved.mode : INIT_MODE,
+    base: Object.assign(clone(DEFAULTS.base), saved.base || {}),
+    colors: {
+      light: Object.assign(clone(DEFAULTS.colors.light), (saved.colors || {}).light || {}),
+      dark: Object.assign(clone(DEFAULTS.colors.dark), (saved.colors || {}).dark || {})
+    }
+  };
+
+  var resolved = function () {
+    return state.mode === 'auto' ? (darkQuery && darkQuery.matches ? 'dark' : 'light') : state.mode;
+  };
+  var currentColors = function () { return state.colors[resolved()]; };
+
+  var cssVal = function (item, value) {
+    return item.unit ? value + item.unit : String(value);
+  };
+
+  var apply = function () {
+    root.setAttribute('data-theme', resolved());
+
+    SPEC.forEach(function (group) {
+      group.items.forEach(function (item) {
+        var value = item.kind === 'color' ? currentColors()[item.key] : state.base[item.key];
+        if (value === undefined || value === null || value === '') root.style.removeProperty(item.cssVar);
+        else root.style.setProperty(item.cssVar, cssVal(item, value));
+      });
+    });
+  };
+
+  var persist = function () {
+    try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* private mode */ }
+  };
+
+  /* ---- build the panel ---- */
+  var panel = document.getElementById('stylepanel');
+  var button = document.getElementById('stylebtn');
+  var panelBody = document.getElementById('sp-body');
+  var modeSelect = document.getElementById('sp-mode');
+  var refs = {};
+
+  var hex6 = function (value) {
+    var v = String(value || '').trim().replace('#', '');
+    if (v.length === 3) v = v.split('').map(function (c) { return c + c; }).join('');
+    return '#' + v.slice(0, 6).padStart(6, '0');
+  };
+
+  var ensureFontOption = function (select, value) {
+    if (!value) return;
+    var found = Array.prototype.some.call(select.options, function (opt) { return opt.value === value; });
+    if (!found) {
+      var option = document.createElement('option');
+      option.value = value;
+      option.textContent = 'Custom';
+      select.appendChild(option);
+    }
+  };
+
+  var addGroup = function (group) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sp-group';
+
+    var title = document.createElement('h3');
+    title.textContent = group.title;
+    if (group.colors) {
+      var tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.id = 'sp-modetag';
+      title.appendChild(tag);
+    }
+    wrap.appendChild(title);
+
+    if (group.colors) {
+      var grid = document.createElement('div');
+      grid.className = 'sp-colors';
+      group.items.forEach(function (item) {
+        var label = document.createElement('label');
+        var swatch = document.createElement('input');
+        swatch.type = 'color';
+        swatch.title = item.label + '  (' + item.cssVar + ')';
+        swatch.setAttribute('aria-label', item.label);
+        var name = document.createElement('span');
+        name.className = 'swatch-label';
+        name.textContent = item.label;
+        var hex = document.createElement('span');
+        hex.className = 'hex';
+        label.append(swatch, name, hex);
+        grid.appendChild(label);
+
+        swatch.addEventListener('input', function () {
+          currentColors()[item.key] = swatch.value;
+          hex.textContent = swatch.value;
+          apply();
+          persist();
+        });
+        refs[item.key] = { swatch: swatch, hex: hex };
+      });
+      wrap.appendChild(grid);
+      panelBody.appendChild(wrap);
+      return;
+    }
+
+    group.items.forEach(function (item) {
+      var row = document.createElement('div');
+      row.className = 'sp-row';
+      var label = document.createElement('label');
+      label.textContent = item.label;
+      row.appendChild(label);
+
+      if (item.kind === 'font') {
+        var select = document.createElement('select');
+        select.setAttribute('aria-label', item.label);
+        (item.options || []).forEach(function (option) {
+          var opt = document.createElement('option');
+          opt.value = option.value;
+          opt.textContent = option.label;
+          select.appendChild(opt);
+        });
+        ensureFontOption(select, state.base[item.key]);
+        select.value = state.base[item.key] || (item.options && item.options[0] ? item.options[0].value : '');
+        label.appendChild(select);
+        select.addEventListener('change', function () {
+          state.base[item.key] = select.value;
+          apply();
+          persist();
+        });
+        refs[item.key] = { select: select };
+      } else {
+        var out = document.createElement('output');
+        row.appendChild(out);
+        var input = document.createElement('input');
+        input.type = 'range';
+        input.min = item.min;
+        input.max = item.max;
+        input.step = item.step;
+        input.setAttribute('aria-label', item.label);
+        row.appendChild(input);
+        input.addEventListener('input', function () {
+          state.base[item.key] = Number(input.value);
+          out.textContent = input.value + (item.unit || '');
+          apply();
+          persist();
+        });
+        refs[item.key] = { input: input, out: out };
+      }
+      wrap.appendChild(row);
+    });
+
+    panelBody.appendChild(wrap);
+  };
+
+  SPEC.forEach(addGroup);
+
+  var refresh = function () {
+    if (modeSelect.value !== state.mode) modeSelect.value = state.mode;
+    var mode = resolved();
+    var modeTag = document.getElementById('sp-modetag');
+    if (modeTag) modeTag.textContent = mode;
+    if (button) button.title = 'Site customiser - ' + mode + ' mode';
+
+    SPEC.forEach(function (group) {
+      group.items.forEach(function (item) {
+        var ref = refs[item.key];
+        if (!ref) return;
+        if (item.kind === 'color') {
+          var value = currentColors()[item.key] || '#000000';
+          ref.swatch.value = hex6(value);
+          ref.hex.textContent = String(value);
+        } else if (item.kind === 'font') {
+          var font = state.base[item.key] || '';
+          ensureFontOption(ref.select, font);
+          ref.select.value = font;
+        } else {
+          var n = state.base[item.key];
+          ref.input.value = n;
+          ref.out.textContent = n + (item.unit || '');
+        }
+      });
+    });
+  };
+
+  var reopen = function () { apply(); refresh(); };
+
+  modeSelect.addEventListener('change', function () {
+    state.mode = modeSelect.value;
+    reopen();
+    persist();
+  });
+
+  var onSystemChange = function () { if (state.mode === 'auto') reopen(); };
+  if (darkQuery) {
+    if (darkQuery.addEventListener) darkQuery.addEventListener('change', onSystemChange);
+    else if (darkQuery.addListener) darkQuery.addListener(onSystemChange);
+  }
+  window.addEventListener('focus', onSystemChange);
+
+  document.getElementById('sp-reset').addEventListener('click', function () {
+    copy(state.base, DEFAULTS.base);
+    copy(state.colors.light, DEFAULTS.colors.light);
+    copy(state.colors.dark, DEFAULTS.colors.dark);
+    state.mode = INIT_MODE;
+    try { localStorage.removeItem(STORE); } catch (e) { /* ignore */ }
+    reopen();
+  });
+
+  var toCss = function () {
+    var lines = [
+      '/* generated by the site customiser - ' + resolved() + ' mode */',
+      '/* paste into the page <style>; rebuild after editing the palette */',
+      ':root{'
+    ];
+    SPEC.forEach(function (group) {
+      if (group.colors) return;
+      group.items.forEach(function (item) {
+        lines.push('  ' + item.cssVar + ':' + cssVal(item, state.base[item.key]) + ';');
+      });
+    });
+    var colorItems = SPEC[SPEC.length - 1].items;
+    colorItems.forEach(function (item) {
+      lines.push('  ' + item.cssVar + ':' + state.colors.light[item.key] + ';');
+    });
+    lines.push('}', '', 'html[data-theme="dark"]{');
+    colorItems.forEach(function (item) {
+      lines.push('  ' + item.cssVar + ':' + state.colors.dark[item.key] + ';');
+    });
+    lines.push('}');
+    return lines.join('\n');
+  };
+
+  var copyText = function (text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return false; });
+    }
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    area.remove();
+    return Promise.resolve(ok);
+  };
+
+  var copyBtn = document.getElementById('sp-copy');
+  copyBtn.addEventListener('click', function () {
+    copyText(toCss()).then(function (ok) {
+      copyBtn.textContent = ok ? 'Copied' : 'Copy failed';
+      setTimeout(function () { copyBtn.textContent = 'Copy CSS'; }, 1600);
+    });
+  });
+
+  var toggle = function (open) {
+    panel.hidden = !open;
+    button.setAttribute('aria-expanded', String(open));
+    if (open) { refresh(); }
+  };
+
+  button.addEventListener('click', function () { toggle(panel.hidden); });
+  document.getElementById('sp-close').addEventListener('click', function () { toggle(false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !panel.hidden) toggle(false);
+  });
+
+  apply();
+  refresh();
+})();
+</script>
+</body>
+</html>

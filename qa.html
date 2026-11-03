@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mini-coding-js · Student Q&amp;A</title>
+<style>
+html{font-size:var(--root-size,24px)}
+
+:root{
+  --paper:#f0eee6; --surface:#fbfaf7; --ivory:#fffdfa; --ink:#1f1e1d;
+  --prose:#33302c; --muted:#55524c; --stone:#8c877c;
+  --line:#e0dbcf; --line-soft:#e9e4d8; --tint:#f6ede6;
+  --terra:#d97757; --terra-dark:#c9633f; --amber:#b9862f;
+  --code-bg:#23211e; --code-bar:#2b2823; --code-line:#3a3732;
+  --code-ink:#f2ece1; --code-dim:#a9a294; --code-accent:#f0b49a;
+  --sidebar:19.25rem; --measure:46rem;
+  --sans:-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif;
+  --serif:'Iowan Old Style',Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif;
+  --mono:'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace;
+}
+html[data-theme="dark"]{
+  --paper:#14171b; --surface:#1b1f24; --ivory:#232830; --ink:#eef2f6;
+  --prose:#c7d0d8; --muted:#9aa7b4; --stone:#7f8c99;
+  --line:#303944; --line-soft:#263039; --tint:#252f3b;
+  --terra:#e08a6a; --terra-dark:#eda07e; --amber:#d3a44a;
+  --code-bg:#111418; --code-bar:#181d22; --code-line:#2b343e;
+  --code-ink:#eef2f6; --code-dim:#8f9ba7; --code-accent:#f0b49a;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--prose);
+  font:1.03125rem/var(--lh-body,1.66) var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:#f0d3c6; color:#2a2622}
+html[data-theme="dark"] ::selection{background:#4a2f28; color:#f2ece1}
+
+/* ---------- shell ---------- */
+.shell{display:grid; grid-template-columns:var(--sidebar) minmax(0,1fr); align-items:start}
+.sidebar{
+  position:sticky; top:0; height:100vh; overflow-y:auto; overscroll-behavior:contain;
+  scrollbar-width:thin; scrollbar-color:#cec6b5 transparent;
+  padding:1.625rem 1.125rem 2.125rem 1.375rem;
+  border-right:0.0625rem solid var(--line);
+  background:linear-gradient(180deg,#f4f1e9,#efece3 60%,#ece8de);
+}
+html[data-theme="dark"] .sidebar{
+  scrollbar-color:#3a4652 transparent;
+  background:linear-gradient(180deg,#1d2228,#191e23 60%,#171b20);
+}
+.side-kicker{
+  display:block; margin:0 0 0.625rem; color:var(--terra-dark);
+  font:600 0.65625rem/1.3 var(--sans); letter-spacing:.14em; text-transform:uppercase; text-decoration:none;
+}
+.side-title{
+  margin:0; color:var(--ink); font:500 1.3125rem/1.2 var(--serif); letter-spacing:-.01em;
+}
+.side-sub{margin:0.375rem 0 0; color:var(--stone); font-size:0.7875rem; line-height:1.45}
+.side-rule{height:0.0625rem; margin:1.125rem 0 0.875rem; background:var(--line)}
+.side-label{
+  margin:0 0 0.375rem; color:var(--stone);
+  font:600 0.65625rem/1.3 var(--sans); letter-spacing:.13em; text-transform:uppercase;
+}
+.toc{display:flex; flex-direction:column; gap:0.0625rem}
+.toc a{
+  display:flex; gap:0.5625rem; align-items:baseline;
+  padding:0.375rem 0.5625rem 0.375rem 0.625rem; border-left:0.125rem solid transparent; border-radius:0 0.4375rem 0.4375rem 0;
+  color:var(--muted); font-size:0.8375rem; line-height:1.4; text-decoration:none;
+  transition:background .14s,color .14s,border-color .14s;
+}
+.toc a .n{color:#a9a294; font:0.6875rem/1 var(--mono); flex:0 0 1.125rem}
+.toc a:hover{background:#e8e3d6; color:var(--ink)}
+html[data-theme="dark"] .toc a .n{color:#7f8c99}
+html[data-theme="dark"] .toc a:hover{background:#252f3b}
+.toc a.active{background:var(--tint); border-left-color:var(--terra); color:var(--ink); font-weight:600}
+.toc a.active .n{color:var(--terra-dark)}
+.side-foot{
+  margin-top:1.25rem; padding-top:0.875rem; border-top:0.0625rem solid var(--line);
+  color:var(--stone); font-size:0.7375rem; line-height:1.6;
+}
+.side-foot code{font-size:0.6875rem}
+
+.progress{position:fixed; top:0; left:var(--sidebar); right:0; height:0.125rem; z-index:40; background:transparent}
+.progress span{display:block; height:100%; width:0; background:var(--terra); transition:width .1s linear}
+
+.sidebar::-webkit-scrollbar{width:0.4375rem}
+.sidebar::-webkit-scrollbar-thumb{background:#d5ccbb; border-radius:0.5rem}
+html[data-theme="dark"] .sidebar::-webkit-scrollbar-thumb{background:#3a4652}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+
+/* ---------- content pane ---------- */
+.pane{padding:3.25rem 3.5rem 8.75rem; min-width:0}
+.inner{max-width:var(--measure); margin:0 auto}
+
+.page-heading{margin:0 0 2.125rem; padding-bottom:1.75rem; border-bottom:0.0625rem solid var(--line)}
+.page-heading .eyebrow{
+  margin:0 0 0.75rem; color:var(--terra-dark);
+  font:600 0.6875rem/1.3 var(--sans); letter-spacing:.15em; text-transform:uppercase;
+}
+h1{
+  margin:0; color:var(--ink); font:500 clamp(2.125rem,4vw,2.875rem)/1.1 var(--serif); letter-spacing:-.02em;
+}
+.page-heading .lede{margin:0.875rem 0 0; color:var(--muted); font-size:1.09375rem; max-width:38rem}
+.meta{
+  margin:1.25rem 0 0; display:flex; flex-wrap:wrap; gap:0.25rem 0.6875rem;
+  color:var(--stone); font:0.7rem/1.6 var(--mono);
+}
+.meta span::before{content:"\00b7"; margin-right:0.6875rem; color:#c3bcae}
+html[data-theme="dark"] .meta span::before{color:#4a5560}
+.meta span:first-child::before{content:none; margin:0}
+
+section{padding-top:0.375rem; margin:0 0 2.75rem}
+section:first-of-type h2{margin-top:0}
+h2{
+  display:flex; gap:0.8125rem; align-items:baseline;
+  margin:2.375rem 0 0.875rem; color:var(--ink);
+  font:500 1.65625rem/1.22 var(--serif); letter-spacing:-.015em;
+  scroll-margin-top:1.625rem;
+}
+h2 .num{
+  flex:0 0 auto; color:var(--terra); padding-top:0.125rem;
+  font:600 0.71875rem/1 var(--mono); letter-spacing:.06em;
+}
+h3{
+  margin:1.875rem 0 0.625rem; color:var(--ink);
+  font:600 0.96875rem/1.4 var(--sans); letter-spacing:.005em;
+}
+h4{
+  margin:1.5rem 0 0.5rem; color:var(--ink);
+  font:600 0.85rem/1.35 var(--sans); letter-spacing:.005em;
+}
+h5{
+  margin:1.25rem 0 0.4rem; color:var(--ink);
+  font:600 0.8rem/1.3 var(--sans); letter-spacing:.005em;
+}
+p{margin:0 0 0.875rem}
+p + p{margin-top:-0.125rem}
+strong{color:var(--ink); font-weight:600}
+em{font-style:italic; color:var(--ink)}
+a{color:var(--terra-dark); text-decoration-thickness:0.0625rem; text-underline-offset:0.125rem}
+
+ul{margin:0 0 1rem; padding-left:0; list-style:none}
+ol{margin:0 0 1rem; padding-left:0; list-style:none; counter-reset:item}
+ol li{position:relative; margin:0 0 0.625rem; padding-left:1.5rem}
+ol li::before{
+  content:counter(item) "."; counter-increment:item; position:absolute; left:0.1875rem; top:0;
+  color:var(--terra); font:600 0.7rem/1 var(--mono);
+}
+ul li{position:relative; margin:0 0 0.625rem; padding-left:1.25rem}
+ul li::before{
+  content:""; position:absolute; left:0.1875rem; top:.66em;
+  width:0.375rem; height:0.375rem; border-radius:50%; background:#d8b6a6;
+}
+html[data-theme="dark"] ul li::before{background:#8a5a48}
+li strong{color:var(--ink)}
+
+code{
+  padding:.12em .38em; border-radius:0.3125rem; background:#e9e4d7; color:#7c3f2b;
+  font:.855em/1.5 var(--mono); word-break:break-word;
+}
+html[data-theme="dark"] code{background:#2b2521; color:#f0b49a}
+
+/* ---------- callouts ---------- */
+.callout{
+  margin:1.25rem 0 1.375rem; padding:0.8125rem 1.0625rem 0.875rem;
+  border-left:0.1875rem solid var(--terra); border-radius:0 0.5625rem 0.5625rem 0;
+  background:var(--tint); color:#4b4741; font-size:0.925rem; line-height:1.62;
+}
+.callout strong{color:var(--ink)}
+.callout.warn{border-left-color:var(--amber); background:#f7f0da; color:#4e4734}
+html[data-theme="dark"] .callout{color:var(--prose)}
+html[data-theme="dark"] .callout.warn{background:#2e2a1e; color:#d8cfb8}
+
+/* ---------- code ---------- */
+figure.code, figure.ascii{margin:1.125rem 0 1.375rem; border-radius:0.6875rem; overflow:hidden}
+figure.code{margin-left:-1.375rem; margin-right:-1.375rem}
+figure.code{background:var(--code-bg); border:0.0625rem solid #34312b; box-shadow:0 0.125rem 0.625rem rgba(31,30,29,.07)}
+html[data-theme="dark"] figure.code{border-color:#2b343e; box-shadow:0 0.125rem 0.625rem rgba(0,0,0,.28)}
+figure.code figcaption{
+  display:flex; justify-content:space-between; gap:0.75rem; align-items:center;
+  padding:0.5rem 0.875rem; background:var(--code-bar); border-bottom:0.0625rem solid var(--code-line);
+  color:var(--code-accent); font:0.7125rem/1.4 var(--mono); letter-spacing:.02em;
+}
+figure.code figcaption .lang{color:#7d776b; font-size:0.6625rem; letter-spacing:.1em; text-transform:uppercase}
+html[data-theme="dark"] figure.code figcaption .lang{color:#8f9ba7}
+figure.code pre{
+  margin:0; padding:0.9375rem 1.125rem 1.0625rem; overflow-x:auto;
+  color:var(--code-ink); font:var(--fs-code,0.775rem)/1.66 var(--mono); tab-size:2;
+  white-space:pre-wrap; overflow-wrap:break-word;
+}
+figure.ascii{
+  border:0.0625rem dashed #d3ccbb; background:#f7f4ec;
+}
+html[data-theme="dark"] figure.ascii{border-color:#3a4652; background:#1b2026}
+figure.ascii figcaption{
+  padding:0.4375rem 0.875rem 0; color:var(--stone);
+  font:600 0.65rem/1.4 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+}
+figure.ascii pre{
+  margin:0; padding:0.6875rem 0.875rem 0.9375rem; overflow-x:auto;
+  color:#4c483f; font:0.76875rem/1.55 var(--mono); white-space:pre;
+}
+html[data-theme="dark"] figure.ascii pre{color:#c7d0d8}
+
+/* ---------- tables ---------- */
+.table-wrap{margin:1rem 0 1.375rem; overflow-x:auto; scrollbar-width:thin; scrollbar-color:#cec6b5 transparent}
+.table-wrap::-webkit-scrollbar{height:0.4375rem}
+.table-wrap::-webkit-scrollbar-thumb{background:#d5ccbb; border-radius:0.5rem}
+html[data-theme="dark"] .table-wrap{scrollbar-color:#3a4652 transparent}
+html[data-theme="dark"] .table-wrap::-webkit-scrollbar-thumb{background:#3a4652}
+table{width:100%; border-collapse:collapse; font-size:0.875rem; line-height:1.5}
+thead th{
+  padding:0 0.75rem 0.5rem 0; border-bottom:0.0625rem solid var(--line); text-align:left;
+  color:var(--stone); font:600 0.6625rem/1.3 var(--sans); letter-spacing:.09em; text-transform:uppercase;
+}
+tbody td{padding:0.625rem 0.75rem 0.625rem 0; border-bottom:0.0625rem solid var(--line-soft); vertical-align:top; color:var(--muted)}
+tbody tr:last-child td{border-bottom:none}
+tbody td:first-child{color:var(--ink)}
+tbody td code{font-size:0.75rem}
+tbody td:first-child{white-space:nowrap}
+.tag{
+  display:inline-block; margin-left:0.375rem; padding:0.0625rem 0.375rem; border-radius:1.25rem;
+  background:#f0dcd2; color:#9a4d31; font:600 0.6rem/1.5 var(--sans); letter-spacing:.08em; text-transform:uppercase;
+}
+html[data-theme="dark"] .tag{background:#3a2a24; color:#f0b49a}
+
+.table-wrap.dense table{font-size:0.8125rem}
+.table-wrap.dense tbody td, .table-wrap.dense td code{white-space:normal; overflow-wrap:anywhere}
+.table-wrap.dense tbody td{padding-right:0.625rem}
+.table-wrap.dense tbody td:first-child{min-width:8.5rem}
+
+/* ---------- footer ---------- */
+.colophon{
+  margin-top:3.5rem; padding-top:1.125rem; border-top:0.0625rem solid var(--line);
+  color:var(--stone); font-size:0.775rem; line-height:1.7;
+}
+.colophon code{font-size:0.7rem}
+
+/* ---------- narrow ---------- */
+@media (max-width: 940px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:static; height:auto; border-right:none; border-bottom:0.0625rem solid var(--line); padding:1.375rem 1.25rem 1.125rem}
+  .toc{flex-direction:row; flex-wrap:wrap; gap:0.25rem 0.375rem}
+  .toc a{padding:0.3125rem 0.5625rem; border-left:none; border-radius:0.4375rem; background:#eae5d8; font-size:0.775rem}
+  html[data-theme="dark"] .toc a{background:#252f3b}
+  .toc a .n{flex:0 0 auto}
+  .toc a.active{border-left:none}
+  .side-foot{display:none}
+  .progress{left:0}
+  .pane{padding:1.875rem 1.25rem 5.625rem}
+  h2{font-size:1.4375rem}
+  .table-wrap{margin-left:0; margin-right:0}
+  figure.code{margin-left:0; margin-right:0}
+  thead th{white-space:nowrap}
+  tbody td, tbody td code{white-space:normal; overflow-wrap:anywhere}
+}
+
+/* ---------- print ---------- */
+@media print{
+  :root,html[data-theme="dark"]{ --paper:#fff !important; --surface:#fff !important; --ivory:#fff !important; --ink:#1f1e1d !important; --prose:#33302c !important; --muted:#44423d !important; --stone:#6b675f !important; --line:#d8d3c8 !important; --line-soft:#e8e4da !important; --tint:#f8f2ec !important; --terra:#c9633f !important; --terra-dark:#a14e2f !important; --amber:#8a6420 !important; --code-bg:#f6f4ef !important; --code-bar:#efece3 !important; --code-line:#ddd8cc !important; --code-ink:#26241f !important; --code-dim:#6b675f !important; --code-accent:#8f3f27}
+
+  .sidebar,.progress{display:none}
+  .shell{display:block}
+  .pane{padding:0}
+  body{background:#fff; font-size:10.5pt}
+  h2{break-after:avoid} figure,table,.callout{break-inside:avoid}
+  figure.code{margin-left:0; margin-right:0}
+  a{color:inherit; text-decoration:none}
+}
+/* ---------- appearance panel (the rounded "Aa" button, top right) ---------- */
+
+#stylebtn{
+  position:fixed; z-index:60; right:18px; top:18px; bottom:auto;
+  display:grid; place-items:center; width:46px; height:46px; padding:0;
+  border:1px solid var(--line); border-radius:50%;
+  background:var(--surface); color:var(--ink);
+  box-shadow:0 6px 22px rgba(31,30,29,.16);
+  font:500 15px/1 var(--serif); cursor:pointer;
+  transition:border-color .14s, color .14s, transform .14s;
+}
+#stylebtn:hover{border-color:var(--terra); color:var(--terra-dark); transform:translateY(-1px)}
+#stylebtn:focus-visible{outline:2px solid var(--terra); outline-offset:2px}
+#stylebtn[aria-expanded="true"]{border-color:var(--terra); color:var(--terra-dark)}
+
+#stylepanel{
+  position:fixed; z-index:61; right:18px; top:76px; bottom:auto;
+  display:flex; flex-direction:column; width:372px;
+  max-height:calc(100vh - 94px);
+  border:1px solid var(--line); border-radius:14px;
+  background:var(--surface); color:var(--ink);
+  box-shadow:0 18px 50px rgba(31,30,29,.24);
+  font:12.5px/1.45 var(--sans);
+}
+#stylepanel[hidden]{display:none}
+
+.sp-head{
+  display:flex; align-items:center; gap:8px;
+  padding:11px 13px; border-bottom:1px solid var(--line-soft);
+}
+.sp-head h2{margin:0; padding:0; border:0; display:block; font:600 13px/1.2 var(--sans); color:var(--ink)}
+.sp-head h2::before{content:none}
+
+.sp-head select,.sp-foot button{
+  padding:5px 9px; border:1px solid var(--line); border-radius:7px;
+  background:var(--ivory); color:var(--ink);
+  font:12.5px/1.3 var(--sans); cursor:pointer;
+}
+.sp-head select:focus-visible,.sp-foot button:focus-visible{outline:2px solid var(--terra); outline-offset:1px}
+
+#sp-close{
+  width:26px; height:26px; padding:0; border:1px solid transparent; border-radius:50%;
+  background:none; color:var(--stone); font:14px/1 var(--sans); cursor:pointer;
+}
+#sp-close:hover{border-color:var(--line); color:var(--ink)}
+
+.sp-body{padding:2px 13px 12px; overflow-x:hidden; overflow-y:auto; scrollbar-width:thin}
+
+.sp-group{padding:11px 0; border-bottom:1px solid var(--line-soft)}
+.sp-group:last-child{border-bottom:0}
+.sp-group h3{
+  margin:0 0 8px; color:var(--stone);
+  font:700 9.5px/1.2 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+}
+.sp-group h3 .tag{margin-left:6px; color:var(--terra-dark); letter-spacing:.04em; text-transform:none}
+
+.sp-row{display:grid; grid-template-columns:1fr auto; gap:2px 10px; align-items:baseline; margin:9px 0}
+.sp-row label{color:var(--muted)}
+.sp-row > *{min-width:0}
+.sp-row output{color:var(--ink); font-variant-numeric:tabular-nums; font-size:11.5px}
+.sp-row input[type="range"]{grid-column:1/-1; width:100%; margin:3px 0 0; accent-color:var(--terra)}
+.sp-row select{
+  grid-column:1/-1; width:100%; margin-top:4px; padding:5px 8px;
+  border:1px solid var(--line); border-radius:7px;
+  background:var(--ivory); color:var(--ink); font:12px/1.4 var(--sans); cursor:pointer;
+}
+.sp-row select:focus-visible{outline:2px solid var(--terra); outline-offset:1px}
+
+.sp-colors label{
+  display:grid; grid-template-columns:26px 1fr auto; gap:8px; align-items:center; padding:2px 0;
+}
+.sp-colors .swatch-label{overflow:hidden; color:var(--muted); text-overflow:ellipsis; white-space:nowrap}
+.sp-colors input[type="color"]{
+  width:26px; height:22px; padding:0; border:1px solid var(--line); border-radius:6px;
+  background:none; cursor:pointer;
+}
+.sp-colors .hex{color:var(--stone); font:11px/1 var(--mono)}
+
+.sp-foot{
+  display:flex; align-items:center; gap:8px;
+  padding:10px 13px; border-top:1px solid var(--line-soft);
+}
+.sp-foot .spacer{flex:1}
+
+@media (max-width:520px){
+  #stylepanel{right:8px; left:8px; width:auto; top:72px; bottom:auto}
+}
+
+@media print{
+  #stylebtn,#stylepanel{display:none !important}
+}
+
+
+/* ---------- Q&A accordions ---------- */
+.qa{
+  margin:0.55rem 0; border:0.0625rem solid var(--line-soft); border-radius:0.6rem;
+  background:var(--surface); overflow:hidden;
+}
+.qa summary{
+  display:flex; align-items:flex-start; gap:0.55rem; padding:0.7rem 0.85rem;
+  color:var(--ink); font:600 0.9rem/1.4 var(--sans); cursor:pointer;
+  list-style:none; user-select:none;
+}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::before{
+  content:"+"; flex:0 0 auto; display:grid; place-items:center;
+  width:1.15rem; height:1.15rem; margin-top:0.1rem;
+  border:0.0625rem solid var(--line); border-radius:50%;
+  color:var(--terra-dark); font:700 0.78rem/1 var(--mono);
+}
+.qa[open] summary::before{content:"−"}
+.qa summary:hover{background:var(--tint)}
+.qa summary:focus-visible{outline:0.125rem solid var(--terra); outline-offset:-0.125rem}
+.qa-body{padding:0.1rem 0.9rem 0.8rem 2.55rem; border-top:0.0625rem solid var(--line-soft)}
+.qa-body p{margin:0.55rem 0 0; color:var(--prose); font-size:0.9rem; line-height:1.62}
+.qa-body ul,.qa-body ol{margin-top:0.55rem}
+.qa-body figure.code{margin-left:0; margin-right:0}
+@media print{
+  .qa{break-inside:avoid}
+  .qa-body{display:block !important}
+}
+</style>
+<script>
+(function () {
+  try {
+    var saved = JSON.parse(localStorage.getItem('mca-site-customiser:v2')) || {};
+    var mode = saved.mode === 'light' || saved.mode === 'dark' ? saved.mode : 'auto';
+    var dark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  } catch (e) { /* no stored preference */ }
+})();
+</script>
+</head>
+<body>
+<div class="progress"><span id="bar"></span></div>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="side-kicker" href="#top">mini-coding-js &middot; Student Q&amp;A</a>
+    <p class="side-title">Student Q&amp;A</p>
+    <p class="side-sub">A grouped architecture reference: open any question to get a direct, technical answer.</p>
+    <div class="side-rule"></div>
+    <p class="side-label">Contents</p>
+    <nav class="toc" id="toc">
+      <a href="#s01"><span class="n">01</span><span>Orientation &amp; System Overview</span></a>
+      <a href="#s02"><span class="n">02</span><span>CLI, Sessions &amp; Process Boundary</span></a>
+      <a href="#s03"><span class="n">03</span><span>Configuration &amp; Environment</span></a>
+      <a href="#s04"><span class="n">04</span><span>Workspace &amp; Path Policy</span></a>
+      <a href="#s05"><span class="n">05</span><span>Sandbox &amp; Command Safety</span></a>
+      <a href="#s06"><span class="n">06</span><span>Tools &amp; Dispatcher</span></a>
+      <a href="#s07"><span class="n">07</span><span>Model Call &amp; Provider Boundary</span></a>
+      <a href="#s08"><span class="n">08</span><span>Prompt, Context &amp; Memory Injection</span></a>
+      <a href="#s09"><span class="n">09</span><span>Agent Loop &amp; Message Protocol</span></a>
+      <a href="#s10"><span class="n">10</span><span>Hooks &amp; Lifecycle</span></a>
+      <a href="#s11"><span class="n">11</span><span>Memory &amp; Persistence</span></a>
+      <a href="#s12"><span class="n">12</span><span>UI, Output &amp; TTY Behaviour</span></a>
+      <a href="#s13"><span class="n">13</span><span>Heartbeat &amp; Liveness</span></a>
+      <a href="#s14"><span class="n">14</span><span>Demo &amp; Scorecard</span></a>
+      <a href="#s15"><span class="n">15</span><span>Testing &amp; Determinism</span></a>
+      <a href="#s16"><span class="n">16</span><span>Acceptance Criteria &amp; Failure Modes</span></a>
+      <a href="#s17"><span class="n">17</span><span>Design Philosophy &amp; Extension</span></a>
+      <a href="#s18"><span class="n">18</span><span>Operations, Troubleshooting &amp; Limits</span></a>
+    </nav>
+    <div class="side-foot">
+      Built from <code>qa.md</code><br>18 sections
+    </div>
+  </aside>
+
+  <main class="pane" id="top">
+    <div class="inner">
+      <header class="page-heading">
+        <p class="eyebrow">Architecture Q&amp;A &middot; student reference</p>
+        <h1>mini-coding-js &middot; Student Q&amp;A</h1>
+        <p class="lede">A grouped question-and-answer reference for the mini-coding-js architecture: the loop, tools, safety boundaries, memory, hooks, CLI, testing, and design constraints.</p>
+        <p class="meta">
+          <span>18 architecture aspects</span>
+          <span>185 questions</span>
+          <span>accordion answers</span>
+          <span>single-file HTML</span>
+        </p>
+      </header>
+
+<div class="callout"><strong>How to use this Q&amp;A:</strong> find the architecture aspect in the sidebar, then open the question you need. The answers are written as direct technical explanations, not as a lesson plan. If a question is not here, the closest section still gives the contract and the file that enforces it.</div>
+
+
+<section id="s01">
+<h2><span class="num">01</span><span>Orientation &amp; System Overview</span></h2>
+
+<details class="qa"><summary>Why is the tool set deliberately small, and what does that buy the architecture?</summary><div class="qa-body"><p>A small tool set keeps the action surface auditable, the schemas manageable for the model, and the safety policy centralised in one dispatcher. More tools widen the attack surface and make the loop harder to test and explain.</p></div></details><details class="qa"><summary>Where does the model's authority end and the harness's authority begin?</summary><div class="qa-body"><p>The model only proposes actions as structured tool calls. The harness validates the request, applies policy, executes the tool, and returns a string observation. The model never receives direct file, process, or network authority; the dispatcher is the gate.</p></div></details><details class="qa"><summary>How does the model create a file if it has no hands?</summary><div class="qa-body"><p>It emits an assistant message containing a <code>write_file</code> tool call. The dispatcher validates the request, the workspace resolves the path, the tool writes the file, and the result is appended as a tool message.</p></div></details><details class="qa"><summary>Why is the messages array called the state?</summary><div class="qa-body"><p>It is the only conversation content the next model call receives. If an action, result, or instruction is not in the array, the model does not know it. Hidden state outside the array breaks that guarantee.</p></div></details><details class="qa"><summary>What would break if <code>agent.js</code> knew about CLI flags and terminal colours?</summary><div class="qa-body"><p>The loop would become coupled to process and presentation concerns. It would be harder to test, harder to reuse, and a CLI or UI change could force a change in agent logic.</p></div></details><details class="qa"><summary>What is the smallest mental model of mini-coding-js?</summary><div class="qa-body"><p>One loop plus boundaries. The model proposes tool calls, the dispatcher executes them, results return as messages, and the loop repeats. Workspace, sandbox, hooks, memory, config, and UI exist to make that loop safe and observable.</p></div></details><details class="qa"><summary>What does "ReAct" mean in this codebase?</summary><div class="qa-body"><p>The model reasons in text, acts by emitting tool calls, observes the returned tool results, and repeats. The loop does not parse private thoughts; it only consumes the assistant message and its structured tool calls.</p></div></details><details class="qa"><summary>What are the eight tools?</summary><div class="qa-body"><p><code>list_files</code>, <code>read_file</code>, <code>create_file</code>, <code>write_file</code>, <code>edit_file</code>, <code>run_command</code>, <code>remember</code>, and <code>recall</code>. They are the model's entire action surface.</p></div></details><details class="qa"><summary>What is the role of <code>src/memory.md</code>?</summary><div class="qa-body"><p>It is the durable, human-readable long-term memory store. It lives outside the sandbox, is read from disk on every memory operation, and is injected into the system prompt as a bounded digest.</p></div></details><details class="qa"><summary>What is the role of <code>src/prompt.js</code>?</summary><div class="qa-body"><p>It builds the system rules and appends the current memory digest. The prompt is rebuilt for each task so memory changes appear without restarting the process.</p></div></details></section>
+
+<section id="s02">
+<h2><span class="num">02</span><span>CLI, Sessions &amp; Process Boundary</span></h2>
+
+<details class="qa"><summary>Where should <code>/new</code> and <code>/quit</code> live, and why not inside <code>agent.js</code>?</summary><div class="qa-body"><p><code>/new</code> and <code>/quit</code> belong in <code>cli.js</code> because they control the session: clearing conversation history, preserving workspace and memory, and ending the process. <code>agent.js</code> should run one task and remain unaware of interactive commands.</p></div></details><details class="qa"><summary>Why distinguish a one-shot task from an interactive session?</summary><div class="qa-body"><p>They have different lifecycles. A one-shot run accepts a task, executes it, and exits. A session keeps history, reads commands such as <code>/new</code> and <code>/quit</code>, and preserves workspace and memory across tasks. Mixing them makes exit codes and tests confusing.</p></div></details><details class="qa"><summary>Why does no TTY mean deny for confirmation?</summary><div class="qa-body"><p>There is no human to answer. Defaulting to allow would be unsafe for an unattended process. Deny is conservative, predictable, and works in CI.</p></div></details><details class="qa"><summary>What should Ctrl+C do in an interactive session?</summary><div class="qa-body"><p>Cancel the current task or command gracefully, preserve the session where sensible, and print a clear status. It should not corrupt memory or the workspace or exit silently.</p></div></details><details class="qa"><summary>Why is <code>cli.js</code> responsible for exit codes?</summary><div class="qa-body"><p>Exit codes are part of the process contract. The agent returns a result object; the CLI maps success, failure, usage, and signals to codes and owns streams and terminal behaviour.</p></div></details><details class="qa"><summary>What is the difference between <code>--demo</code> and a live run?</summary><div class="qa-body"><p><code>--demo</code> uses a scripted model and needs no API key or network. A live run calls the real model provider and requires <code>OPENROUTER_API_KEY</code> plus a valid model configuration.</p></div></details><details class="qa"><summary>What do exit codes 0, 1, 2, and 3 mean?</summary><div class="qa-body"><p>0 means the run finished successfully; 1 means a model request or fatal error stopped the run; 2 means no task was given; 3 means the step limit was reached.</p></div></details><details class="qa"><summary>What does <code>--no-memory</code> do?</summary><div class="qa-body"><p>It disables the memory store for the run. The <code>remember</code> and <code>recall</code> tools return an error explaining that no memory store is available.</p></div></details><details class="qa"><summary>What does <code>--no-hooks</code> do?</summary><div class="qa-body"><p>It silences the default <code>[HOOK:Name]</code> trace. The nine hooks are still available; the flag only controls whether their firing is printed.</p></div></details><details class="qa"><summary>Why does the CLI own session history?</summary><div class="qa-body"><p>A session persists conversation history across tasks. The CLI decides when to carry it forward, when <code>/new</code> clears it, and when <code>/quit</code> ends the process. The agent loop only runs one task.</p></div></details></section>
+
+<section id="s03">
+<h2><span class="num">03</span><span>Configuration &amp; Environment</span></h2>
+
+<details class="qa"><summary>Why is a config object easier to test than a module that reads <code>process.env</code> whenever it is called?</summary><div class="qa-body"><p>A config object can be injected, asserted, and varied in tests. A module that reads <code>process.env</code> at call time is global hidden state: two tests share it, production can differ silently, and changing one value can affect unrelated code paths.</p></div></details><details class="qa"><summary>Why normalise the model name during configuration?</summary><div class="qa-body"><p>Providers accept different names and slugs for the same model. Normalising once in config produces one canonical value, so tools and logs do not disagree and a bare name is not silently treated as a different model.</p></div></details><details class="qa"><summary>Why search upward for <code>.env</code> instead of only checking the current directory?</summary><div class="qa-body"><p>Project commands often run from subdirectories. The nearest <code>.env</code> matches the project context. Search stops at the filesystem root, and an explicit path can override it.</p></div></details><details class="qa"><summary>Why should tools not read <code>process.env</code> directly?</summary><div class="qa-body"><p>That bypasses resolved configuration and creates hidden global state. Pass the needed values through the config or tool context so tests and production see the same source of truth.</p></div></details><details class="qa"><summary>What is the configuration fingerprint used for?</summary><div class="qa-body"><p>It is a safe summary of effective settings, with no secrets, for logs and the startup banner. It helps reproduce and debug an environment without exposing keys.</p></div></details><details class="qa"><summary>What is the configuration precedence?</summary><div class="qa-body"><p>Explicit CLI overrides beat <code>.env</code>, which beats the shell environment, which beats built-in defaults. The resolved values are passed inward as one config object.</p></div></details><details class="qa"><summary>What does <code>findEnvFile</code> do?</summary><div class="qa-body"><p>It searches upward from the starting directory for the nearest <code>.env</code> file, stopping at the filesystem root. An explicit env-file path can override the search.</p></div></details><details class="qa"><summary>What does <code>normalizeModel</code> do?</summary><div class="qa-body"><p>It converts a bare model name into the canonical provider slug expected by the API, so a short name and a full slug do not silently become different models.</p></div></details><details class="qa"><summary>What is <code>fingerprint</code> used for?</summary><div class="qa-body"><p>It produces a safe summary of the effective configuration for logs and the startup banner. It must not expose secrets such as API keys.</p></div></details><details class="qa"><summary>What does <code>loadConfig</code> return?</summary><div class="qa-body"><p>A resolved configuration object containing the model, workspace root, memory file, command policy, step limit, and other runtime settings. Tools and the loop receive values from that object rather than reading the environment directly.</p></div></details></section>
+
+<section id="s04">
+<h2><span class="num">04</span><span>Workspace &amp; Path Policy</span></h2>
+
+<details class="qa"><summary>Why is rejecting <code>../</code> not enough on its own? What can a symlink do that a plain path cannot?</summary><div class="qa-body"><p>Rejecting <code>../</code> only catches one spelling of escape. Paths can be absolute, drive-relative, UNC, expanded from environment variables, or hidden behind a symlink or junction inside the workspace. The resolver must normalise first, resolve the deepest existing ancestor with <code>realpath</code>, then test containment.</p></div></details><details class="qa"><summary>Why must <code>~</code>, <code>%VAR%</code>, and <code>$VAR</code> be expanded before the containment check?</summary><div class="qa-body"><p>A path that looks harmless before expansion can become a home or system path afterwards. Expansion first means every later check sees the real path being requested. Checking before expansion would allow an environment variable or tilde to bypass the policy.</p></div></details><details class="qa"><summary>Why are <code>resolve()</code> and <code>resolveRead()</code> separate methods?</summary><div class="qa-body"><p>They express different policies: writes are fenced, reads are deliberately open. Separate methods make the asymmetry explicit and prevent a caller from accidentally applying the wrong rule.</p></div></details><details class="qa"><summary>Why resolve the deepest existing ancestor instead of the final path?</summary><div class="qa-body"><p>The final path may not exist yet. The deepest existing ancestor is the part that can be resolved with <code>realpath</code> to reveal symlinks or junctions; the not-yet-created remainder is appended afterwards.</p></div></details><details class="qa"><summary>What race remains even after careful path checks?</summary><div class="qa-body"><p>Time-of-check/time-of-use: the filesystem can change between the check and the write. Path policy is best-effort against mistakes; adversarial concurrency needs OS or container isolation.</p></div></details><details class="qa"><summary>What is <code>PathError</code>?</summary><div class="qa-body"><p>The error thrown when a requested path is invalid, malformed, or escapes the workspace under the strict write policy. It carries a clear reason for the refusal.</p></div></details><details class="qa"><summary>What is <code>rel</code>?</summary><div class="qa-body"><p>The normalised path relative to the workspace root, using <code>/</code> separators. The root itself is represented as <code>.</code>.</p></div></details><details class="qa"><summary>Why does <code>resolveRead</code> allow absolute paths?</summary><div class="qa-body"><p>Reads are deliberately open so the agent can inspect docs, logs, and libraries outside the workspace. Only mutation is fenced. Relative reads still start at the workspace root.</p></div></details><details class="qa"><summary>What is the containment test?</summary><div class="qa-body"><p>After normalisation and realpath resolution, the relative path must be empty or must not start with <code>..</code> and must not be absolute. If it fails, the write is refused.</p></div></details><details class="qa"><summary>Which Windows path forms are rejected?</summary><div class="qa-body"><p>Drive-absolute paths such as <code>C:\...</code>, drive-relative paths such as <code>C:foo</code>, and UNC paths such as <code>\\server\share</code> or <code>//server/share</code>.</p></div></details></section>
+
+<section id="s05">
+<h2><span class="num">05</span><span>Sandbox &amp; Command Safety</span></h2>
+
+<details class="qa"><summary>What is the difference between "we checked the command" and "the command cannot affect the host"?</summary><div class="qa-body"><p>A command scan is a permission check: it looks at what the command appears to do and allows or denies it. A container or kernel boundary changes what the command is capable of doing. The workspace fence and deny-list are useful, but they are not the same guarantee as isolation.</p></div></details><details class="qa"><summary>Why strip API keys and tokens from the child environment even when the command itself is allowed?</summary><div class="qa-body"><p>Least privilege: an allowed command still does not need the agent's secrets. Stripping keys and tokens prevents accidental printing, logging, or exfiltration through a command that was permitted for another reason. Policy and secret isolation are separate controls.</p></div></details><details class="qa"><summary>What is the difference between <code>ask</code>, <code>allow</code>, and <code>deny</code> command policies?</summary><div class="qa-body"><p><code>ask</code> requires confirmation and denies when there is no TTY; <code>allow</code> runs without a prompt; <code>deny</code> refuses. Hard-denied commands remain refused even under <code>--yes</code>.</p></div></details><details class="qa"><summary>Why can hard-denied commands not be overridden by <code>--yes</code>?</summary><div class="qa-body"><p>They are the non-negotiable safety floor. If a convenience flag could bypass them, the policy would provide no real guarantee for demos or unattended runs.</p></div></details><details class="qa"><summary>If command scanning can be bypassed, why keep it?</summary><div class="qa-body"><p>It is defence in depth. It catches obvious mistakes, adds friction to dangerous actions, and centralises policy. It is not the sole boundary; untrusted code still needs real isolation.</p></div></details><details class="qa"><summary>What is <code>ForbiddenError</code>?</summary><div class="qa-body"><p>The error type used when the sandbox refuses an action. It has code <code>FORBIDDEN</code> and a reason that can be returned to the model as an observation.</p></div></details><details class="qa"><summary>What is <code>shellWriteTargets</code>?</summary><div class="qa-body"><p>A scanner that inspects a shell command for paths it appears to write to, so the sandbox can apply the workspace write policy before running the command.</p></div></details><details class="qa"><summary>What is <code>tokenizeCommand</code>?</summary><div class="qa-body"><p>A helper that splits a command into tokens so the sandbox can inspect the command name, arguments, and apparent write targets without executing it.</p></div></details><details class="qa"><summary>What is <code>sandboxFor</code>?</summary><div class="qa-body"><p>A factory that binds a sandbox to a workspace and its policy, producing the object used by the tool dispatcher for write and command checks.</p></div></details><details class="qa"><summary>What does <code>Sandbox.check()</code> do?</summary><div class="qa-body"><p>It resolves the requested action and path, applies the workspace and command policy, and throws <code>ForbiddenError</code> when the action is not allowed.</p></div></details></section>
+
+<section id="s06">
+<h2><span class="num">06</span><span>Tools &amp; Dispatcher</span></h2>
+
+<details class="qa"><summary>Why return a tool error as text instead of throwing an exception that ends the run?</summary><div class="qa-body"><p>Throwing ends the run and loses the model's chance to adapt. Returning the error as a string keeps the protocol intact: every tool call gets a result, the observation becomes part of the message history, and the model can try a different approach on the next step.</p></div></details><details class="qa"><summary>What makes a tool schema good enough for a model to use reliably?</summary><div class="qa-body"><p>A clear name, a narrow argument set, obvious required fields, descriptions that explain when to use it, validation before execution, and a predictable result format. Small, boring schemas are easier for the model to call correctly and easier for the harness to check.</p></div></details><details class="qa"><summary>What belongs in a tool result string?</summary><div class="qa-body"><p>A truthful, bounded, model-readable outcome: success data, paths, errors, or refusals. It should contain enough context for the next step and must never be invented by the harness.</p></div></details><details class="qa"><summary>How should the dispatcher handle an unknown tool or invalid JSON arguments?</summary><div class="qa-body"><p>Return an error observation instead of crashing. Name the tool or parse problem clearly, and still produce a tool result so the loop can continue and the model can adapt.</p></div></details><details class="qa"><summary>Why should tools not be invoked directly by the model?</summary><div class="qa-body"><p>The model cannot execute code; it can only ask. Harness mediation provides validation, policy, logging, sandboxing, and a consistent result contract. Direct authority would remove those controls.</p></div></details><details class="qa"><summary>What is <code>TOOL_NAMES</code>?</summary><div class="qa-body"><p>The canonical ordered list of the eight tool names. It is used for schemas, prompt rules, error messages, and tests.</p></div></details><details class="qa"><summary>What is <code>TOOL_SCHEMAS</code>?</summary><div class="qa-body"><p>The OpenAI function-calling schemas sent with each model request. Each schema names the tool, describes it, and defines its parameters with <code>additionalProperties: false</code>.</p></div></details><details class="qa"><summary>What is <code>runTool</code>?</summary><div class="qa-body"><p>The dispatcher entry point. It validates the tool name and arguments, applies policy, calls the handler, and returns a string observation. Errors are returned as strings, not thrown out of the loop.</p></div></details><details class="qa"><summary>What is the difference between <code>create_file</code>, <code>write_file</code>, and <code>edit_file</code>?</summary><div class="qa-body"><p><code>create_file</code> fails if the file already exists; <code>write_file</code> replaces a whole file; <code>edit_file</code> replaces an exact <code>old_string</code> with a new string.</p></div></details><details class="qa"><summary>What is the <code>run_command</code> timeout?</summary><div class="qa-body"><p>Commands time out after 30 seconds. A timed-out command appends a timeout message to stderr and returns a non-zero result.</p></div></details></section>
+
+<section id="s07">
+<h2><span class="num">07</span><span>Model Call &amp; Provider Boundary</span></h2>
+
+<details class="qa"><summary>What should the loop do when the response is cut off by the token limit?</summary><div class="qa-body"><p>Do not treat a truncated response as a complete one. Inspect the finish reason or length signal, discard or repair incomplete tool arguments, and either retry with a clear instruction or stop with an honest message. Never invent the missing arguments.</p></div></details><details class="qa"><summary>Why inject the chat function instead of importing a provider client directly?</summary><div class="qa-body"><p>The loop should depend on an interface, not a vendor. Injecting the function makes it easy to swap providers, run offline with a fake model, and assert exactly which messages were sent without making a network request.</p></div></details><details class="qa"><summary>What are <code>llm.js</code> responsibilities, and what are they not?</summary><div class="qa-body"><p>It builds the request, calls the provider, handles timeouts and HTTP failures, and normalises the response shape. It does not orchestrate the loop, execute tools, or format terminal output.</p></div></details><details class="qa"><summary>Why normalise provider responses?</summary><div class="qa-body"><p>Providers differ in field names and tool-call representation. The loop should consume one stable shape, which reduces provider-specific branching and keeps the agent contract clear.</p></div></details><details class="qa"><summary>On a timeout, should <code>llm.js</code> retry silently?</summary><div class="qa-body"><p>No. Retry policy should be explicit and bounded at the caller. Silent retries can duplicate cost or side effects and hide latency; return a clear failure instead.</p></div></details><details class="qa"><summary>What is the <code>chat</code> signature?</summary><div class="qa-body"><p><code>chat({ apiKey, model, messages, tools, signal, timeoutMs = 90_000 })</code>. It returns a normalised assistant message with content, tool calls, and finish reason.</p></div></details><details class="qa"><summary>What is the request body?</summary><div class="qa-body"><p><code>{ model, messages, tools, max_tokens: 2048 }</code>. The tools are the eight function schemas; the messages are the current conversation state.</p></div></details><details class="qa"><summary>What is response normalisation?</summary><div class="qa-body"><p>Converting the provider response into a stable shape: assistant content, an array of tool calls, and a finish reason. The loop should not depend on provider-specific fields.</p></div></details><details class="qa"><summary>What is the truncation guard?</summary><div class="qa-body"><p>If <code>finish_reason</code> is <code>length</code> and there are no tool calls, the loop appends a user message asking the model to continue with smaller tool calls. A truncated tool call is never dispatched.</p></div></details><details class="qa"><summary>What happens on a model timeout?</summary><div class="qa-body"><p>The request is aborted through the signal and returns a clear failure. Retry policy is not hidden inside <code>llm.js</code>; the caller decides whether and how to retry.</p></div></details></section>
+
+<section id="s08">
+<h2><span class="num">08</span><span>Prompt, Context &amp; Memory Injection</span></h2>
+
+<details class="qa"><summary>What belongs in the prompt, and what belongs in code that the model cannot edit?</summary><div class="qa-body"><p>The prompt carries instructions, rules, the memory digest, and the tool contract. Code carries enforcement: path containment, command policy, step limits, output caps. Anything that must be guaranteed belongs in code, not in a request the model can ignore.</p></div></details><details class="qa"><summary>What happens when memory changes in the middle of a session?</summary><div class="qa-body"><p>The system prompt is rebuilt for each request, so a memory change can appear on the next model call without restarting the session. Conversation history remains, but the fresh prompt carries the current memory digest and rules.</p></div></details><details class="qa"><summary>Why is the system prompt not a security boundary?</summary><div class="qa-body"><p>It is text the model may ignore or be manipulated into overriding. Guarantees belong in code: path policy, command policy, limits, and validation. The prompt guides behaviour; it does not enforce it.</p></div></details><details class="qa"><summary>What is prompt injection in this agent?</summary><div class="qa-body"><p>Untrusted content such as file text or tool output contains instructions that try to override the system rules. Treat that content as data, keep least privilege, and enforce decisions outside the prompt.</p></div></details><details class="qa"><summary>Why keep tool schemas separate from the prompt text?</summary><div class="qa-body"><p>The schemas are a structured API contract sent with the request; the prompt describes behaviour. Mixing them duplicates information and lets the two definitions drift apart.</p></div></details><details class="qa"><summary>What is <code>systemRules</code>?</summary><div class="qa-body"><p>The prose rules that tell the model which tools exist, that reads are open, that writes are fenced, and how to work safely. The tool names are interpolated into the rules.</p></div></details><details class="qa"><summary>What is <code>buildSystemPrompt</code>?</summary><div class="qa-body"><p>A function that returns the system rules and appends the current memory digest when a memory store and digest exist.</p></div></details><details class="qa"><summary>What is the memory digest?</summary><div class="qa-body"><p>The bounded set of memory lines, each starting with <code>- [</code>, that is injected into the system prompt. It is not the whole memory file.</p></div></details><details class="qa"><summary>Why rebuild the system prompt for every task?</summary><div class="qa-body"><p>Memory can change between tasks. Rebuilding the prompt means the next model call sees the latest durable notes without restarting the process or carrying a stale prompt in history.</p></div></details></section>
+
+<section id="s09">
+<h2><span class="num">09</span><span>Agent Loop &amp; Message Protocol</span></h2>
+
+<details class="qa"><summary>Why must every <code>tool_call_id</code> get a matching tool result before the next model call?</summary><div class="qa-body"><p>The provider protocol expects each assistant <code>tool_call</code> to be followed by a tool message carrying the same <code>tool_call_id</code>. Without that pairing the next request is malformed, and the model sees an incomplete record of what it asked for and what happened.</p></div></details><details class="qa"><summary>Why does the loop need a step limit?</summary><div class="qa-body"><p>Without a limit, a confused model can loop forever, spend money, or flood the transcript. A step limit turns that into a bounded, observable failure with a clear reason, and it makes loop tests deterministic.</p></div></details><details class="qa"><summary>Why append the assistant reply before executing its tools?</summary><div class="qa-body"><p>The history must show what the model requested. Tool results then attach to that assistant turn through their ids. Without the assistant message, the tool messages have no preceding call.</p></div></details><details class="qa"><summary>What if the model returns text and tool calls together?</summary><div class="qa-body"><p>Preserve the text in the assistant message and process the tool calls. The text may be commentary; the reply is not final until a model response contains no tool calls.</p></div></details><details class="qa"><summary>Why not automatically retry a failed tool?</summary><div class="qa-body"><p>The failure is an observation for the model to reason about. Blind retries can repeat side effects. Any retry policy should be explicit, bounded, and owned by the caller.</p></div></details><details class="qa"><summary>What does <code>runTask</code> return?</summary><div class="qa-body"><p>An object such as <code>{ ok, reason, messages }</code>. The CLI uses the result to choose an exit code and to decide whether to carry history into the next task.</p></div></details><details class="qa"><summary>What is <code>maxSteps</code>?</summary><div class="qa-body"><p>The maximum number of model/tool iterations for one task. It bounds cost and runaway loops and turns an endless run into an observable step-limit failure.</p></div></details><details class="qa"><summary>What is <code>history</code>?</summary><div class="qa-body"><p>The message array carried from previous tasks in a session. The loop prepends a fresh system prompt, then the history, then the new user task.</p></div></details><details class="qa"><summary>What is <code>StepLimit</code>?</summary><div class="qa-body"><p>The hook fired when the loop exhausts <code>maxSteps</code>. It receives the step count and messages and is followed by <code>SessionEnd</code> with a failure reason.</p></div></details><details class="qa"><summary>What is <code>SessionEnd</code>?</summary><div class="qa-body"><p>The hook fired on every exit path, including success, step limit, hook block, and request failure. It is the final lifecycle observation for the run.</p></div></details></section>
+
+<section id="s10">
+<h2><span class="num">10</span><span>Hooks &amp; Lifecycle</span></h2>
+
+<details class="qa"><summary>Which hook would you use to log every model request, and which would you use to block a dangerous tool?</summary><div class="qa-body"><p>Log every request with <code>PreModel</code> or <code>PostModel</code>; both observe the model boundary. Block a dangerous action with <code>PreToolUse</code>, because that fires after the model has chosen a tool but before the dispatcher executes it.</p></div></details><details class="qa"><summary>What does "first block wins" mean for hook handlers?</summary><div class="qa-body"><p>The first handler that returns a block stops the action. Later handlers for that moment are skipped, and the tool or run does not proceed. The first refusal is the decision, which keeps policy order predictable.</p></div></details><details class="qa"><summary>What can <code>PostToolUse</code> change that <code>PreToolUse</code> cannot?</summary><div class="qa-body"><p><code>PostToolUse</code> sees the result and may replace the observation text. <code>PreToolUse</code> sees the proposed call and may block it before execution. They run at different times for different purposes.</p></div></details><details class="qa"><summary>Why inject hooks instead of importing a global hook registry?</summary><div class="qa-body"><p>Injected hooks are scoped to a run, easy to test, and free of cross-test global state. A global registry makes behaviour depend on registration order and hidden setup.</p></div></details><details class="qa"><summary>What is the danger of putting policy only in hooks?</summary><div class="qa-body"><p>Hooks are optional and can be missing or misconfigured. Safety must hold by default in the core. Hooks are for observation and extension, not the only enforcement layer.</p></div></details><details class="qa"><summary>What are the nine hook events?</summary><div class="qa-body"><p><code>SessionStart</code>, <code>UserPromptSubmit</code>, <code>PreModel</code>, <code>PostModel</code>, <code>PreToolUse</code>, <code>PostToolUse</code>, <code>Stop</code>, <code>StepLimit</code>, and <code>SessionEnd</code>.</p></div></details><details class="qa"><summary>What is a hook payload?</summary><div class="qa-body"><p>An event-specific object. For example, <code>PreToolUse</code> receives the tool name, arguments, and step; <code>PostToolUse</code> receives the result and success flag.</p></div></details><details class="qa"><summary>What is <code>traceHooks</code>?</summary><div class="qa-body"><p>The default trace that prints <code>[HOOK:Name]</code> lines as hooks fire. It makes lifecycle behaviour visible without attaching custom handlers.</p></div></details><details class="qa"><summary>What is <code>hookMeta</code>?</summary><div class="qa-body"><p>The catalogue metadata for each hook: name, icon, colour, timing, payload, capabilities, and teaching note. It powers <code>--hooks</code> and the trace.</p></div></details><details class="qa"><summary>What is <code>printHookCatalogue</code>?</summary><div class="qa-body"><p>The function behind <code>--hooks</code>. It prints the nine-hook catalogue and a hint for attaching handlers with <code>hooks.on(...)</code>.</p></div></details></section>
+
+<section id="s11">
+<h2><span class="num">11</span><span>Memory &amp; Persistence</span></h2>
+
+<details class="qa"><summary>What deserves a durable memory entry, and what should the agent rediscover each run?</summary><div class="qa-body"><p>Store durable facts: project decisions, stable preferences, constraints that should survive a restart. Rediscover transient things such as directory listings, file contents, test output, and today's task details. Memory is for what is expensive to lose, not for everything the agent has seen.</p></div></details><details class="qa"><summary>Why not simply store everything the agent sees in memory?</summary><div class="qa-body"><p>Memory is for durable, reusable facts, not a transcript copy. Storing everything makes the file stale and expensive to inject, hides the current truth among old observations, and turns memory into an unbounded second context window.</p></div></details><details class="qa"><summary>How does memory avoid duplicate entries?</summary><div class="qa-body"><p>Use a stable key, slug, or normalised comparison and refresh the existing entry instead of appending another. Deduplicate on write and keep the file bounded.</p></div></details><details class="qa"><summary>What happens when memory exceeds the prompt budget?</summary><div class="qa-body"><p>Select the most relevant or recent entries within the configured character or token budget, and state what was omitted. The file may hold more than the prompt injects.</p></div></details><details class="qa"><summary>Why search or query memory instead of injecting everything?</summary><div class="qa-body"><p>Large memory bloats the context, distracts the model, and may exceed the window. Retrieval keeps the prompt focused on what the current task needs.</p></div></details><details class="qa"><summary>What is the memory file format?</summary><div class="qa-body"><p>One bullet per memory: <code>- [tag] text _(date)_</code>. The tag classifies the note, and the date records when it was last written.</p></div></details><details class="qa"><summary>What is <code>remember</code>?</summary><div class="qa-body"><p>The tool that adds or refreshes a durable memory entry. It normalises whitespace and avoids duplicate entries.</p></div></details><details class="qa"><summary>What is <code>recall</code>?</summary><div class="qa-body"><p>The tool that searches memory for relevant entries and returns a bounded result. It is the lazy retrieval path, complementing the eager prompt digest.</p></div></details><details class="qa"><summary>What is <code>digest</code>?</summary><div class="qa-body"><p>The bounded set of memory entries injected into the system prompt. It is selected from the file and capped by the prompt budget.</p></div></details><details class="qa"><summary>What are <code>maxEntries</code> and <code>promptChars</code>?</summary><div class="qa-body"><p>Bounds on the memory store and the prompt digest. They prevent memory from growing without limit or swallowing the context window.</p></div></details></section>
+
+<section id="s12">
+<h2><span class="num">12</span><span>UI, Output &amp; TTY Behaviour</span></h2>
+
+<details class="qa"><summary>What breaks when formatting code is scattered through the agent loop?</summary><div class="qa-body"><p>Formatting and logic become entangled. Tests must match colour codes and spacing, logs contain ANSI escapes when redirected, and the loop cannot run without the presentation layer. Keeping output in <code>ui.js</code> makes both layers easier to change.</p></div></details><details class="qa"><summary>How does keeping presentation in one file make testing easier?</summary><div class="qa-body"><p>The UI layer can be tested or disabled independently, colour can be stripped for logs, and the loop can be tested without matching ANSI codes. It also prevents presentation changes from forcing changes in agent logic.</p></div></details><details class="qa"><summary>Why should UI helpers own formatting rather than embed decisions?</summary><div class="qa-body"><p>Formatting should be deterministic and testable, separate from logic. Central helpers make output consistent, allow colour stripping, and keep decisions in the agent rather than the printer.</p></div></details><details class="qa"><summary>What should happen when stdout is not a TTY?</summary><div class="qa-body"><p>Disable colour and interactive prompts, emit plain text, and deny confirmation rather than hang. Redirected logs must remain readable and machine-friendly.</p></div></details><details class="qa"><summary>Why format tool results in the UI instead of inside <code>tools.js</code>?</summary><div class="qa-body"><p>Tools produce data and result strings; the UI decides presentation. Mixing them makes tools depend on a terminal and harder to reuse or test.</p></div></details><details class="qa"><summary>What is <code>ui</code>?</summary><div class="qa-body"><p>The single module for terminal presentation: step headers, tool calls, results, errors, refusals, memory notes, and exit notes. The agent loop does not format output itself.</p></div></details><details class="qa"><summary>What are <code>ui.tool</code>, <code>ui.result</code>, <code>ui.error</code>, and <code>ui.forbidden</code>?</summary><div class="qa-body"><p>Output helpers for the corresponding events. They keep formatting consistent and make the terminal transcript readable.</p></div></details><details class="qa"><summary>How does colour behave without a TTY?</summary><div class="qa-body"><p>Colour and interactive formatting should be disabled or reduced so redirected logs remain plain and machine-readable.</p></div></details><details class="qa"><summary>What is <code>ui.exitNote</code>?</summary><div class="qa-body"><p>A helper that prints a plain-English explanation for a non-zero exit code, such as a missing task, a failed request, or a step-limit stop.</p></div></details><details class="qa"><summary>What is <code>ui.memory</code>?</summary><div class="qa-body"><p>The helper that prints how many memory entries were added to the system prompt, making memory injection visible.</p></div></details></section>
+
+<section id="s13">
+<h2><span class="num">13</span><span>Heartbeat &amp; Liveness</span></h2>
+
+<details class="qa"><summary>What can a heartbeat prove, and what can it never prove?</summary><div class="qa-body"><p>A heartbeat proves the process is alive and still scheduling work. It cannot prove progress, correctness, or that a remote call is healthy. A heartbeat during a hung model request still tells you the process has not died, which is useful for locating the stall.</p></div></details><details class="qa"><summary>What should an external watchdog do if the heartbeat stops?</summary><div class="qa-body"><p>A watchdog can treat the process as stalled or dead and restart or report it. The process itself may be unable to announce failure if its event loop is blocked, which is exactly why the heartbeat is external evidence, not a self-certification.</p></div></details><details class="qa"><summary>Why update a timestamp instead of printing a heartbeat line every interval?</summary><div class="qa-body"><p>A timestamp is cheap, machine-readable, and does not flood the transcript. An external watchdog can poll it while the real output stays readable.</p></div></details><details class="qa"><summary>Can a heartbeat keep a hung operation alive?</summary><div class="qa-body"><p>No. It reports liveness; it cannot unblock a hung call. Timeouts, cancellation, or an external watchdog must handle the actual stall.</p></div></details><details class="qa"><summary>Where should heartbeat logic live?</summary><div class="qa-body"><p>At the process or CLI boundary, or injected into a long-running loop as a dependency. The core agent should not depend on a specific heartbeat transport.</p></div></details><details class="qa"><summary>What is <code>heartbeat(log, ms)</code>?</summary><div class="qa-body"><p>A helper that periodically updates a liveness timestamp through the injected logger. It shows the process is still alive during long operations.</p></div></details><details class="qa"><summary>What is <code>heartbeatMs</code>?</summary><div class="qa-body"><p>The configured heartbeat interval passed into the run. It controls how often the liveness timestamp is refreshed.</p></div></details><details class="qa"><summary>What is <code>log</code>?</summary><div class="qa-body"><p>The injected logging interface. The heartbeat uses it instead of writing directly to the terminal, which keeps the helper testable.</p></div></details><details class="qa"><summary>How is the heartbeat cleaned up?</summary><div class="qa-body"><p>The interval is cleared in a <code>finally</code> path so it stops when the model call or run ends, including on failure.</p></div></details><details class="qa"><summary>Where is the heartbeat started?</summary><div class="qa-body"><p>Around the model call, before <code>chatFn</code> is invoked. That is the long external operation where liveness matters most.</p></div></details></section>
+
+<section id="s14">
+<h2><span class="num">14</span><span>Demo &amp; Scorecard</span></h2>
+
+<details class="qa"><summary>What is the difference between a demo that runs successfully and a demo that proves a guard held?</summary><div class="qa-body"><p>A successful run only shows that a path executed. A proof checks the expected observation: the forbidden write returns <code>FORBIDDEN</code>, the file is absent on disk, the denied command does not run, and the scorecard records that result. Evidence beats a green checkmark.</p></div></details><details class="qa"><summary>Why is a scripted model preferable to mocking the HTTP layer in the demo?</summary><div class="qa-body"><p>A scripted model returns the exact assistant messages and tool calls the demo needs, so the loop and dispatcher are exercised directly. Mocking HTTP still forces the learner to reason through transport details that are irrelevant to the demo’s purpose.</p></div></details><details class="qa"><summary>What should the scripted model return first in the demo?</summary><div class="qa-body"><p>A tool call that exercises a teaching point, such as listing, writing, or running. Later calls react to those results and end with a final answer. The demo should show the loop, not just print text.</p></div></details><details class="qa"><summary>Why should the demo deliberately attempt a forbidden write or denied command?</summary><div class="qa-body"><p>It produces a real observation from the guard: a <code>FORBIDDEN</code> or <code>DENIED</code> result, no file or command side effect, and a scorecard entry. The demo proves the refusal path works instead of only showing successful actions.</p></div></details><details class="qa"><summary>What should the scorecard not claim?</summary><div class="qa-body"><p>It should not claim full security, container isolation, or live-model correctness. It reports only what the scripted run observed, and its limits should be stated honestly.</p></div></details><details class="qa"><summary>What is <code>DEMO_SCRIPT</code>?</summary><div class="qa-body"><p>The scripted sequence of assistant messages and tool calls used by the offline demo. It exercises the loop, tools, guards, and final answer without a network.</p></div></details><details class="qa"><summary>What is <code>demo.js</code>?</summary><div class="qa-body"><p>The offline demo module that supplies the scripted model and runs the scorecard. It is the no-key path for teaching and verification.</p></div></details><details class="qa"><summary>What is the scorecard?</summary><div class="qa-body"><p>A summary that reads the demo's own tool results and reports what happened, including whether refusals and guards behaved as expected.</p></div></details><details class="qa"><summary>What is <code>--demo</code>?</summary><div class="qa-body"><p>The CLI flag that runs the scripted demo instead of a live model. It needs no API key and no network.</p></div></details><details class="qa"><summary>Why is <code>DEMO_SCRIPT.length + 1</code> used for <code>maxSteps</code>?</summary><div class="qa-body"><p>It gives the scripted model enough steps to emit every scripted response and still reach a final answer, while keeping the run bounded.</p></div></details></section>
+
+<section id="s15">
+<h2><span class="num">15</span><span>Testing &amp; Determinism</span></h2>
+
+<details class="qa"><summary>Which dependency would you inject first to test the loop without a real model?</summary><div class="qa-body"><p>Inject the model first. A fake model can return a scripted tool call followed by a final answer, which drives the loop deterministically without a network key. The clock, logger, confirmation function, hooks, memory, and workspace can then be added as needed.</p></div></details><details class="qa"><summary>What is a fake model, and what should it record?</summary><div class="qa-body"><p>A fake model is a function with the same interface as the real chat call, returning canned responses. It should record the messages it received and the order of calls so tests can assert what the loop sent and when.</p></div></details><details class="qa"><summary>What should be tested with a fake model versus a real temporary filesystem?</summary><div class="qa-body"><p>Use a fake model for loop protocol, ordering, and termination. Use real temporary directories for workspace resolution, sandbox writes, and memory persistence. Integration tests combine both at the boundaries.</p></div></details><details class="qa"><summary>Why must the write fence and command policy have negative tests?</summary><div class="qa-body"><p>Refusals are the safety contract. Tests must prove that an outside write returns <code>FORBIDDEN</code> without touching disk, that a hard-denied command never runs, and that a denied confirmation has no side effect.</p></div></details><details class="qa"><summary>Which dependencies must be injected to make the agent loop deterministic?</summary><div class="qa-body"><p>At minimum the model, clock, logger, confirmation function, hooks, memory, and workspace. Temporary directories and fixed inputs remove filesystem and timing variation; no test should depend on network access or shared global state.</p></div></details><details class="qa"><summary>What is a fake model?</summary><div class="qa-body"><p>A function with the same interface as the real chat call that returns canned assistant messages. It records the requests it receives so tests can assert the loop's behaviour.</p></div></details><details class="qa"><summary>What is <code>node:test</code>?</summary><div class="qa-body"><p>The built-in Node.js test runner used by the project. It avoids adding a test framework dependency.</p></div></details><details class="qa"><summary>What is <code>assert</code>?</summary><div class="qa-body"><p>The built-in Node.js assertion module used to check expected values and thrown errors in tests.</p></div></details><details class="qa"><summary>What is a test seam?</summary><div class="qa-body"><p>An injected dependency such as the model, clock, logger, confirmation function, hooks, memory, or workspace. Seams let tests replace real I/O with deterministic fakes.</p></div></details><details class="qa"><summary>What is an offline test?</summary><div class="qa-body"><p>A test that needs no network, API key, or external service. The real loop runs with a fake model and temporary filesystem state.</p></div></details></section>
+
+<section id="s16">
+<h2><span class="num">16</span><span>Acceptance Criteria &amp; Failure Modes</span></h2>
+
+<details class="qa"><summary>Which acceptance criterion would catch a regression in the write fence?</summary><div class="qa-body"><p>The clearest criterion is the write-fence test: attempt a write outside <code>workspace/</code>, confirm one <code>FORBIDDEN</code> line and a returned observation, and verify that no file was created. That catches regressions in path resolution, policy, and tool behaviour together.</p></div></details><details class="qa"><summary>Why should acceptance criteria be observable at the CLI level?</summary><div class="qa-body"><p>The CLI is the user-facing contract. Observable criteria catch integration failures that unit tests can miss, and they can be checked without knowing internal function names. If the behaviour cannot be observed from outside, it is hard to call it done.</p></div></details><details class="qa"><summary>What exit code should a run return when it hits the step limit, and why?</summary><div class="qa-body"><p>The specified step-limit exit code should be distinct from success, usage errors, and missing-key failures. It lets scripts and tests distinguish "the agent stopped because it ran out of budget" from other failure modes.</p></div></details><details class="qa"><summary>What observable evidence should the acceptance suite require for a blocked command?</summary><div class="qa-body"><p>A refusal line, a returned <code>DENIED</code> observation, no command side effect, and the expected hook trace or exit behaviour. The test should fail if any of those are missing.</p></div></details><details class="qa"><summary>Which sandbox failure paths must acceptance cover?</summary><div class="qa-body"><p>An outside write, a hard-denied command under <code>--yes</code>, an <code>ask</code> policy with no TTY, a blocked <code>PreToolUse</code> hook, and a child environment without secrets. These are the behaviours that define the safety contract.</p></div></details><details class="qa"><summary>What are acceptance criteria?</summary><div class="qa-body"><p>Observable behaviours the finished app must demonstrate, such as a refused outside write, a denied command, a persisted memory, or a step-limit exit code.</p></div></details><details class="qa"><summary>What is the write fence test?</summary><div class="qa-body"><p>Attempt a write outside <code>workspace/</code>, confirm a <code>FORBIDDEN</code> observation and one refusal line, and verify that no file was created.</p></div></details><details class="qa"><summary>What is the command policy test?</summary><div class="qa-body"><p>Check that <code>deny</code> refuses all commands, <code>ask</code> denies without a TTY, <code>allow</code> runs permitted commands, and hard-denied commands cannot be overridden by <code>--yes</code>.</p></div></details><details class="qa"><summary>What is the memory persistence test?</summary><div class="qa-body"><p>Write a memory, restart the process, and confirm the entry is still present and available to <code>recall</code> or the prompt digest.</p></div></details><details class="qa"><summary>What is the hook trace test?</summary><div class="qa-body"><p>Run a normal task and confirm the expected <code>[HOOK:Name]</code> lines appear in order, and that <code>--no-hooks</code> silences them.</p></div></details></section>
+
+<section id="s17">
+<h2><span class="num">17</span><span>Design Philosophy &amp; Extension</span></h2>
+
+<details class="qa"><summary>What goes wrong if you build the agent loop before the workspace and sandbox contracts?</summary><div class="qa-body"><p>You get a loop that can act before the world around it is trustworthy. Writes, reads, command policy, and tool results are all undefined or unsafe, and tests become coupled to whatever behaviour happens to emerge. Contracts first make the loop small and predictable.</p></div></details><details class="qa"><summary>Why build the UI early if it is not core agent logic?</summary><div class="qa-body"><p>The UI establishes the project's output language early: step headers, tool results, errors, and refusals. Building it first gives later code a stable presentation seam, makes demos readable, and keeps formatting tests separate from agent logic.</p></div></details><details class="qa"><summary>Which contracts must be stable before <code>agent.js</code> can be tested with a fake model?</summary><div class="qa-body"><p>The chat-function interface, the tool dispatcher and result format, the hook API, the memory query/update contract, and the workspace write policy. Once those seams are fixed, the loop can be driven deterministically.</p></div></details><details class="qa"><summary>What is a good checkpoint after the sandbox is complete?</summary><div class="qa-body"><p>Prove that an allowed write succeeds, an outside write is refused with no side effect, a denied command is blocked, and secrets are absent from the child environment. Then build on that trusted base.</p></div></details><details class="qa"><summary>Why defer the CLI until the loop works?</summary><div class="qa-body"><p>The CLI adds flags, sessions, streams, signals, and process exits. The core loop and its fakes should be proven first; the CLI then wires a tested library into a program.</p></div></details><details class="qa"><summary>Which additions would violate the project’s bounded-autonomy constraint?</summary><div class="qa-body"><p>Arbitrary shell execution without policy, unbounded loops or output, automatic dependency installation, a hidden memory index, or multi-agent orchestration without explicit limits. Each adds authority or state the harness cannot reliably bound.</p></div></details><details class="qa"><summary>What constraints must any new feature satisfy without breaking the architecture?</summary><div class="qa-body"><p>It must have one obvious place, remain testable offline, respect existing path and command policy, avoid hidden global state, stay within bounded limits, and not make the core loop harder to explain or observe.</p></div></details><details class="qa"><summary>Why is hidden global state a problem for the agent’s behaviour and tests?</summary><div class="qa-body"><p>It makes behaviour depend on prior runs or module load order, so the same messages can produce different results. Explicit state passed through <code>runTask</code> keeps behaviour reproducible and lets tests control every input.</p></div></details><details class="qa"><summary>What does bounded autonomy mean in practice?</summary><div class="qa-body"><p>Limits on steps, time, output, memory, command policy, and permissions. The agent can act, but it cannot run forever, spend without bound, or escape its defined scope.</p></div></details><details class="qa"><summary>What safety claims must the project avoid making about its sandbox?</summary><div class="qa-body"><p>It must not claim container-level isolation, complete command safety, or that the deny-list cannot be bypassed. It should state that the workspace fence and command scanner are best-effort and that untrusted code needs a real external boundary.</p></div></details><details class="qa"><summary>What does "one obvious place for each decision" mean?</summary><div class="qa-body"><p>Config in <code>config.js</code>, path policy in <code>workspace.js</code>, mutation policy in <code>sandbox.js</code>, prompt in <code>prompt.js</code>, presentation in <code>ui.js</code>, and process concerns in <code>cli.js</code>.</p></div></details><details class="qa"><summary>What is bounded autonomy?</summary><div class="qa-body"><p>The agent can act, but only within explicit limits: step count, command policy, output caps, memory bounds, timeouts, and workspace containment.</p></div></details><details class="qa"><summary>What is honest safety?</summary><div class="qa-body"><p>Stating that the workspace fence and command scanner are best-effort, not a container, and that untrusted code needs a real external isolation boundary.</p></div></details><details class="qa"><summary>What is "no hidden state"?</summary><div class="qa-body"><p>Memory is a file, history is a message array, and configuration is a resolved object. Behaviour should not depend on invisible globals or module load order.</p></div></details><details class="qa"><summary>What does "small enough to explain" mean?</summary><div class="qa-body"><p>The project resists features that make the core loop harder to read, test, or observe. One loop, eight tools, nine hooks, and a small set of files.</p></div></details></section>
+
+<section id="s18">
+<h2><span class="num">18</span><span>Operations, Troubleshooting &amp; Limits</span></h2>
+
+<details class="qa"><summary>What must the repository contain for the offline demo to run without external services?</summary><div class="qa-body"><p>Source files, a working package script, the scripted model and demo data, and a command that needs no API key or network. The demo must create its own workspace state and clean up or isolate it safely.</p></div></details><details class="qa"><summary>What operational information must the README provide to reproduce the demo and a live run?</summary><div class="qa-body"><p>The install and run commands, the offline demo command, the environment variables required for live mode, where output and workspace files appear, and the known limitations of the sandbox.</p></div></details><details class="qa"><summary>How should the build prompt relate to the implementation so the two stay accurate?</summary><div class="qa-body"><p>The prompt should specify the same file boundaries, exported contracts, and observable behaviours as the code. When the implementation changes, the prompt must change with it; otherwise it becomes an inaccurate second specification.</p></div></details><details class="qa"><summary>Which boundaries must an architecture diagram make explicit?</summary><div class="qa-body"><p>The loop and dispatcher, the workspace write fence, the sandbox boundary, hook call sites, the memory file, and the separation between CLI, UI, and agent. The diagram should show direction of control and where policy is enforced.</p></div></details><details class="qa"><summary>What limitations must the README state about the workspace fence and sandbox?</summary><div class="qa-body"><p>That the fence is a path policy, not a container; that command scanning is best-effort and bypassable; that reads are deliberately open; and that strong isolation requires an external boundary such as Docker or a kernel sandbox.</p></div></details><details class="qa"><summary>What are the most common failure modes?</summary><div class="qa-body"><p>A missing API key, no TTY for confirmation, a step-limit stop, a forbidden path, a denied command, or a model request failure. Each has a distinct message or exit code.</p></div></details><details class="qa"><summary>What does <code>--help</code> show?</summary><div class="qa-body"><p>Usage, flags, and examples. It works without a key or configuration.</p></div></details><details class="qa"><summary>What does <code>--hooks</code> show?</summary><div class="qa-body"><p>The full nine-hook catalogue with timing, payload, capabilities, and a hint for attaching handlers. It needs no key.</p></div></details><details class="qa"><summary>What does <code>--memory</code> show?</summary><div class="qa-body"><p>The memory store, its label, and the exact digest that would be injected into the system prompt. It needs configuration but no model call.</p></div></details><details class="qa"><summary>What are the known limitations?</summary><div class="qa-body"><p>The workspace fence is a path policy, not a container; reads are open; command scanning is best-effort and bypassable; and strong isolation requires Docker or a kernel sandbox.</p></div></details><details class="qa"><summary>How should a student troubleshoot a failed run?</summary><div class="qa-body"><p>Read the red error line, check the exit code meaning, inspect the hook trace, and verify the workspace path, command policy, API key, and step limit.</p></div></details></section>
+
+
+      <div class="colophon">
+        Built from <code>reverse-engineering.md</code> &middot; 18 sections &middot; mini-coding-js explainer series
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  var toc = document.getElementById('toc');
+  var links = toc.querySelectorAll('a');
+  var sections = [];
+  links.forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({link:a, el:el});
+  });
+  function onScroll(){
+    var y = window.scrollY + 80;
+    var active = null;
+    for (var i = 0; i < sections.length; i++){
+      if (y >= sections[i].el.offsetTop) active = sections[i];
+    }
+    sections.forEach(function(s){ s.link.classList.remove('active'); });
+    if (active) active.link.classList.add('active');
+    var bar = document.getElementById('bar');
+    var doc = document.documentElement;
+    var pct = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+    bar.style.width = Math.max(0, Math.min(1, pct || 0)) * 100 + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+<button id="stylebtn" type="button" aria-expanded="false" aria-controls="stylepanel"
+        aria-label="Site customiser" title="Site customiser">Aa</button>
+
+<aside id="stylepanel" hidden aria-label="Site customiser">
+  <div class="sp-head">
+    <h2>Site customiser</h2>
+    <select id="sp-mode" aria-label="Colour mode">
+      <option value="auto">System</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+    <button id="sp-close" type="button" aria-label="Close site customiser">&#10005;</button>
+  </div>
+  <div class="sp-body" id="sp-body"></div>
+  <div class="sp-foot">
+    <button id="sp-reset" type="button">Reset</button>
+    <span class="spacer"></span>
+    <button id="sp-copy" type="button">Copy CSS</button>
+  </div>
+</aside>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     Site customiser - Light / Dark / System only.
+     The page's CSS custom properties are the settings schema, so
+     the panel can never drift from the stylesheet. Colours are kept
+     per mode, and every control writes to both the TOC sidebar and
+     the content pane because they share the same tokens.
+     ============================================================ */
+
+  var FONT_OPTIONS = {
+    serif: [
+      { label: 'Iowan / Palatino', value: "'Iowan Old Style',Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif" },
+      { label: 'Georgia', value: "Georgia,'Times New Roman',serif" },
+      { label: 'Charter / Cambria', value: "Charter,'Bitstream Charter',Cambria,Georgia,serif" },
+      { label: 'System serif', value: "ui-serif,'New York',Times,serif" }
+    ],
+    sans: [
+      { label: 'System sans', value: "-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif" },
+      { label: 'Inter / Helvetica', value: "Inter,'Helvetica Neue',Helvetica,Arial,sans-serif" },
+      { label: 'Arial', value: "Arial,'Helvetica Neue',Helvetica,sans-serif" },
+      { label: 'Verdana', value: "Verdana,Geneva,Tahoma,sans-serif" }
+    ],
+    mono: [
+      { label: 'JetBrains Mono', value: "'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace" },
+      { label: 'SF Mono / Consolas', value: "ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace" },
+      { label: 'Consolas', value: "Consolas,'Courier New',monospace" },
+      { label: 'Courier', value: "'Courier New',Courier,monospace" }
+    ]
+  };
+
+  var SPEC = [
+    { table: 'type', title: 'Type', items: [
+      { key: 'root_size', cssVar: '--root-size', kind: 'number', unit: 'px', min: 16, max: 40, step: 0.5, def: 24, label: 'Text size' },
+      { key: 'lh_body', cssVar: '--lh-body', kind: 'number', unit: '', min: 1.2, max: 2.2, step: 0.01, def: 1.66, label: 'Line height' },
+      { key: 'fs_code', cssVar: '--fs-code', kind: 'number', unit: 'rem', min: 0.6, max: 1.2, step: 0.005, def: 0.775, label: 'Code size' }
+    ] },
+    { table: 'layout', title: 'Layout', items: [
+      { key: 'sidebar', cssVar: '--sidebar', kind: 'number', unit: 'rem', min: 12, max: 30, step: 0.25, def: 19.25, label: 'Sidebar width' },
+      { key: 'measure', cssVar: '--measure', kind: 'number', unit: 'rem', min: 30, max: 72, step: 1, def: 46, label: 'Reading column' }
+    ] },
+    { table: 'fonts', title: 'Fonts', items: [
+      { key: 'serif', cssVar: '--serif', kind: 'font', options: FONT_OPTIONS.serif, def: FONT_OPTIONS.serif[0].value, label: 'Headings (serif)' },
+      { key: 'sans', cssVar: '--sans', kind: 'font', options: FONT_OPTIONS.sans, def: FONT_OPTIONS.sans[0].value, label: 'Body (sans)' },
+      { key: 'mono', cssVar: '--mono', kind: 'font', options: FONT_OPTIONS.mono, def: FONT_OPTIONS.mono[0].value, label: 'Code (mono)' }
+    ] },
+    { table: 'colors', title: 'Colours', colors: true, items: [
+      { key: 'paper', cssVar: '--paper', kind: 'color', label: 'Page background' },
+      { key: 'surface', cssVar: '--surface', kind: 'color', label: 'Sidebar / panel' },
+      { key: 'ivory', cssVar: '--ivory', kind: 'color', label: 'Cards and inputs' },
+      { key: 'ink', cssVar: '--ink', kind: 'color', label: 'Headings' },
+      { key: 'prose', cssVar: '--prose', kind: 'color', label: 'Body text' },
+      { key: 'muted', cssVar: '--muted', kind: 'color', label: 'Secondary text' },
+      { key: 'stone', cssVar: '--stone', kind: 'color', label: 'Faint labels' },
+      { key: 'line', cssVar: '--line', kind: 'color', label: 'Borders' },
+      { key: 'line_soft', cssVar: '--line-soft', kind: 'color', label: 'Hairlines' },
+      { key: 'tint', cssVar: '--tint', kind: 'color', label: 'Active nav' },
+      { key: 'terra', cssVar: '--terra', kind: 'color', label: 'Accent' },
+      { key: 'terra_dark', cssVar: '--terra-dark', kind: 'color', label: 'Links / eyebrow' },
+      { key: 'amber', cssVar: '--amber', kind: 'color', label: 'Warnings' },
+      { key: 'code_bg', cssVar: '--code-bg', kind: 'color', label: 'Code background' },
+      { key: 'code_bar', cssVar: '--code-bar', kind: 'color', label: 'Code caption bar' },
+      { key: 'code_line', cssVar: '--code-line', kind: 'color', label: 'Code border' },
+      { key: 'code_ink', cssVar: '--code-ink', kind: 'color', label: 'Code text' },
+      { key: 'code_dim', cssVar: '--code-dim', kind: 'color', label: 'Code comments' },
+      { key: 'code_accent', cssVar: '--code-accent', kind: 'color', label: 'Code caption text' }
+    ] }
+  ];
+
+  var DEFAULTS = {
+    base: {
+      root_size: 24, lh_body: 1.66, fs_code: 0.775, sidebar: 19.25, measure: 46,
+      serif: FONT_OPTIONS.serif[0].value,
+      sans: FONT_OPTIONS.sans[0].value,
+      mono: FONT_OPTIONS.mono[0].value
+    },
+    colors: {
+      light: {
+        paper: '#f0eee6', surface: '#fbfaf7', ivory: '#fffdfa', ink: '#1f1e1d',
+        prose: '#33302c', muted: '#55524c', stone: '#8c877c',
+        line: '#e0dbcf', line_soft: '#e9e4d8', tint: '#f6ede6',
+        terra: '#d97757', terra_dark: '#c9633f', amber: '#b9862f',
+        code_bg: '#23211e', code_bar: '#2b2823', code_line: '#3a3732',
+        code_ink: '#f2ece1', code_dim: '#a9a294', code_accent: '#f0b49a'
+      },
+      dark: {
+        paper: '#14171b', surface: '#1b1f24', ivory: '#232830', ink: '#eef2f6',
+        prose: '#c7d0d8', muted: '#9aa7b4', stone: '#7f8c99',
+        line: '#303944', line_soft: '#263039', tint: '#252f3b',
+        terra: '#e08a6a', terra_dark: '#eda07e', amber: '#d3a44a',
+        code_bg: '#111418', code_bar: '#181d22', code_line: '#2b343e',
+        code_ink: '#eef2f6', code_dim: '#8f9ba7', code_accent: '#f0b49a'
+      }
+    }
+  };
+
+  var INIT_MODE = 'auto';
+  var STORE = 'mca-site-customiser:v2';
+
+  var root = document.documentElement;
+  var darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
+  var copy = function (target, source) {
+    Object.keys(target).forEach(function (k) { delete target[k]; });
+    Object.keys(clone(source)).forEach(function (k) { target[k] = clone(source)[k]; });
+  };
+
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { saved = {}; }
+
+  var state = {
+    mode: saved.mode === 'light' || saved.mode === 'dark' || saved.mode === 'auto' ? saved.mode : INIT_MODE,
+    base: Object.assign(clone(DEFAULTS.base), saved.base || {}),
+    colors: {
+      light: Object.assign(clone(DEFAULTS.colors.light), (saved.colors || {}).light || {}),
+      dark: Object.assign(clone(DEFAULTS.colors.dark), (saved.colors || {}).dark || {})
+    }
+  };
+
+  var resolved = function () {
+    return state.mode === 'auto' ? (darkQuery && darkQuery.matches ? 'dark' : 'light') : state.mode;
+  };
+  var currentColors = function () { return state.colors[resolved()]; };
+
+  var cssVal = function (item, value) {
+    return item.unit ? value + item.unit : String(value);
+  };
+
+  var apply = function () {
+    root.setAttribute('data-theme', resolved());
+
+    SPEC.forEach(function (group) {
+      group.items.forEach(function (item) {
+        var value = item.kind === 'color' ? currentColors()[item.key] : state.base[item.key];
+        if (value === undefined || value === null || value === '') root.style.removeProperty(item.cssVar);
+        else root.style.setProperty(item.cssVar, cssVal(item, value));
+      });
+    });
+  };
+
+  var persist = function () {
+    try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* private mode */ }
+  };
+
+  /* ---- build the panel ---- */
+  var panel = document.getElementById('stylepanel');
+  var button = document.getElementById('stylebtn');
+  var panelBody = document.getElementById('sp-body');
+  var modeSelect = document.getElementById('sp-mode');
+  var refs = {};
+
+  var hex6 = function (value) {
+    var v = String(value || '').trim().replace('#', '');
+    if (v.length === 3) v = v.split('').map(function (c) { return c + c; }).join('');
+    return '#' + v.slice(0, 6).padStart(6, '0');
+  };
+
+  var ensureFontOption = function (select, value) {
+    if (!value) return;
+    var found = Array.prototype.some.call(select.options, function (opt) { return opt.value === value; });
+    if (!found) {
+      var option = document.createElement('option');
+      option.value = value;
+      option.textContent = 'Custom';
+      select.appendChild(option);
+    }
+  };
+
+  var addGroup = function (group) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sp-group';
+
+    var title = document.createElement('h3');
+    title.textContent = group.title;
+    if (group.colors) {
+      var tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.id = 'sp-modetag';
+      title.appendChild(tag);
+    }
+    wrap.appendChild(title);
+
+    if (group.colors) {
+      var grid = document.createElement('div');
+      grid.className = 'sp-colors';
+      group.items.forEach(function (item) {
+        var label = document.createElement('label');
+        var swatch = document.createElement('input');
+        swatch.type = 'color';
+        swatch.title = item.label + '  (' + item.cssVar + ')';
+        swatch.setAttribute('aria-label', item.label);
+        var name = document.createElement('span');
+        name.className = 'swatch-label';
+        name.textContent = item.label;
+        var hex = document.createElement('span');
+        hex.className = 'hex';
+        label.append(swatch, name, hex);
+        grid.appendChild(label);
+
+        swatch.addEventListener('input', function () {
+          currentColors()[item.key] = swatch.value;
+          hex.textContent = swatch.value;
+          apply();
+          persist();
+        });
+        refs[item.key] = { swatch: swatch, hex: hex };
+      });
+      wrap.appendChild(grid);
+      panelBody.appendChild(wrap);
+      return;
+    }
+
+    group.items.forEach(function (item) {
+      var row = document.createElement('div');
+      row.className = 'sp-row';
+      var label = document.createElement('label');
+      label.textContent = item.label;
+      row.appendChild(label);
+
+      if (item.kind === 'font') {
+        var select = document.createElement('select');
+        select.setAttribute('aria-label', item.label);
+        (item.options || []).forEach(function (option) {
+          var opt = document.createElement('option');
+          opt.value = option.value;
+          opt.textContent = option.label;
+          select.appendChild(opt);
+        });
+        ensureFontOption(select, state.base[item.key]);
+        select.value = state.base[item.key] || (item.options && item.options[0] ? item.options[0].value : '');
+        label.appendChild(select);
+        select.addEventListener('change', function () {
+          state.base[item.key] = select.value;
+          apply();
+          persist();
+        });
+        refs[item.key] = { select: select };
+      } else {
+        var out = document.createElement('output');
+        row.appendChild(out);
+        var input = document.createElement('input');
+        input.type = 'range';
+        input.min = item.min;
+        input.max = item.max;
+        input.step = item.step;
+        input.setAttribute('aria-label', item.label);
+        row.appendChild(input);
+        input.addEventListener('input', function () {
+          state.base[item.key] = Number(input.value);
+          out.textContent = input.value + (item.unit || '');
+          apply();
+          persist();
+        });
+        refs[item.key] = { input: input, out: out };
+      }
+      wrap.appendChild(row);
+    });
+
+    panelBody.appendChild(wrap);
+  };
+
+  SPEC.forEach(addGroup);
+
+  var refresh = function () {
+    if (modeSelect.value !== state.mode) modeSelect.value = state.mode;
+    var mode = resolved();
+    var modeTag = document.getElementById('sp-modetag');
+    if (modeTag) modeTag.textContent = mode;
+    if (button) button.title = 'Site customiser - ' + mode + ' mode';
+
+    SPEC.forEach(function (group) {
+      group.items.forEach(function (item) {
+        var ref = refs[item.key];
+        if (!ref) return;
+        if (item.kind === 'color') {
+          var value = currentColors()[item.key] || '#000000';
+          ref.swatch.value = hex6(value);
+          ref.hex.textContent = String(value);
+        } else if (item.kind === 'font') {
+          var font = state.base[item.key] || '';
+          ensureFontOption(ref.select, font);
+          ref.select.value = font;
+        } else {
+          var n = state.base[item.key];
+          ref.input.value = n;
+          ref.out.textContent = n + (item.unit || '');
+        }
+      });
+    });
+  };
+
+  var reopen = function () { apply(); refresh(); };
+
+  modeSelect.addEventListener('change', function () {
+    state.mode = modeSelect.value;
+    reopen();
+    persist();
+  });
+
+  var onSystemChange = function () { if (state.mode === 'auto') reopen(); };
+  if (darkQuery) {
+    if (darkQuery.addEventListener) darkQuery.addEventListener('change', onSystemChange);
+    else if (darkQuery.addListener) darkQuery.addListener(onSystemChange);
+  }
+  window.addEventListener('focus', onSystemChange);
+
+  document.getElementById('sp-reset').addEventListener('click', function () {
+    copy(state.base, DEFAULTS.base);
+    copy(state.colors.light, DEFAULTS.colors.light);
+    copy(state.colors.dark, DEFAULTS.colors.dark);
+    state.mode = INIT_MODE;
+    try { localStorage.removeItem(STORE); } catch (e) { /* ignore */ }
+    reopen();
+  });
+
+  var toCss = function () {
+    var lines = [
+      '/* generated by the site customiser - ' + resolved() + ' mode */',
+      '/* paste into the page <style>; rebuild after editing the palette */',
+      ':root{'
+    ];
+    SPEC.forEach(function (group) {
+      if (group.colors) return;
+      group.items.forEach(function (item) {
+        lines.push('  ' + item.cssVar + ':' + cssVal(item, state.base[item.key]) + ';');
+      });
+    });
+    var colorItems = SPEC[SPEC.length - 1].items;
+    colorItems.forEach(function (item) {
+      lines.push('  ' + item.cssVar + ':' + state.colors.light[item.key] + ';');
+    });
+    lines.push('}', '', 'html[data-theme="dark"]{');
+    colorItems.forEach(function (item) {
+      lines.push('  ' + item.cssVar + ':' + state.colors.dark[item.key] + ';');
+    });
+    lines.push('}');
+    return lines.join('\n');
+  };
+
+  var copyText = function (text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return false; });
+    }
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    area.remove();
+    return Promise.resolve(ok);
+  };
+
+  var copyBtn = document.getElementById('sp-copy');
+  copyBtn.addEventListener('click', function () {
+    copyText(toCss()).then(function (ok) {
+      copyBtn.textContent = ok ? 'Copied' : 'Copy failed';
+      setTimeout(function () { copyBtn.textContent = 'Copy CSS'; }, 1600);
+    });
+  });
+
+  var toggle = function (open) {
+    panel.hidden = !open;
+    button.setAttribute('aria-expanded', String(open));
+    if (open) { refresh(); }
+  };
+
+  button.addEventListener('click', function () { toggle(panel.hidden); });
+  document.getElementById('sp-close').addEventListener('click', function () { toggle(false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !panel.hidden) toggle(false);
+  });
+
+  apply();
+  refresh();
+})();
+</script>
+</body>
+</html>

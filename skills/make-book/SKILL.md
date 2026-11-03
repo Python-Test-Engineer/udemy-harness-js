@@ -143,11 +143,13 @@ so they cannot drift.
 A fixed bottom-right `Aa` button opens an `<aside id="stylepanel">` built at
 runtime from `panel_spec()` serialised into the page as JSON:
 
-- **Mode** select: `auto` / `light` / `dark`. `auto` follows
-  `prefers-color-scheme` and removes `data-theme` from `<html>`.
+- **Mode** select: **System** (`auto`) / **Light** / **Dark** only. System follows
+  `prefers-color-scheme`; Light and Dark write `data-theme` on `<html>` so the
+  TOC sidebar and content pane change together.
 - **Type** sliders: book text px, book line height, chrome px, chrome line height.
 - **Layout** sliders: sidebar width px, reading column %.
-- **Fonts**: one text input per stack; blank values are ignored.
+- **Fonts**: one curated dropdown per stack (`<select>`), never a free-text
+  input; a theme font outside the list is preserved as a `Custom` option.
 - **Colours**: a swatch + hex per key, editing only the *resolved* scheme
   (light and dark are kept as separate state, so an edit in dark never clobbers
   the light value).

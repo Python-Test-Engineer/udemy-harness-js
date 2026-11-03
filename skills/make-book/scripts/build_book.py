@@ -146,6 +146,29 @@ DEFAULT_FONTS = {
     "mono": '"JetBrains Mono", "Cascadia Mono", Consolas, ui-monospace, monospace',
 }
 
+# Curated stacks for the appearance panel. The panel renders these as <select>
+# dropdowns; a theme font that is not listed is preserved as a "Custom" option.
+FONT_OPTIONS = {
+    "serif": [
+        {"label": "Iowan / Palatino", "value": '"Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif'},
+        {"label": "Georgia", "value": 'Georgia, "Times New Roman", serif'},
+        {"label": "Charter / Cambria", "value": 'Charter, "Bitstream Charter", Cambria, Georgia, serif'},
+        {"label": "System serif", "value": 'ui-serif, "New York", Times, serif'},
+    ],
+    "sans": [
+        {"label": "System sans", "value": '-apple-system, "Segoe UI", Inter, Helvetica, Arial, sans-serif'},
+        {"label": "Inter / Helvetica", "value": 'Inter, "Helvetica Neue", Helvetica, Arial, sans-serif'},
+        {"label": "Arial", "value": 'Arial, "Helvetica Neue", Helvetica, sans-serif'},
+        {"label": "Verdana", "value": 'Verdana, Geneva, Tahoma, sans-serif'},
+    ],
+    "mono": [
+        {"label": "JetBrains Mono", "value": '"JetBrains Mono", "Cascadia Mono", Consolas, ui-monospace, monospace'},
+        {"label": "SF Mono / Consolas", "value": 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace'},
+        {"label": "Consolas", "value": 'Consolas, "Courier New", monospace'},
+        {"label": "Courier", "value": '"Courier New", Courier, monospace'},
+    ],
+}
+
 # sizes in px; line heights unitless
 DEFAULT_TYPE = {"fs_ui": 17, "fs_content": 34, "lh_ui": 1.62, "lh_content": 1.62}
 
@@ -897,7 +920,7 @@ details code { font-size: .85em; }
   accent-color: var(--terra);
 }
 
-.sp-row input[type="text"] {
+.sp-row select {
   grid-column: 1 / -1;
   width: 100%;
   margin-top: 3px;
@@ -906,7 +929,13 @@ details code { font-size: .85em; }
   border-radius: 7px;
   background: var(--ivory);
   color: var(--ink);
-  font: 400 var(--fs-copy)/1.4 var(--mono);
+  font: 400 var(--fs-copy)/1.4 var(--sans);
+  cursor: pointer;
+}
+
+.sp-row select:focus-visible {
+  outline: 2px solid var(--terra);
+  outline-offset: 1px;
 }
 
 .sp-colors { display: block; }
@@ -1195,6 +1224,17 @@ JS = """
     return '#' + v.slice(0, 6).padStart(6, '0');
   };
 
+  const ensureFontOption = (select, value) => {
+    if (!value) return;
+    const found = Array.from(select.options).some(opt => opt.value === value);
+    if (!found) {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = 'Custom';
+      select.appendChild(option);
+    }
+  };
+
   const addGroup = (group) => {
     const wrap = document.createElement('div');
     wrap.className = 'sp-group';
@@ -1247,19 +1287,23 @@ JS = """
       row.appendChild(label);
 
       if (item.kind === 'font') {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.spellcheck = false;
-        label.appendChild(input);
-        input.addEventListener('change', () => {
-          const value = input.value.trim();
-          if (value) {
-            state.base[item.key] = value;
-            apply();
-            persist();
-          }
+        const select = document.createElement('select');
+        select.setAttribute('aria-label', item.label);
+        (item.options || []).forEach(option => {
+          const opt = document.createElement('option');
+          opt.value = option.value;
+          opt.textContent = option.label;
+          select.appendChild(opt);
         });
-        refs[item.key] = { input: input };
+        ensureFontOption(select, state.base[item.key]);
+        select.value = state.base[item.key] || (item.options && item.options[0] ? item.options[0].value : '');
+        label.appendChild(select);
+        select.addEventListener('change', () => {
+          state.base[item.key] = select.value;
+          apply();
+          persist();
+        });
+        refs[item.key] = { select: select };
       } else {
         const out = document.createElement('output');
         row.appendChild(out);
@@ -1301,7 +1345,9 @@ JS = """
         ref.swatch.value = hex6(value);
         ref.hex.textContent = String(value);
       } else if (item.kind === 'font') {
-        ref.input.value = state.base[item.key] || '';
+        const font = state.base[item.key] || '';
+        ensureFontOption(ref.select, font);
+        ref.select.value = font;
       } else {
         const value = state.base[item.key];
         ref.input.value = value;
@@ -1443,7 +1489,7 @@ __BODY__
   <div class="sp-head">
     <h2>Appearance</h2>
     <select id="sp-mode" aria-label="Colour scheme">
-      <option value="auto">Auto</option>
+      <option value="auto">System</option>
       <option value="light">Light</option>
       <option value="dark">Dark</option>
     </select>
@@ -1497,9 +1543,9 @@ def panel_spec() -> list[dict]:
             "table": "fonts",
             "title": "Fonts",
             "items": [
-                {"key": "serif", "cssVar": "--serif", "kind": "font", "label": "Headings (serif stack)"},
-                {"key": "sans", "cssVar": "--sans", "kind": "font", "label": "Body (sans stack)"},
-                {"key": "mono", "cssVar": "--mono", "kind": "font", "label": "Code (mono stack)"},
+                {"key": "serif", "cssVar": "--serif", "kind": "font", "options": FONT_OPTIONS["serif"], "label": "Headings (serif stack)"},
+                {"key": "sans", "cssVar": "--sans", "kind": "font", "options": FONT_OPTIONS["sans"], "label": "Body (sans stack)"},
+                {"key": "mono", "cssVar": "--mono", "kind": "font", "options": FONT_OPTIONS["mono"], "label": "Code (mono stack)"},
             ],
         },
         {

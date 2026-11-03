@@ -122,7 +122,8 @@ and the panel work without re-tinting individual rules.
 ## Panel internals worth knowing
 
 - Panel spec is `{table, title, items[{key, cssVar, kind, min, max, step, label}]}`
-  serialised to JSON; kinds are `size`, `number`, `font`, `color`.
+  serialised to JSON; kinds are `size`, `number`, `font`, `color`. Font items carry
+  an `options` array and render as a `<select>` dropdown.
 - Applied as inline custom properties on `document.documentElement`; the print
   block therefore overrides them with `!important`.
 - `localStorage` key is `book-theme:<sha256(theme)[:10]>` - a theme edit resets

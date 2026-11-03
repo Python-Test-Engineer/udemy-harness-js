@@ -318,7 +318,119 @@ tbody td:first-child{white-space:nowrap}
   #stylebtn,#stylepanel{display:none !important}
 }
 
+/* ---------- site settings: dark mode ---------- */
+html[data-theme="dark"]{
+  --paper:#14171b; --surface:#1b1f24; --ivory:#232830; --ink:#eef2f6;
+  --prose:#c7d0d8; --muted:#9aa7b4; --stone:#7f8c99;
+  --line:#303944; --line-soft:#263039; --tint:#252f3b;
+  --terra:#e08a6a; --terra-dark:#eda07e; --amber:#d3a44a;
+  --code-bg:#111418; --code-bar:#181d22; --code-line:#2b343e;
+  --code-ink:#eef2f6; --code-dim:#8f9ba7; --code-accent:#f0b49a;
+}
+html[data-theme="dark"] ::selection{background:#4a2f28; color:#f2ece1}
+html[data-theme="dark"] .sidebar{
+  scrollbar-color:#3a4652 transparent;
+  background:linear-gradient(180deg,#1d2228,#191e23 60%,#171b20);
+}
+html[data-theme="dark"] .toc a .n{color:#7f8c99}
+html[data-theme="dark"] .toc a:hover{background:#252f3b}
+html[data-theme="dark"] .sidebar::-webkit-scrollbar-thumb{background:#3a4652}
+html[data-theme="dark"] .meta span::before{color:#4a5560}
+html[data-theme="dark"] ul li::before{background:#8a5a48}
+html[data-theme="dark"] code{background:#2b2521; color:#f0b49a}
+html[data-theme="dark"] .callout{color:var(--prose)}
+html[data-theme="dark"] .callout.warn{background:#2e2a1e; color:#d8cfb8}
+html[data-theme="dark"] figure.code{border-color:#2b343e; box-shadow:0 0.125rem 0.625rem rgba(0,0,0,.28)}
+html[data-theme="dark"] figure.code figcaption .lang{color:#8f9ba7}
+html[data-theme="dark"] figure.ascii{border-color:#3a4652; background:#1b2026}
+html[data-theme="dark"] figure.ascii pre{color:#c7d0d8}
+html[data-theme="dark"] .table-wrap{scrollbar-color:#3a4652 transparent}
+html[data-theme="dark"] .table-wrap::-webkit-scrollbar-thumb{background:#3a4652}
+html[data-theme="dark"] .tag{background:#3a2a24; color:#f0b49a}
+@media (max-width:940px){
+  html[data-theme="dark"] .toc a{background:#252f3b}
+}
+/* ---------- site settings panel (top-right Aa) ---------- */
+#themebtn{display:none!important}
+#stylebtn{
+  position:fixed; z-index:60; right:18px; top:18px; bottom:auto;
+  display:grid; place-items:center; width:46px; height:46px; padding:0;
+  border:1px solid var(--line); border-radius:50%;
+  background:var(--surface); color:var(--ink);
+  box-shadow:0 6px 22px rgba(31,30,29,.16);
+  font:500 15px/1 var(--serif); cursor:pointer;
+  transition:border-color .14s, color .14s, transform .14s;
+}
+#stylebtn:hover{border-color:var(--terra); color:var(--terra-dark); transform:translateY(-1px)}
+#stylebtn:focus-visible{outline:2px solid var(--terra); outline-offset:2px}
+#stylebtn[aria-expanded="true"]{border-color:var(--terra); color:var(--terra-dark)}
+#stylepanel{
+  position:fixed; z-index:61; right:18px; top:76px; bottom:auto;
+  display:flex; flex-direction:column; width:372px;
+  max-height:calc(100vh - 94px);
+  border:1px solid var(--line); border-radius:14px;
+  background:var(--surface); color:var(--ink);
+  box-shadow:0 18px 50px rgba(31,30,29,.24);
+  font:12.5px/1.45 var(--sans);
+}
+#stylepanel[hidden]{display:none}
+.sp-head{display:flex; align-items:center; gap:8px; padding:11px 13px; border-bottom:1px solid var(--line-soft)}
+.sp-head h2{margin:0; padding:0; border:0; display:block; font:600 13px/1.2 var(--sans); color:var(--ink)}
+.sp-head h2::before{content:none}
+.sp-head select,.sp-foot button{
+  padding:5px 9px; border:1px solid var(--line); border-radius:7px;
+  background:var(--ivory); color:var(--ink);
+  font:12.5px/1.3 var(--sans); cursor:pointer;
+}
+.sp-head select:focus-visible,.sp-foot button:focus-visible{outline:2px solid var(--terra); outline-offset:1px}
+#sp-close{
+  width:26px; height:26px; padding:0; border:1px solid transparent; border-radius:50%;
+  background:none; color:var(--stone); font:14px/1 var(--sans); cursor:pointer;
+}
+#sp-close:hover{border-color:var(--line); color:var(--ink)}
+.sp-body{padding:2px 13px 12px; overflow-x:hidden; overflow-y:auto; scrollbar-width:thin}
+.sp-group{padding:11px 0; border-bottom:1px solid var(--line-soft)}
+.sp-group:last-child{border-bottom:0}
+.sp-group h3{
+  margin:0 0 8px; color:var(--stone);
+  font:700 9.5px/1.2 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+}
+.sp-group h3 .tag{margin-left:6px; color:var(--terra-dark); letter-spacing:.04em; text-transform:none}
+.sp-row{display:grid; grid-template-columns:1fr auto; gap:2px 10px; align-items:baseline; margin:9px 0}
+.sp-row label{color:var(--muted)}
+.sp-row > *{min-width:0}
+.sp-row output{color:var(--ink); font-variant-numeric:tabular-nums; font-size:11.5px}
+.sp-row input[type="range"]{grid-column:1/-1; width:100%; margin:3px 0 0; accent-color:var(--terra)}
+.sp-row select{
+  grid-column:1/-1; width:100%; margin-top:4px; padding:5px 8px;
+  border:1px solid var(--line); border-radius:7px;
+  background:var(--ivory); color:var(--ink); font:12px/1.4 var(--sans); cursor:pointer;
+}
+.sp-row select:focus-visible{outline:2px solid var(--terra); outline-offset:1px}
+.sp-colors label{display:grid; grid-template-columns:26px 1fr auto; gap:8px; align-items:center; padding:2px 0}
+.sp-colors .swatch-label{overflow:hidden; color:var(--muted); text-overflow:ellipsis; white-space:nowrap}
+.sp-colors input[type="color"]{width:26px; height:22px; padding:0; border:1px solid var(--line); border-radius:6px; background:none; cursor:pointer}
+.sp-colors .hex{color:var(--stone); font:11px/1 var(--mono)}
+.sp-foot{display:flex; align-items:center; gap:8px; padding:10px 13px; border-top:1px solid var(--line-soft)}
+.sp-foot .spacer{flex:1}
+@media (max-width:520px){
+  #stylepanel{right:8px; left:8px; width:auto; top:72px; bottom:auto}
+}
+@media print{
+  #stylebtn,#stylepanel{display:none!important}
+}
+
 </style>
+<script>
+(function () {
+  try {
+    var saved = JSON.parse(localStorage.getItem('mca-site-customiser:v2')) || {};
+    var mode = saved.mode === 'light' || saved.mode === 'dark' ? saved.mode : 'auto';
+    var dark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  } catch (e) { /* no stored preference */ }
+})();
+</script>
 </head></head>
 <body>
 <div class="progress"><span id="bar"></span></div>
@@ -774,13 +886,10 @@ its.</p>
 <aside id="stylepanel" hidden aria-label="Site customiser">
   <div class="sp-head">
     <h2>Site customiser</h2>
-    <select id="sp-site" aria-label="Site palette">
-      <option value="warm-paper">Warm paper</option>
-      <option value="slate">Slate</option>
-      <option value="forest">Forest</option>
-      <option value="ocean">Ocean</option>
-      <option value="plum">Plum</option>
-      <option value="midnight">Midnight</option>
+    <select id="sp-mode" aria-label="Colour mode">
+      <option value="auto">System</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
     </select>
     <button id="sp-close" type="button" aria-label="Close site customiser">&#10005;</button>
   </div>
@@ -797,13 +906,33 @@ its.</p>
   'use strict';
 
   /* ============================================================
-     Site customiser - the same idea as the one in nanocode's
-     book.html: the page's CSS custom properties are the settings
-     schema, so the panel can never drift from the stylesheet.
-     A site is a complete palette; switching site restyles the page,
-     editing a swatch edits that site in place, and Copy CSS exports
-     the live base settings plus the selected site palette.
+     Site customiser - Light / Dark / System only.
+     The page's CSS custom properties are the settings schema, so
+     the panel can never drift from the stylesheet. Colours are kept
+     per mode, and every control writes to both the TOC sidebar and
+     the content pane because they share the same tokens.
      ============================================================ */
+
+  var FONT_OPTIONS = {
+    serif: [
+      { label: 'Iowan / Palatino', value: "'Iowan Old Style',Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif" },
+      { label: 'Georgia', value: "Georgia,'Times New Roman',serif" },
+      { label: 'Charter / Cambria', value: "Charter,'Bitstream Charter',Cambria,Georgia,serif" },
+      { label: 'System serif', value: "ui-serif,'New York',Times,serif" }
+    ],
+    sans: [
+      { label: 'System sans', value: "-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif" },
+      { label: 'Inter / Helvetica', value: "Inter,'Helvetica Neue',Helvetica,Arial,sans-serif" },
+      { label: 'Arial', value: "Arial,'Helvetica Neue',Helvetica,sans-serif" },
+      { label: 'Verdana', value: "Verdana,Geneva,Tahoma,sans-serif" }
+    ],
+    mono: [
+      { label: 'JetBrains Mono', value: "'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace" },
+      { label: 'SF Mono / Consolas', value: "ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace" },
+      { label: 'Consolas', value: "Consolas,'Courier New',monospace" },
+      { label: 'Courier', value: "'Courier New',Courier,monospace" }
+    ]
+  };
 
   var SPEC = [
     { table: 'type', title: 'Type', items: [
@@ -816,9 +945,9 @@ its.</p>
       { key: 'measure', cssVar: '--measure', kind: 'number', unit: 'rem', min: 30, max: 72, step: 1, def: 46, label: 'Reading column' }
     ] },
     { table: 'fonts', title: 'Fonts', items: [
-      { key: 'serif', cssVar: '--serif', kind: 'font', def: "'Iowan Old Style',Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif", label: 'Headings (serif)' },
-      { key: 'sans', cssVar: '--sans', kind: 'font', def: "-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif", label: 'Body (sans)' },
-      { key: 'mono', cssVar: '--mono', kind: 'font', def: "'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace", label: 'Code (mono)' }
+      { key: 'serif', cssVar: '--serif', kind: 'font', options: FONT_OPTIONS.serif, def: FONT_OPTIONS.serif[0].value, label: 'Headings (serif)' },
+      { key: 'sans', cssVar: '--sans', kind: 'font', options: FONT_OPTIONS.sans, def: FONT_OPTIONS.sans[0].value, label: 'Body (sans)' },
+      { key: 'mono', cssVar: '--mono', kind: 'font', options: FONT_OPTIONS.mono, def: FONT_OPTIONS.mono[0].value, label: 'Code (mono)' }
     ] },
     { table: 'colors', title: 'Colours', colors: true, items: [
       { key: 'paper', cssVar: '--paper', kind: 'color', label: 'Page background' },
@@ -846,104 +975,50 @@ its.</p>
   var DEFAULTS = {
     base: {
       root_size: 24, lh_body: 1.66, fs_code: 0.775, sidebar: 19.25, measure: 46,
-      serif: "'Iowan Old Style',Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif",
-      sans: "-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif",
-      mono: "'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace"
+      serif: FONT_OPTIONS.serif[0].value,
+      sans: FONT_OPTIONS.sans[0].value,
+      mono: FONT_OPTIONS.mono[0].value
     },
     colors: {
-      paper: '#f0eee6', surface: '#fbfaf7', ivory: '#fffdfa', ink: '#1f1e1d',
-      prose: '#33302c', muted: '#55524c', stone: '#8c877c',
-      line: '#e0dbcf', line_soft: '#e9e4d8', tint: '#f6ede6',
-      terra: '#d97757', terra_dark: '#c9633f', amber: '#b9862f',
-      code_bg: '#23211e', code_bar: '#2b2823', code_line: '#3a3732',
-      code_ink: '#f2ece1', code_dim: '#a9a294', code_accent: '#f0b49a'
+      light: { paper: '#f0eee6', surface: '#fbfaf7', ivory: '#fffdfa', ink: '#1f1e1d', prose: '#33302c', muted: '#55524c', stone: '#8c877c', line: '#e0dbcf', line_soft: '#e9e4d8', tint: '#f6ede6', terra: '#d97757', terra_dark: '#c9633f', amber: '#b9862f', code_bg: '#23211e', code_bar: '#2b2823', code_line: '#3a3732', code_ink: '#f2ece1', code_dim: '#a9a294', code_accent: '#f0b49a' },
+      dark: { paper: '#14171b', surface: '#1b1f24', ivory: '#232830', ink: '#eef2f6', prose: '#c7d0d8', muted: '#9aa7b4', stone: '#7f8c99', line: '#303944', line_soft: '#263039', tint: '#252f3b', terra: '#e08a6a', terra_dark: '#eda07e', amber: '#d3a44a', code_bg: '#111418', code_bar: '#181d22', code_line: '#2b343e', code_ink: '#eef2f6', code_dim: '#8f9ba7', code_accent: '#f0b49a' }
     }
   };
 
-  /* A site is a complete palette. Switching site restyles the whole page;
-     editing a swatch edits that site in place, and Reset restores every site. */
-  var SITES = {
-    'warm-paper': { label: 'Warm paper', colors: DEFAULTS.colors },
-    'slate': { label: 'Slate', colors: {
-      paper: '#eef0f3', surface: '#f8f9fb', ivory: '#ffffff', ink: '#1c222b',
-      prose: '#333b46', muted: '#566070', stone: '#8b95a3',
-      line: '#d8dde4', line_soft: '#e6e9ee', tint: '#e8edf4',
-      terra: '#5b7fa6', terra_dark: '#3f6590', amber: '#b07b2c',
-      code_bg: '#1e242d', code_bar: '#262d38', code_line: '#38414e',
-      code_ink: '#eef2f7', code_dim: '#9aa5b3', code_accent: '#9fc2e6'
-    } },
-    'forest': { label: 'Forest', colors: {
-      paper: '#eef2ed', surface: '#f8faf7', ivory: '#ffffff', ink: '#1d2a21',
-      prose: '#344238', muted: '#57665a', stone: '#8a978b',
-      line: '#d7e0d6', line_soft: '#e5ece3', tint: '#e7efe7',
-      terra: '#4f8a63', terra_dark: '#36704a', amber: '#a97a2f',
-      code_bg: '#1c2620', code_bar: '#243128', code_line: '#354739',
-      code_ink: '#edf4ee', code_dim: '#9aae9f', code_accent: '#9ed0ad'
-    } },
-    'ocean': { label: 'Ocean', colors: {
-      paper: '#eaf2f4', surface: '#f6fbfc', ivory: '#ffffff', ink: '#142a30',
-      prose: '#2f464d', muted: '#526c74', stone: '#8399a0',
-      line: '#d2e1e5', line_soft: '#e2edf0', tint: '#e2f0f3',
-      terra: '#2f7f8f', terra_dark: '#206675', amber: '#b07b2c',
-      code_bg: '#15272b', code_bar: '#1d3338', code_line: '#2f4c52',
-      code_ink: '#eaf5f7', code_dim: '#93aeb4', code_accent: '#8fd0de'
-    } },
-    'plum': { label: 'Plum', colors: {
-      paper: '#f4eef4', surface: '#fbf7fb', ivory: '#ffffff', ink: '#2c1e2f',
-      prose: '#463449', muted: '#6b5670', stone: '#9a879e',
-      line: '#e3d7e4', line_soft: '#eee6ef', tint: '#f1e5f2',
-      terra: '#9b5b9e', terra_dark: '#7d417f', amber: '#b07b2c',
-      code_bg: '#291f2b', code_bar: '#342736', code_line: '#4a3850',
-      code_ink: '#f5eef6', code_dim: '#b09ab5', code_accent: '#d8a9dc'
-    } },
-    'midnight': { label: 'Midnight', colors: {
-      paper: '#14171b', surface: '#1b1f24', ivory: '#232830', ink: '#eef2f6',
-      prose: '#c7d0d8', muted: '#9aa7b4', stone: '#7f8c99',
-      line: '#303944', line_soft: '#263039', tint: '#252f3b',
-      terra: '#e08a6a', terra_dark: '#eda07e', amber: '#d3a44a',
-      code_bg: '#111418', code_bar: '#181d22', code_line: '#2b343e',
-      code_ink: '#eef2f6', code_dim: '#8f9ba7', code_accent: '#f0b49a'
-    } }
-  };
-
-  var SITE_ORDER = ['warm-paper', 'slate', 'forest', 'ocean', 'plum', 'midnight'];
-  var INIT_SITE = 'warm-paper';
-  var STORE = 'mca-site-customiser:v1';
+  var INIT_MODE = 'auto';
+  var STORE = 'mca-site-customiser:v2';
 
   var root = document.documentElement;
+  var darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
   var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
   var copy = function (target, source) {
     Object.keys(target).forEach(function (k) { delete target[k]; });
     Object.keys(clone(source)).forEach(function (k) { target[k] = clone(source)[k]; });
-  };
-  var defaultSites = function () {
-    var out = {};
-    SITE_ORDER.forEach(function (id) { out[id] = clone(SITES[id].colors); });
-    return out;
   };
 
   var saved = {};
   try { saved = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { saved = {}; }
 
   var state = {
-    site: SITE_ORDER.indexOf(saved.site) >= 0 ? saved.site : INIT_SITE,
+    mode: saved.mode === 'light' || saved.mode === 'dark' || saved.mode === 'auto' ? saved.mode : INIT_MODE,
     base: Object.assign(clone(DEFAULTS.base), saved.base || {}),
-    sites: defaultSites()
+    colors: {
+      light: Object.assign(clone(DEFAULTS.colors.light), (saved.colors || {}).light || {}),
+      dark: Object.assign(clone(DEFAULTS.colors.dark), (saved.colors || {}).dark || {})
+    }
   };
-  if (saved.sites) {
-    SITE_ORDER.forEach(function (id) {
-      if (saved.sites[id]) Object.assign(state.sites[id], saved.sites[id]);
-    });
-  }
 
-  var currentColors = function () { return state.sites[state.site]; };
+  var resolved = function () {
+    return state.mode === 'auto' ? (darkQuery && darkQuery.matches ? 'dark' : 'light') : state.mode;
+  };
+  var currentColors = function () { return state.colors[resolved()]; };
 
   var cssVal = function (item, value) {
     return item.unit ? value + item.unit : String(value);
   };
 
   var apply = function () {
-    root.setAttribute('data-site', state.site);
+    root.setAttribute('data-theme', resolved());
 
     SPEC.forEach(function (group) {
       group.items.forEach(function (item) {
@@ -962,13 +1037,24 @@ its.</p>
   var panel = document.getElementById('stylepanel');
   var button = document.getElementById('stylebtn');
   var panelBody = document.getElementById('sp-body');
-  var siteSelect = document.getElementById('sp-site');
+  var modeSelect = document.getElementById('sp-mode');
   var refs = {};
 
   var hex6 = function (value) {
     var v = String(value || '').trim().replace('#', '');
     if (v.length === 3) v = v.split('').map(function (c) { return c + c; }).join('');
     return '#' + v.slice(0, 6).padStart(6, '0');
+  };
+
+  var ensureFontOption = function (select, value) {
+    if (!value) return;
+    var found = Array.prototype.some.call(select.options, function (opt) { return opt.value === value; });
+    if (!found) {
+      var option = document.createElement('option');
+      option.value = value;
+      option.textContent = 'Custom';
+      select.appendChild(option);
+    }
   };
 
   var addGroup = function (group) {
@@ -980,7 +1066,7 @@ its.</p>
     if (group.colors) {
       var tag = document.createElement('span');
       tag.className = 'tag';
-      tag.id = 'sp-sitetag';
+      tag.id = 'sp-modetag';
       title.appendChild(tag);
     }
     wrap.appendChild(title);
@@ -1023,19 +1109,23 @@ its.</p>
       row.appendChild(label);
 
       if (item.kind === 'font') {
-        var text = document.createElement('input');
-        text.type = 'text';
-        text.spellcheck = false;
-        label.appendChild(text);
-        text.addEventListener('change', function () {
-          var value = text.value.trim();
-          if (value) {
-            state.base[item.key] = value;
-            apply();
-            persist();
-          }
+        var select = document.createElement('select');
+        select.setAttribute('aria-label', item.label);
+        (item.options || []).forEach(function (option) {
+          var opt = document.createElement('option');
+          opt.value = option.value;
+          opt.textContent = option.label;
+          select.appendChild(opt);
         });
-        refs[item.key] = { input: text };
+        ensureFontOption(select, state.base[item.key]);
+        select.value = state.base[item.key] || (item.options && item.options[0] ? item.options[0].value : '');
+        label.appendChild(select);
+        select.addEventListener('change', function () {
+          state.base[item.key] = select.value;
+          apply();
+          persist();
+        });
+        refs[item.key] = { select: select };
       } else {
         var out = document.createElement('output');
         row.appendChild(out);
@@ -1063,11 +1153,11 @@ its.</p>
   SPEC.forEach(addGroup);
 
   var refresh = function () {
-    if (siteSelect.value !== state.site) siteSelect.value = state.site;
-    var label = SITES[state.site].label;
-    var siteTag = document.getElementById('sp-sitetag');
-    if (siteTag) siteTag.textContent = label;
-    button.title = 'Site customiser - ' + label;
+    if (modeSelect.value !== state.mode) modeSelect.value = state.mode;
+    var mode = resolved();
+    var modeTag = document.getElementById('sp-modetag');
+    if (modeTag) modeTag.textContent = mode;
+    if (button) button.title = 'Site customiser - ' + mode + ' mode';
 
     SPEC.forEach(function (group) {
       group.items.forEach(function (item) {
@@ -1078,7 +1168,9 @@ its.</p>
           ref.swatch.value = hex6(value);
           ref.hex.textContent = String(value);
         } else if (item.kind === 'font') {
-          ref.input.value = state.base[item.key] || '';
+          var font = state.base[item.key] || '';
+          ensureFontOption(ref.select, font);
+          ref.select.value = font;
         } else {
           var n = state.base[item.key];
           ref.input.value = n;
@@ -1090,23 +1182,31 @@ its.</p>
 
   var reopen = function () { apply(); refresh(); };
 
-  siteSelect.addEventListener('change', function () {
-    state.site = siteSelect.value;
+  modeSelect.addEventListener('change', function () {
+    state.mode = modeSelect.value;
     reopen();
     persist();
   });
 
+  var onSystemChange = function () { if (state.mode === 'auto') reopen(); };
+  if (darkQuery) {
+    if (darkQuery.addEventListener) darkQuery.addEventListener('change', onSystemChange);
+    else if (darkQuery.addListener) darkQuery.addListener(onSystemChange);
+  }
+  window.addEventListener('focus', onSystemChange);
+
   document.getElementById('sp-reset').addEventListener('click', function () {
     copy(state.base, DEFAULTS.base);
-    state.sites = defaultSites();
-    state.site = INIT_SITE;
+    copy(state.colors.light, DEFAULTS.colors.light);
+    copy(state.colors.dark, DEFAULTS.colors.dark);
+    state.mode = INIT_MODE;
     try { localStorage.removeItem(STORE); } catch (e) { /* ignore */ }
     reopen();
   });
 
   var toCss = function () {
     var lines = [
-      '/* generated by the site customiser - ' + SITES[state.site].label + ' */',
+      '/* generated by the site customiser - ' + resolved() + ' mode */',
       '/* paste into the page <style>; rebuild after editing the palette */',
       ':root{'
     ];
@@ -1116,10 +1216,13 @@ its.</p>
         lines.push('  ' + item.cssVar + ':' + cssVal(item, state.base[item.key]) + ';');
       });
     });
-    lines.push('');
-    var colors = SPEC[SPEC.length - 1].items;
-    colors.forEach(function (item) {
-      lines.push('  ' + item.cssVar + ':' + currentColors()[item.key] + ';');
+    var colorItems = SPEC[SPEC.length - 1].items;
+    colorItems.forEach(function (item) {
+      lines.push('  ' + item.cssVar + ':' + state.colors.light[item.key] + ';');
+    });
+    lines.push('}', '', 'html[data-theme="dark"]{');
+    colorItems.forEach(function (item) {
+      lines.push('  ' + item.cssVar + ':' + state.colors.dark[item.key] + ';');
     });
     lines.push('}');
     return lines.join('\n');
