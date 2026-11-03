@@ -98,10 +98,24 @@ function mdToHtml(md) {
 
   const headings = [];
   let h2Counter = 0;
+  let h3Counter = 0;
+  let h4Counter = 0;
+  let skippingToc = false;
 
   while (i < lines.length) {
     const raw = lines[i];
     const line = raw; // keep original for code blocks
+
+    // Strip embedded markdown Table of Contents from the content pane
+    // (the sidebar already provides a generated TOC)
+    if (skippingToc) {
+      if (/^#{1,2}\s/.test(line)) {
+        skippingToc = false;
+      } else {
+        i++;
+        continue;
+      }
+    }
 
     // Code block
     if (line.startsWith('```')) {
@@ -171,6 +185,8 @@ function mdToHtml(md) {
     if (h1Match) {
       closeSection();
       h2Counter++;
+      h3Counter = 0;
+      h4Counter = 0;
       const text = inline(h1Match[1]);
       const id = 's' + String(h2Counter).padStart(2, '0');
       headings.push({ level: 2, text: h1Match[1], id });
@@ -180,17 +196,31 @@ function mdToHtml(md) {
       continue;
     }
     if (h2Match) {
+      const headingText = h2Match[1].trim();
+      if (/^table of contents$/i.test(headingText)) {
+        closeSection();
+        skippingToc = true;
+        i++;
+        continue;
+      }
       flushList();
       flushBlockquote();
-      const text = inline(h2Match[1]);
-      html += `\n<h3>${text}</h3>\n`;
+      h3Counter++;
+      h4Counter = 0;
+      const text = inline(headingText);
+      const id = 's' + String(h2Counter).padStart(2, '0') + '-' + String(h3Counter).padStart(2, '0');
+      headings.push({ level: 3, text: headingText, id });
+      html += `\n<h3 id="${id}">${text}</h3>\n`;
       i++;
       continue;
     }
     if (h3Match) {
       flushList();
+      h4Counter++;
       const text = inline(h3Match[1]);
-      html += `\n<h4>${text}</h4>\n`;
+      const id = 's' + String(h2Counter).padStart(2, '0') + '-' + String(h3Counter).padStart(2, '0') + '-' + String(h4Counter).padStart(2, '0');
+      headings.push({ level: 4, text: h3Match[1], id });
+      html += `\n<h4 id="${id}">${text}</h4>\n`;
       i++;
       continue;
     }
@@ -241,9 +271,21 @@ function mdToHtml(md) {
 function buildPage({ title, eyebrow, h1, lede, meta, tocTitle, sideSub, sideFoot, contentHtml, headings }) {
   const numPad = (n) => String(n).padStart(2, '0');
 
-  const toc = headings.map((h, idx) =>
-    `      <a href="#${h.id}"><span class="n">${numPad(idx + 1)}</span><span>${escapeXml(h.text)}</span></a>`
-  ).join('\n');
+  let secNum = 0;
+  const toc = headings.map((h) => {
+    let numText = '';
+    let levelClass = '';
+    if (h.level === 2) {
+      secNum++;
+      numText = numPad(secNum);
+      levelClass = 'l2';
+    } else if (h.level === 3) {
+      levelClass = 'l3';
+    } else if (h.level === 4) {
+      levelClass = 'l4';
+    }
+    return `      <a href="#${h.id}" class="${levelClass}"><span class="n">${numText}</span><span>${escapeXml(h.text)}</span></a>`;
+  }).join('\n');
 
   const metaTags = (meta || []).map(m => `          <span>${escapeXml(m)}</span>`).join('\n');
 
@@ -325,6 +367,12 @@ html[data-theme="dark"] .toc a .n{color:#7f8c99}
 html[data-theme="dark"] .toc a:hover{background:#252f3b}
 .toc a.active{background:var(--tint); border-left-color:var(--terra); color:var(--ink); font-weight:600}
 .toc a.active .n{color:var(--terra-dark)}
+.toc a.l3{padding-left:1.25rem; font-size:0.78rem}
+.toc a.l4{padding-left:1.85rem; font-size:0.73rem}
+.toc a.l3 .n,
+.toc a.l4 .n{display:none}
+html[data-theme="dark"] .toc a.l3:hover,
+html[data-theme="dark"] .toc a.l4:hover{background:#222930}
 .side-foot{
   margin-top:1.25rem; padding-top:0.875rem; border-top:0.0625rem solid var(--line);
   color:var(--stone); font-size:0.7375rem; line-height:1.6;
@@ -496,6 +544,8 @@ html[data-theme="dark"] .tag{background:#3a2a24; color:#f0b49a}
   html[data-theme="dark"] .toc a{background:#252f3b}
   .toc a .n{flex:0 0 auto}
   .toc a.active{border-left:none}
+  .toc a.l3{font-size:0.74rem}
+  .toc a.l4{font-size:0.70rem}
   .side-foot{display:none}
   .progress{left:0}
   .pane{padding:1.875rem 1.25rem 5.625rem}

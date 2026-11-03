@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mini-coding-js · PLAN</title>
+<style>
+html{font-size:var(--root-size,24px)}
+
+:root{
+  --paper:#f0eee6; --surface:#fbfaf7; --ivory:#fffdfa; --ink:#1f1e1d;
+  --prose:#33302c; --muted:#55524c; --stone:#8c877c;
+  --line:#e0dbcf; --line-soft:#e9e4d8; --tint:#f6ede6;
+  --terra:#d97757; --terra-dark:#c9633f; --amber:#b9862f;
+  --code-bg:#23211e; --code-bar:#2b2823; --code-line:#3a3732;
+  --code-ink:#f2ece1; --code-dim:#a9a294; --code-accent:#f0b49a;
+  --sidebar:19.25rem; --measure:46rem;
+  --sans:-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif;
+  --serif:'Iowan Old Style',Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif;
+  --mono:'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace;
+}
+html[data-theme="dark"]{
+  --paper:#14171b; --surface:#1b1f24; --ivory:#232830; --ink:#eef2f6;
+  --prose:#c7d0d8; --muted:#9aa7b4; --stone:#7f8c99;
+  --line:#303944; --line-soft:#263039; --tint:#252f3b;
+  --terra:#e08a6a; --terra-dark:#eda07e; --amber:#d3a44a;
+  --code-bg:#111418; --code-bar:#181d22; --code-line:#2b343e;
+  --code-ink:#eef2f6; --code-dim:#8f9ba7; --code-accent:#f0b49a;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--prose);
+  font:1.03125rem/var(--lh-body,1.66) var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:#f0d3c6; color:#2a2622}
+html[data-theme="dark"] ::selection{background:#4a2f28; color:#f2ece1}
+
+/* ---------- shell ---------- */
+.shell{display:grid; grid-template-columns:var(--sidebar) minmax(0,1fr); align-items:start}
+.sidebar{
+  position:sticky; top:0; height:100vh; overflow-y:auto; overscroll-behavior:contain;
+  scrollbar-width:thin; scrollbar-color:#cec6b5 transparent;
+  padding:1.625rem 1.125rem 2.125rem 1.375rem;
+  border-right:0.0625rem solid var(--line);
+  background:linear-gradient(180deg,#f4f1e9,#efece3 60%,#ece8de);
+}
+html[data-theme="dark"] .sidebar{
+  scrollbar-color:#3a4652 transparent;
+  background:linear-gradient(180deg,#1d2228,#191e23 60%,#171b20);
+}
+.side-kicker{
+  display:block; margin:0 0 0.625rem; color:var(--terra-dark);
+  font:600 0.65625rem/1.3 var(--sans); letter-spacing:.14em; text-transform:uppercase; text-decoration:none;
+}
+.side-title{
+  margin:0; color:var(--ink); font:500 1.3125rem/1.2 var(--serif); letter-spacing:-.01em;
+}
+.side-sub{margin:0.375rem 0 0; color:var(--stone); font-size:0.7875rem; line-height:1.45}
+.side-rule{height:0.0625rem; margin:1.125rem 0 0.875rem; background:var(--line)}
+.side-label{
+  margin:0 0 0.375rem; color:var(--stone);
+  font:600 0.65625rem/1.3 var(--sans); letter-spacing:.13em; text-transform:uppercase;
+}
+.toc{display:flex; flex-direction:column; gap:0.0625rem}
+.toc a{
+  display:flex; gap:0.5625rem; align-items:baseline;
+  padding:0.375rem 0.5625rem 0.375rem 0.625rem; border-left:0.125rem solid transparent; border-radius:0 0.4375rem 0.4375rem 0;
+  color:var(--muted); font-size:0.8375rem; line-height:1.4; text-decoration:none;
+  transition:background .14s,color .14s,border-color .14s;
+}
+.toc a .n{color:#a9a294; font:0.6875rem/1 var(--mono); flex:0 0 1.125rem}
+.toc a:hover{background:#e8e3d6; color:var(--ink)}
+html[data-theme="dark"] .toc a .n{color:#7f8c99}
+html[data-theme="dark"] .toc a:hover{background:#252f3b}
+.toc a.active{background:var(--tint); border-left-color:var(--terra); color:var(--ink); font-weight:600}
+.toc a.active .n{color:var(--terra-dark)}
+.toc a.l3{padding-left:1.25rem; font-size:0.78rem}
+.toc a.l4{padding-left:1.85rem; font-size:0.73rem}
+.toc a.l3 .n,
+.toc a.l4 .n{display:none}
+html[data-theme="dark"] .toc a.l3:hover,
+html[data-theme="dark"] .toc a.l4:hover{background:#222930}
+.side-foot{
+  margin-top:1.25rem; padding-top:0.875rem; border-top:0.0625rem solid var(--line);
+  color:var(--stone); font-size:0.7375rem; line-height:1.6;
+}
+.side-foot code{font-size:0.6875rem}
+
+.progress{position:fixed; top:0; left:var(--sidebar); right:0; height:0.125rem; z-index:40; background:transparent}
+.progress span{display:block; height:100%; width:0; background:var(--terra); transition:width .1s linear}
+
+.sidebar::-webkit-scrollbar{width:0.4375rem}
+.sidebar::-webkit-scrollbar-thumb{background:#d5ccbb; border-radius:0.5rem}
+html[data-theme="dark"] .sidebar::-webkit-scrollbar-thumb{background:#3a4652}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+
+/* ---------- content pane ---------- */
+.pane{padding:3.25rem 3.5rem 8.75rem; min-width:0}
+.inner{max-width:var(--measure); margin:0 auto}
+
+.page-heading{margin:0 0 2.125rem; padding-bottom:1.75rem; border-bottom:0.0625rem solid var(--line)}
+.page-heading .eyebrow{
+  margin:0 0 0.75rem; color:var(--terra-dark);
+  font:600 0.6875rem/1.3 var(--sans); letter-spacing:.15em; text-transform:uppercase;
+}
+h1{
+  margin:0; color:var(--ink); font:500 clamp(2.125rem,4vw,2.875rem)/1.1 var(--serif); letter-spacing:-.02em;
+}
+.page-heading .lede{margin:0.875rem 0 0; color:var(--muted); font-size:1.09375rem; max-width:38rem}
+.meta{
+  margin:1.25rem 0 0; display:flex; flex-wrap:wrap; gap:0.25rem 0.6875rem;
+  color:var(--stone); font:0.7rem/1.6 var(--mono);
+}
+.meta span::before{content:"\00b7"; margin-right:0.6875rem; color:#c3bcae}
+html[data-theme="dark"] .meta span::before{color:#4a5560}
+.meta span:first-child::before{content:none; margin:0}
+
+section{padding-top:0.375rem; margin:0 0 2.75rem}
+section:first-of-type h2{margin-top:0}
+h2{
+  display:flex; gap:0.8125rem; align-items:baseline;
+  margin:2.375rem 0 0.875rem; color:var(--ink);
+  font:500 1.65625rem/1.22 var(--serif); letter-spacing:-.015em;
+  scroll-margin-top:1.625rem;
+}
+h2 .num{
+  flex:0 0 auto; color:var(--terra); padding-top:0.125rem;
+  font:600 0.71875rem/1 var(--mono); letter-spacing:.06em;
+}
+h3{
+  margin:1.875rem 0 0.625rem; color:var(--ink);
+  font:600 0.96875rem/1.4 var(--sans); letter-spacing:.005em;
+}
+h4{
+  margin:1.5rem 0 0.5rem; color:var(--ink);
+  font:600 0.85rem/1.35 var(--sans); letter-spacing:.005em;
+}
+h5{
+  margin:1.25rem 0 0.4rem; color:var(--ink);
+  font:600 0.8rem/1.3 var(--sans); letter-spacing:.005em;
+}
+p{margin:0 0 0.875rem}
+p + p{margin-top:-0.125rem}
+strong{color:var(--ink); font-weight:600}
+em{font-style:italic; color:var(--ink)}
+a{color:var(--terra-dark); text-decoration-thickness:0.0625rem; text-underline-offset:0.125rem}
+
+ul{margin:0 0 1rem; padding-left:0; list-style:none}
+ol{margin:0 0 1rem; padding-left:0; list-style:none; counter-reset:item}
+ol li{position:relative; margin:0 0 0.625rem; padding-left:1.5rem}
+ol li::before{
+  content:counter(item) "."; counter-increment:item; position:absolute; left:0.1875rem; top:0;
+  color:var(--terra); font:600 0.7rem/1 var(--mono);
+}
+ul li{position:relative; margin:0 0 0.625rem; padding-left:1.25rem}
+ul li::before{
+  content:""; position:absolute; left:0.1875rem; top:.66em;
+  width:0.375rem; height:0.375rem; border-radius:50%; background:#d8b6a6;
+}
+html[data-theme="dark"] ul li::before{background:#8a5a48}
+li strong{color:var(--ink)}
+
+code{
+  padding:.12em .38em; border-radius:0.3125rem; background:#e9e4d7; color:#7c3f2b;
+  font:.855em/1.5 var(--mono); word-break:break-word;
+}
+html[data-theme="dark"] code{background:#2b2521; color:#f0b49a}
+
+/* ---------- callouts ---------- */
+.callout{
+  margin:1.25rem 0 1.375rem; padding:0.8125rem 1.0625rem 0.875rem;
+  border-left:0.1875rem solid var(--terra); border-radius:0 0.5625rem 0.5625rem 0;
+  background:var(--tint); color:#4b4741; font-size:0.925rem; line-height:1.62;
+}
+.callout strong{color:var(--ink)}
+.callout.warn{border-left-color:var(--amber); background:#f7f0da; color:#4e4734}
+html[data-theme="dark"] .callout{color:var(--prose)}
+html[data-theme="dark"] .callout.warn{background:#2e2a1e; color:#d8cfb8}
+
+/* ---------- code ---------- */
+figure.code, figure.ascii{margin:1.125rem 0 1.375rem; border-radius:0.6875rem; overflow:hidden}
+figure.code{margin-left:-1.375rem; margin-right:-1.375rem}
+figure.code{background:var(--code-bg); border:0.0625rem solid #34312b; box-shadow:0 0.125rem 0.625rem rgba(31,30,29,.07)}
+html[data-theme="dark"] figure.code{border-color:#2b343e; box-shadow:0 0.125rem 0.625rem rgba(0,0,0,.28)}
+figure.code figcaption{
+  display:flex; justify-content:space-between; gap:0.75rem; align-items:center;
+  padding:0.5rem 0.875rem; background:var(--code-bar); border-bottom:0.0625rem solid var(--code-line);
+  color:var(--code-accent); font:0.7125rem/1.4 var(--mono); letter-spacing:.02em;
+}
+figure.code figcaption .lang{color:#7d776b; font-size:0.6625rem; letter-spacing:.1em; text-transform:uppercase}
+html[data-theme="dark"] figure.code figcaption .lang{color:#8f9ba7}
+figure.code pre{
+  margin:0; padding:0.9375rem 1.125rem 1.0625rem; overflow-x:auto;
+  color:var(--code-ink); font:var(--fs-code,0.775rem)/1.66 var(--mono); tab-size:2;
+  white-space:pre-wrap; overflow-wrap:break-word;
+}
+figure.ascii{
+  border:0.0625rem dashed #d3ccbb; background:#f7f4ec;
+}
+html[data-theme="dark"] figure.ascii{border-color:#3a4652; background:#1b2026}
+figure.ascii figcaption{
+  padding:0.4375rem 0.875rem 0; color:var(--stone);
+  font:600 0.65rem/1.4 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+}
+figure.ascii pre{
+  margin:0; padding:0.6875rem 0.875rem 0.9375rem; overflow-x:auto;
+  color:#4c483f; font:0.76875rem/1.55 var(--mono); white-space:pre;
+}
+html[data-theme="dark"] figure.ascii pre{color:#c7d0d8}
+
+/* ---------- tables ---------- */
+.table-wrap{margin:1rem 0 1.375rem; overflow-x:auto; scrollbar-width:thin; scrollbar-color:#cec6b5 transparent}
+.table-wrap::-webkit-scrollbar{height:0.4375rem}
+.table-wrap::-webkit-scrollbar-thumb{background:#d5ccbb; border-radius:0.5rem}
+html[data-theme="dark"] .table-wrap{scrollbar-color:#3a4652 transparent}
+html[data-theme="dark"] .table-wrap::-webkit-scrollbar-thumb{background:#3a4652}
+table{width:100%; border-collapse:collapse; font-size:0.875rem; line-height:1.5}
+thead th{
+  padding:0 0.75rem 0.5rem 0; border-bottom:0.0625rem solid var(--line); text-align:left;
+  color:var(--stone); font:600 0.6625rem/1.3 var(--sans); letter-spacing:.09em; text-transform:uppercase;
+}
+tbody td{padding:0.625rem 0.75rem 0.625rem 0; border-bottom:0.0625rem solid var(--line-soft); vertical-align:top; color:var(--muted)}
+tbody tr:last-child td{border-bottom:none}
+tbody td:first-child{color:var(--ink)}
+tbody td code{font-size:0.75rem}
+tbody td:first-child{white-space:nowrap}
+.tag{
+  display:inline-block; margin-left:0.375rem; padding:0.0625rem 0.375rem; border-radius:1.25rem;
+  background:#f0dcd2; color:#9a4d31; font:600 0.6rem/1.5 var(--sans); letter-spacing:.08em; text-transform:uppercase;
+}
+html[data-theme="dark"] .tag{background:#3a2a24; color:#f0b49a}
+
+.table-wrap.dense table{font-size:0.8125rem}
+.table-wrap.dense tbody td, .table-wrap.dense td code{white-space:normal; overflow-wrap:anywhere}
+.table-wrap.dense tbody td{padding-right:0.625rem}
+.table-wrap.dense tbody td:first-child{min-width:8.5rem}
+
+/* ---------- footer ---------- */
+.colophon{
+  margin-top:3.5rem; padding-top:1.125rem; border-top:0.0625rem solid var(--line);
+  color:var(--stone); font-size:0.775rem; line-height:1.7;
+}
+.colophon code{font-size:0.7rem}
+
+/* ---------- narrow ---------- */
+@media (max-width: 940px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:static; height:auto; border-right:none; border-bottom:0.0625rem solid var(--line); padding:1.375rem 1.25rem 1.125rem}
+  .toc{flex-direction:row; flex-wrap:wrap; gap:0.25rem 0.375rem}
+  .toc a{padding:0.3125rem 0.5625rem; border-left:none; border-radius:0.4375rem; background:#eae5d8; font-size:0.775rem}
+  html[data-theme="dark"] .toc a{background:#252f3b}
+  .toc a .n{flex:0 0 auto}
+  .toc a.active{border-left:none}
+  .toc a.l3{font-size:0.74rem}
+  .toc a.l4{font-size:0.70rem}
+  .side-foot{display:none}
+  .progress{left:0}
+  .pane{padding:1.875rem 1.25rem 5.625rem}
+  h2{font-size:1.4375rem}
+  .table-wrap{margin-left:0; margin-right:0}
+  figure.code{margin-left:0; margin-right:0}
+  thead th{white-space:nowrap}
+  tbody td, tbody td code{white-space:normal; overflow-wrap:anywhere}
+}
+
+/* ---------- print ---------- */
+@media print{
+  :root,html[data-theme="dark"]{ --paper:#fff !important; --surface:#fff !important; --ivory:#fff !important; --ink:#1f1e1d !important; --prose:#33302c !important; --muted:#44423d !important; --stone:#6b675f !important; --line:#d8d3c8 !important; --line-soft:#e8e4da !important; --tint:#f8f2ec !important; --terra:#c9633f !important; --terra-dark:#a14e2f !important; --amber:#8a6420 !important; --code-bg:#f6f4ef !important; --code-bar:#efece3 !important; --code-line:#ddd8cc !important; --code-ink:#26241f !important; --code-dim:#6b675f !important; --code-accent:#8f3f27}
+
+  .sidebar,.progress{display:none}
+  .shell{display:block}
+  .pane{padding:0}
+  body{background:#fff; font-size:10.5pt}
+  h2{break-after:avoid} figure,table,.callout{break-inside:avoid}
+  figure.code{margin-left:0; margin-right:0}
+  a{color:inherit; text-decoration:none}
+}
+/* ---------- appearance panel (the rounded "Aa" button, top right) ---------- */
+
+#stylebtn{
+  position:fixed; z-index:60; right:18px; top:18px; bottom:auto;
+  display:grid; place-items:center; width:46px; height:46px; padding:0;
+  border:1px solid var(--line); border-radius:50%;
+  background:var(--surface); color:var(--ink);
+  box-shadow:0 6px 22px rgba(31,30,29,.16);
+  font:500 15px/1 var(--serif); cursor:pointer;
+  transition:border-color .14s, color .14s, transform .14s;
+}
+#stylebtn:hover{border-color:var(--terra); color:var(--terra-dark); transform:translateY(-1px)}
+#stylebtn:focus-visible{outline:2px solid var(--terra); outline-offset:2px}
+#stylebtn[aria-expanded="true"]{border-color:var(--terra); color:var(--terra-dark)}
+
+#stylepanel{
+  position:fixed; z-index:61; right:18px; top:76px; bottom:auto;
+  display:flex; flex-direction:column; width:372px;
+  max-height:calc(100vh - 94px);
+  border:1px solid var(--line); border-radius:14px;
+  background:var(--surface); color:var(--ink);
+  box-shadow:0 18px 50px rgba(31,30,29,.24);
+  font:12.5px/1.45 var(--sans);
+}
+#stylepanel[hidden]{display:none}
+
+.sp-head{
+  display:flex; align-items:center; gap:8px;
+  padding:11px 13px; border-bottom:1px solid var(--line-soft);
+}
+.sp-head h2{margin:0; padding:0; border:0; display:block; font:600 13px/1.2 var(--sans); color:var(--ink)}
+.sp-head h2::before{content:none}
+
+.sp-head select,.sp-foot button{
+  padding:5px 9px; border:1px solid var(--line); border-radius:7px;
+  background:var(--ivory); color:var(--ink);
+  font:12.5px/1.3 var(--sans); cursor:pointer;
+}
+.sp-head select:focus-visible,.sp-foot button:focus-visible{outline:2px solid var(--terra); outline-offset:1px}
+
+#sp-close{
+  width:26px; height:26px; padding:0; border:1px solid transparent; border-radius:50%;
+  background:none; color:var(--stone); font:14px/1 var(--sans); cursor:pointer;
+}
+#sp-close:hover{border-color:var(--line); color:var(--ink)}
+
+.sp-body{padding:2px 13px 12px; overflow-x:hidden; overflow-y:auto; scrollbar-width:thin}
+
+.sp-group{padding:11px 0; border-bottom:1px solid var(--line-soft)}
+.sp-group:last-child{border-bottom:0}
+.sp-group h3{
+  margin:0 0 8px; color:var(--stone);
+  font:700 9.5px/1.2 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+}
+.sp-group h3 .tag{margin-left:6px; color:var(--terra-dark); letter-spacing:.04em; text-transform:none}
+
+.sp-row{display:grid; grid-template-columns:1fr auto; gap:2px 10px; align-items:baseline; margin:9px 0}
+.sp-row label{color:var(--muted)}
+.sp-row > *{min-width:0}
+.sp-row output{color:var(--ink); font-variant-numeric:tabular-nums; font-size:11.5px}
+.sp-row input[type="range"]{grid-column:1/-1; width:100%; margin:3px 0 0; accent-color:var(--terra)}
+.sp-row select{
+  grid-column:1/-1; width:100%; margin-top:4px; padding:5px 8px;
+  border:1px solid var(--line); border-radius:7px;
+  background:var(--ivory); color:var(--ink); font:12px/1.4 var(--sans); cursor:pointer;
+}
+.sp-row select:focus-visible{outline:2px solid var(--terra); outline-offset:1px}
+
+.sp-colors label{
+  display:grid; grid-template-columns:26px 1fr auto; gap:8px; align-items:center; padding:2px 0;
+}
+.sp-colors .swatch-label{overflow:hidden; color:var(--muted); text-overflow:ellipsis; white-space:nowrap}
+.sp-colors input[type="color"]{
+  width:26px; height:22px; padding:0; border:1px solid var(--line); border-radius:6px;
+  background:none; cursor:pointer;
+}
+.sp-colors .hex{color:var(--stone); font:11px/1 var(--mono)}
+
+.sp-foot{
+  display:flex; align-items:center; gap:8px;
+  padding:10px 13px; border-top:1px solid var(--line-soft);
+}
+.sp-foot .spacer{flex:1}
+
+@media (max-width:520px){
+  #stylepanel{right:8px; left:8px; width:auto; top:72px; bottom:auto}
+}
+
+@media print{
+  #stylebtn,#stylepanel{display:none !important}
+}
+
+</style>
+<script>
+(function () {
+  try {
+    var saved = JSON.parse(localStorage.getItem('mca-site-customiser:v2')) || {};
+    var mode = saved.mode === 'light' || saved.mode === 'dark' ? saved.mode : 'auto';
+    var dark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  } catch (e) { /* no stored preference */ }
+})();
+</script>
+</head>
+<body>
+<div class="progress"><span id="bar"></span></div>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="side-kicker" href="#top">mini-coding-js &middot; Build prompt</a>
+    <p class="side-title">PLAN</p>
+    <p class="side-sub">Converted from Markdown to styled HTML.</p>
+    <div class="side-rule"></div>
+    <p class="side-label">Contents</p>
+    <nav class="toc" id="toc">
+      <a href="#s01" class="l2"><span class="n">01</span><span>Build Plan: mini-coding-agent-js</span></a>
+      <a href="#s01-01" class="l3"><span class="n"></span><span>Prerequisites</span></a>
+      <a href="#s01-02" class="l3"><span class="n"></span><span>Full Architecture (end state)</span></a>
+      <a href="#s01-03" class="l3"><span class="n"></span><span>How to Use This Plan</span></a>
+      <a href="#s01-04" class="l3"><span class="n"></span><span>Phase A: A Chatbot That Talks</span></a>
+      <a href="#s01-04-01" class="l4"><span class="n"></span><span>Stage 0: Scaffold</span></a>
+      <a href="#s01-04-02" class="l4"><span class="n"></span><span>Stage 1: Terminal Language (`ui.js`)</span></a>
+      <a href="#s01-04-03" class="l4"><span class="n"></span><span>Stage 2: Config &amp; Model Client (`config.js`, `llm.js`)</span></a>
+      <a href="#s01-04-04" class="l4"><span class="n"></span><span>Stage 3: The Simplest Chat Loop</span></a>
+      <a href="#s01-04-05" class="l4"><span class="n"></span><span>Stage 4: Conversation History</span></a>
+      <a href="#s01-04-06" class="l4"><span class="n"></span><span>Stage 5: System Prompt (`prompt.js`)</span></a>
+      <a href="#s01-05" class="l3"><span class="n"></span><span>Phase B: Give the Chatbot Hands (Tools)</span></a>
+      <a href="#s01-05-01" class="l4"><span class="n"></span><span>Stage 6: Path Policy (`workspace.js`)</span></a>
+      <a href="#s01-05-02" class="l4"><span class="n"></span><span>Stage 7: Read-Only File Tools</span></a>
+      <a href="#s01-05-03" class="l4"><span class="n"></span><span>Stage 8: Sandbox + Write Tools</span></a>
+      <a href="#s01-05-04" class="l4"><span class="n"></span><span>Stage 9: Command Execution (`run_command`)</span></a>
+      <a href="#s01-06" class="l3"><span class="n"></span><span>Phase C: Memory &amp; Observability</span></a>
+      <a href="#s01-06-01" class="l4"><span class="n"></span><span>Stage 10: Long-term Memory (`memory.js`, `remember`, `recall`)</span></a>
+      <a href="#s01-06-02" class="l4"><span class="n"></span><span>Stage 11: Lifecycle Hooks (`hooks.js`)</span></a>
+      <a href="#s01-07" class="l3"><span class="n"></span><span>Phase D: The Agent Loop &amp; Polish</span></a>
+      <a href="#s01-07-01" class="l4"><span class="n"></span><span>Stage 12: The ReAct Loop (`agent.js`, `heartbeat.js`)</span></a>
+      <a href="#s01-07-02" class="l4"><span class="n"></span><span>Stage 13: Offline Demo (`demo.js`)</span></a>
+      <a href="#s01-07-03" class="l4"><span class="n"></span><span>Stage 14: Sessions, History Trimming &amp; Full CLI Polish</span></a>
+      <a href="#s01-08" class="l3"><span class="n"></span><span>Phase E: Hardening &amp; Docs</span></a>
+      <a href="#s01-08-01" class="l4"><span class="n"></span><span>Stage 15: Full Test Suite</span></a>
+      <a href="#s01-08-02" class="l4"><span class="n"></span><span>Stage 16: Documentation &amp; Final Acceptance</span></a>
+      <a href="#s01-09" class="l3"><span class="n"></span><span>Checklist</span></a>
+    </nav>
+    <div class="side-foot">
+      Built from <code>PLAN.md</code><br>27 sections
+    </div>
+  </aside>
+
+  <main class="pane" id="top">
+    <div class="inner">
+      <header class="page-heading">
+        <p class="eyebrow">Reading guide</p>
+        <h1>PLAN</h1>
+        <p class="lede">Converted from Markdown.</p>
+        <p class="meta">
+          <span>27 sections</span>
+          <span>generated page</span>
+        </p>
+      </header>
+
+
+<section id="s01">
+<h2><span class="num">01</span><span>Build Plan: mini-coding-agent-js</span></h2>
+
+<div class="callout"><strong>Goal:</strong> Build a fully capable coding-agent harness <strong>starting from a simple chatbot</strong> and adding one architectural layer at a time.  
+<strong>Method:</strong> Every stage produces a runnable program. You chat with the model at Stage 3, give it read-only tools at Stage 7, let it edit files at Stage 8, execute commands at Stage 9, remember things at Stage 10, observe its lifecycle at Stage 11, and finally wrap it in the ReAct loop at Stage 12.  
+<strong>Why:</strong> If you build the plumbing first you wait hours before the thing talks. If you build the conversation first, every new feature is an immediate super-power you can feel.</div>
+
+</section>
+
+<h3 id="s01-01">Prerequisites</h3>
+
+<ul>
+<li>Node.js &gt;= 20 (ES modules, <code>AbortSignal.any</code>, <code>node:test</code>)</li>
+<li>One runtime dependency: <code>chalk</code> (v5+, ESM)</li>
+<li>OpenRouter API key (only needed when you want live mode; demo is offline)</li>
+</ul>
+
+<hr>
+
+<h3 id="s01-02">Full Architecture (end state)</h3>
+
+<figure class="code"><pre>CLI (cli.js)
+  ├─ loadConfig()              config.js
+  ├─ Workspace + Sandbox       workspace.js / sandbox.js
+  ├─ Memory                    memory.js
+  ├─ chatFn (real | demo)      llm.js / demo.js
+  ├─ Hooks (trace by default)  hooks.js
+  └─ runTask() per task        agent.js
+       └─ think → model call → tool calls? ──no──→ answer, stop
+                    ↑                │
+                    └──── yes: run each tool, append result</pre></figure>
+
+<p><strong>The golden rule (enforced from Stage 12 onward):</strong> <code>agent.js</code> is a library. It knows nothing about flags, colours, <code>.env</code>, or <code>process.exit</code>. The CLI owns all process concerns. Tests can run the loop with a fake model and no network.</p>
+
+<p><strong>Before Stage 12:</strong> <code>cli.js</code> owns the conversation loop directly. We extract it into <code>agent.js</code> only once the loop is complex enough to deserve its own file.</p>
+
+<hr>
+
+<h3 id="s01-03">How to Use This Plan</h3>
+
+<ol>
+<li>Pick the next stage.</li>
+<li>Read the <strong>What you will learn</strong>, <strong>Files to create</strong>, and <strong>Files to modify</strong> sections.</li>
+<li>Build/modify.</li>
+<li>Run the <strong>Acceptance criteria</strong>.</li>
+<li>When satisfied, move on.</li>
+</ol>
+
+<p><strong>Do not skip ahead.</strong> Each stage adds a concrete capability. The CLI should do something new and useful after every stage.</p>
+
+<hr>
+
+<h3 id="s01-04">Phase A: A Chatbot That Talks</h3>
+
+<p>The goal of this phase is a working OpenRouter chat client. No tools, no sandbox, no memory—just you and the model.</p>
+
+<hr>
+
+<h4 id="s01-04-01">Stage 0: Scaffold</h4>
+
+<p><strong>What you will learn:</strong> ES modules project layout, the single-dependency constraint, workspace directory design.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>package.json</code></li>
+<li><code>.gitignore</code></li>
+<li><code>workspace/.gitkeep</code></li>
+<li><code>src/.gitkeep</code></li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li><code>cd mini-coding-agent-js &amp;&amp; npm install</code> installs exactly <code>chalk</code>.</li>
+<li><code>node --test</code> reports <code>0 tests</code> (no failure).</li>
+<li><code>workspace/</code> exists and is git-ignored except <code>.gitkeep</code>.</li>
+<li><code>type: "module"</code> is set in <code>package.json</code>.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-04-02">Stage 1: Terminal Language (<code>ui.js</code>)</h4>
+
+<p><strong>What you will learn:</strong> Separation of presentation from logic. Every visual helper returns a string; the caller decides whether to print it. <code>chalk</code> is the only dependency.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>src/ui.js</code></li>
+<li><code>test/ui.test.js</code></li>
+</ul>
+
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li>Every helper returns a string. The caller (usually <code>console.log</code>) prints it.</li>
+<li><code>ui.result(text)</code> classifies failure when the first line starts with <code>ERROR</code>, <code>DENIED</code>, or <code>FORBIDDEN</code>, or contains a non-zero <code>exit code N</code>.</li>
+<li><code>explainExit(code)</code> maps exit codes to plain-English meanings (1, 2, 3, 126, 127, 128–164, 9009, etc.).</li>
+<li><code>ui.forbidden(action, requested, reason)</code> must be conspicuous and greppable: <code>⛔ FORBIDDEN SAVE ../escape.txt - path escapes the workspace: ../escape.txt</code>.</li>
+<li>Model output containing backslashes or colour-looking tags must print verbatim.</li>
+</ul>
+
+<p><strong>API to build:</strong></p>
+
+<figure class="code"><pre>ui.title(text)                 // bold cyan
+ui.field(label)                // green label, white ›
+ui.kv(label, value)            // blue padded label + white value
+ui.step(step, max, width=40)   // blue "── step X/Y ────"
+ui.think(text)                 // "think:" cyan + text
+ui.tool(name, args)            // "tool →" white, name yellow, args white
+ui.result(text)                // green/red result line, with details below
+ui.forbidden(action, requested, reason)
+ui.pass(text) / ui.fail(text)
+ui.rule(label, width=44)       // bold magenta divider
+ui.hookTitle(label)
+ui.hookLine(icon, name, colour, when, live)
+ui.hookField(label, value, colour)
+ui.hookLive()
+ui.hookNote(name, text)
+ui.hookTrace(icon, name, colour, explanation, detail)
+ui.hookFlow(steps)
+ui.memory(text)
+ui.exitNote(code, meaning)
+ui.answerRule()                // bold green "── final answer ────"
+ui.answer(text)
+ui.warn(text) / ui.waiting(text) / ui.error(text) / ui.note(text)
+ui.prompt(label) / ui.dim(text)</pre></figure>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li>Every helper returns a string.</li>
+<li>Styles become ANSI when TTY; strip cleanly or read back as original text when not.</li>
+<li>Failed results are red; clean results are green.</li>
+<li>Exit code 1 gets a description via <code>explainExit</code>.</li>
+<li>Successful command shows first stdout line in a dim annotation.</li>
+<li><code>forbidden</code> produces bold red capitals.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-04-03">Stage 2: Config &amp; Model Client (<code>config.js</code>, <code>llm.js</code>)</h4>
+
+<p><strong>What you will learn:</strong> <code>.env</code> discovery and precedence, fingerprinting, model normalisation, plain <code>fetch</code> to OpenRouter, <code>AbortSignal</code> composition.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>src/config.js</code></li>
+<li><code>src/llm.js</code></li>
+<li><code>test/config.test.js</code></li>
+<li><code>test/llm.test.js</code></li>
+</ul>
+
+<p><strong>Key concepts (config.js):</strong></p>
+
+<ul>
+<li><code>PROJECT_ROOT = path.resolve(import.meta.dirname, '..')</code>.</li>
+<li><code>findEnvFile(startDir)</code>: nearest <code>.env</code> wins, walks up to filesystem root.</li>
+<li><code>loadDotEnv(file)</code>: supports <code>KEY=VALUE</code>, optional <code>export </code> prefix, <code>#</code> comments, quoted values, blank values ignored.</li>
+<li><strong>Precedence:</strong> <code>.env</code> overrides inherited shell variables (so a stale key in <code>~/.bashrc</code> does not outrank the project's key).</li>
+<li><code>fingerprint(secret)</code>: unset → <code>not set</code>; length ≤ 12 → all <code>*</code>; otherwise <code>&lt;first5&gt;...&lt;last4&gt;</code>.</li>
+<li><code>normalizeModel</code>: OpenRouter requires <code>vendor/model</code>. Map bare-name prefixes: <code>deepseek</code> → <code>deepseek</code>, <code>claude</code> → <code>anthropic</code>, <code>gpt</code>/<code>o1</code>/<code>o3</code>/<code>o4</code>/<code>chatgpt</code> → <code>openai</code>, <code>gemini</code> → <code>google</code>, <code>grok</code> → <code>x-ai</code>, <code>llama</code> → <code>meta-llama</code>, <code>qwen</code> → <code>qwen</code>, <code>mistral</code>/<code>mixtral</code> → <code>mistralai</code>.</li>
+<li><code>loadConfig(overrides, { envFile, startDir })</code>: returns full config with <code>apiKeySource</code>, <code>modelSource</code>, etc.</li>
+<li>Defaults: model <code>deepseek/deepseek-v4.1-flash-1017</code>, <code>CMD_POLICY=ask</code>, <code>MAX_STEPS=12</code>, <code>REQUEST_TIMEOUT_MS=90000</code>, <code>WORKSPACE_DIR=workspace</code>, <code>MEMORY_FILE=src/memory.md</code>, <code>MEMORY_MAX_ENTRIES=60</code>, <code>MEMORY_PROMPT_CHARS=1200</code>.</li>
+</ul>
+
+<p><strong>Key concepts (llm.js):</strong></p>
+
+<ul>
+<li><code>chat({ apiKey, model, messages, tools, signal, timeoutMs = 90000 })</code>.</li>
+<li>Missing key → throw <code>OPENROUTER_API_KEY is not set...</code>.</li>
+<li>Combine caller <code>signal</code> with <code>AbortSignal.timeout(timeoutMs)</code> via <code>AbortSignal.any</code>.</li>
+<li>POST to <code>https://openrouter.ai/api/v1/chat/completions</code>.</li>
+<li>Headers: <code>Authorization</code>, <code>Content-Type</code>, <code>X-Title: min-coding-js</code>.</li>
+<li>Body: <code>{ model, messages, tools, max_tokens: 2048 }</code>.</li>
+<li>On fetch timeout: throw <code>request timed out after &lt;seconds&gt;s</code>.</li>
+<li>Non-2xx: hint 401 = bad key, 402 = out of credits.</li>
+<li>Non-JSON body or <code>.error</code> field handled with truncated preview.</li>
+<li><code>sanitizeAssistant(message)</code>: rebuild with only <code>role</code>, <code>content</code>, <code>tool_calls</code>. Delete <code>content</code> when null and tool calls exist. Drop <code>reasoning</code> / <code>reasoning_content</code>.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li><code>loadConfig</code> resolves <code>.env</code>, shell, overrides correctly.</li>
+<li><code>.env</code> beats stale shell key; shell used for names <code>.env</code> does not define.</li>
+<li>Missing <code>.env</code> is not an error.</li>
+<li>Fingerprint never exposes the whole key.</li>
+<li>Bare model names normalised to <code>vendor/model</code>.</li>
+<li>Override reported only when value genuinely differed.</li>
+<li><code>sanitizeAssistant</code> drops reasoning and rebuilds clean message.</li>
+<li>LLM tests mock <code>fetch</code> to test timeout, error handling, and JSON parsing without a network.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-04-04">Stage 3: The Simplest Chat Loop</h4>
+
+<p><strong>What you will learn:</strong> wiring config, LLM, and UI into a runnable program. Reading user input. The first time you see the model reply.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>src/cli.js</code> (minimal version)</li>
+<li><code>test/input.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify:</strong> none yet (this is the first <code>cli.js</code>).</p>
+
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li>This stage intentionally avoids tools, memory, hooks, and the full agent loop. The goal is <strong>immediate gratification</strong>.</li>
+<li><code>askTask({ input, output })</code>: readline loop. Prompt: <code>  &lt;green task&gt; &lt;white ›&gt;</code>. Trim. Blank lines re-ask. Ctrl-C returns <code>null</code>. Use <code>for await (const raw of rl)</code> to support multi-line chunks.</li>
+<li>Parse flags: <code>--help</code>, <code>--model</code>, <code>--max-steps</code>, and all remaining non-flags become the task string.</li>
+<li>Load config; build <code>messages = [{ role: 'system', content: 'You are a helpful assistant.' }, { role: 'user', content: task }]</code>.</li>
+<li>Call <code>chat()</code> from <code>llm.js</code>.</li>
+<li>Print <code>ui.answer(message.content)</code>.</li>
+<li>If no task argument and stdin is not a TTY, print a hint and exit 2.</li>
+<li>Exit code 1 if the request fails (network/key error).</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li><code>node src/cli.js --help</code> prints concise usage with no API key needed.</li>
+<li><code>node src/cli.js "Say hello"</code> sends the task to OpenRouter and prints the model's reply.</li>
+<li>No task + non-TTY stdin exits 2 with a helpful message.</li>
+<li>Invalid/missing key exits 1 with a clear message.</li>
+<li><code>--model</code> flag overrides <code>.env</code>.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-04-05">Stage 4: Conversation History</h4>
+
+<p><strong>What you will learn:</strong> session state. The assistant remembers what you just said.</p>
+
+<p><strong>Files to create:</strong> none new.</p>
+
+<p><strong>Files to modify:</strong> <code>src/cli.js</code></p>
+
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li>Keep a <code>messages</code> array. Append user messages and assistant replies.</li>
+<li>After a one-shot task, print a note that you can press Up or run again—but actually, implement an <strong>interactive session loop</strong> now.</li>
+<li>Print <code>interactive session - type a task below (/quit exits)</code>.</li>
+<li>Commands: <code>/quit</code>, <code>/exit</code>, <code>/new</code>.</li>
+<li><code>/new</code> clears <code>messages</code> and starts fresh (system prompt still re-added).</li>
+<li>Trim blank input.</li>
+<li>Every turn appends <code>user</code> → model call → append <code>assistant</code>.</li>
+<li>Use the real model call, no tools yet.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li>Interactive session: follow-up questions reference previous context.</li>
+<li><code>/new</code> clears history.</li>
+<li><code>/quit</code> and <code>/exit</code> end the session.</li>
+<li>Session prints <code>session over - N turn(s)</code> on exit.</li>
+<li>One-shot still works.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-04-06">Stage 5: System Prompt (<code>prompt.js</code>)</h4>
+
+<p><strong>What you will learn:</strong> separating behavioural rules from control flow. Dynamic prompt composition.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>src/prompt.js</code></li>
+<li><code>test/prompt.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify:</strong> <code>src/cli.js</code> (replace hard-coded system prompt with <code>buildSystemPrompt</code>)</p>
+
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li><code>systemRules(tools = TOOL_NAMES)</code> produces the prose behavioural contract.</li>
+<li>Rules cover: look before you write, prefer <code>create_file</code> for new files, <code>edit_file</code> for small changes, <code>write_file</code> for whole-file replacement, old_string must be copied exactly, run what you wrote, do not invent tool results, be concise, one tool call per step, remember useful facts.</li>
+<li><code>buildSystemPrompt({ memory, log })</code>: rules + optional memory digest.</li>
+<li>At this stage memory is not yet implemented, so the digest is always empty.</li>
+<li>No memory → rules only.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li>Rules are injected as the first <code>system</code> message on every turn.</li>
+<li><code>/new</code> keeps the system prompt.</li>
+<li>No tool names listed yet (since tools aren't built); the signature accepts <code>tools</code> but <code>cli.js</code> passes <code>[]</code> for now.</li>
+</ul>
+
+<hr>
+
+<h3 id="s01-05">Phase B: Give the Chatbot Hands (Tools)</h3>
+
+<p>Now the model can touch the filesystem and run commands. We add tools one capability at a time.</p>
+
+<hr>
+
+<h4 id="s01-05-01">Stage 6: Path Policy (<code>workspace.js</code>)</h4>
+
+<p><strong>What you will learn:</strong> The foundation of agent safety: <strong>reads are open; writes are fenced</strong>. Path resolution, containment, symlink hardening.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>src/workspace.js</code></li>
+<li><code>test/workspace.test.js</code></li>
+</ul>
+
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li><code>PathError</code> exported.</li>
+<li><code>new Workspace(root)</code>: resolves root, <code>mkdir -p</code>, stores <code>fs.realpathSync(root)</code>.</li>
+<li><code>workspace.resolve(requested)</code>: strict write policy. Rejects:</li>
+<li>empty/non-string;</li>
+<li>absolute paths;</li>
+<li>drive-relative (<code>C:foo</code>);</li>
+<li>UNC (<code>\\server\share</code>, <code>//server/share</code>);</li>
+<li><code>~</code>, <code>$</code>, <code>%</code> prefixes;</li>
+<li>forbidden first segments (<code>users</code>, <code>windows</code>, <code>program files</code>, <code>desktop</code>, <code>documents</code>, <code>downloads</code>, <code>appdata</code>, <code>onedrive</code>, <code>library</code>, <code>system32</code>, etc.).</li>
+<li>Expands <code>~</code>, <code>%VAR%</code>, <code>${VAR}</code>, <code>$VAR</code> <strong>before</strong> containment checks.</li>
+<li>Symlink safety: resolve the deepest existing ancestor with <code>fs.realpathSync</code>, append the remainder, then re-check containment.</li>
+<li><code>workspace.resolveRead(requested)</code>: permissive. Allows absolute paths, outside paths, <code>~</code>.</li>
+<li><code>rel</code> is <code>/</code>-separated; root is <code>.</code>.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li>Resolves legitimate relative paths; <code>rel</code> correct.</li>
+<li>Refuses every escape shape.</li>
+<li>Allows reads outside the workspace.</li>
+<li>Symlinked folder inside workspace cannot smuggle a write outside.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-05-02">Stage 7: Read-Only File Tools</h4>
+
+<p><strong>What you will learn:</strong> The first tools the model can invoke. Argument validation. String observations (never thrown errors).</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>src/tools.js</code> (partial: <code>list_files</code>, <code>read_file</code> only)</li>
+<li><code>test/tools.test.js</code> (read-only tests)</li>
+</ul>
+
+<p><strong>Files to modify:</strong> <code>src/prompt.js</code> (add <code>list_files</code> and <code>read_file</code> to the rules)</p>
+
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li>OpenAI function-calling schema shape: <code>{ type: 'function', function: { name, description, parameters: { type: 'object', properties: {...}, additionalProperties: false } } }</code>.</li>
+<li><code>validate(name, rawArgs)</code>: raw may be JSON string or object; parse, type-check, integer-check.</li>
+<li><code>runTool(name, rawArgs, ctx)</code>: dispatch. Unknown tool → error string.</li>
+<li>Handler exceptions become text observations (not thrown out of the loop).</li>
+<li><code>list_files</code>:</li>
+<li>Params: <code>path</code> (default <code>'.'</code>), <code>depth</code> (default 3, max 6).</li>
+<li><code>resolveRead</code>.</li>
+<li>Missing folder → <code>ERROR: no such folder: &lt;rel&gt;</code>.</li>
+<li>Walk recursively, sorted, skip <code>.git</code>, <code>node_modules</code>, <code>.venv</code>, <code>__pycache__</code>.</li>
+<li>Directories print <code>&lt;rel&gt;/</code>; files print <code>&lt;rel&gt;  (&lt;size&gt;b)</code>.</li>
+<li>Stop at <code>depth</code> and 200 lines.</li>
+<li>End with <code>\n\n&lt;dirs&gt; folder(s), &lt;files&gt; file(s) under &lt;start.rel&gt;</code>.</li>
+<li><code>read_file</code>:</li>
+<li>Params: <code>path</code> (required), <code>offset</code> (default 1), <code>limit</code> (default 200, max 2000).</li>
+<li><code>resolveRead</code>.</li>
+<li>Missing → <code>ERROR: no such file: &lt;rel&gt;</code>; directory → <code>ERROR: &lt;rel&gt; is a folder - use list_files</code>.</li>
+<li>Header: <code>"&lt;rel&gt; (&lt;total lines&gt;)"</code>.</li>
+<li>Numbered lines right-aligned to width 4 followed by <code>| </code>.</li>
+<li>Append <code>\n... [&lt;n&gt; more lines]</code> when truncated.</li>
+<li><code>offset</code> clamps ≥ 1; <code>limit</code> clamps 1..2000.</li>
+</ul>
+
+<p><strong>CLI changes at this stage:</strong></p>
+
+<ul>
+<li><code>cli.js</code> now constructs <code>TOOL_SCHEMAS</code> for the two tools and passes them to <code>chat()</code>.</li>
+<li>After the model reply, if <code>message.tool_calls</code> exists, execute the tools, append <code>role: 'tool'</code> results, and send back to the model for a final answer.</li>
+<li>This is a <strong>manual tool loop inside cli.js</strong> (not <code>agent.js</code> yet). It teaches the ReAct pattern before we formalise it.</li>
+<li>Print <code>ui.tool(name, args)</code> and <code>ui.result(result)</code>.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li>Model can call <code>list_files</code> and see directory listings.</li>
+<li>Model can call <code>read_file</code> and see numbered file contents.</li>
+<li>Bad tool arguments return text errors, not crashes.</li>
+<li>Reads outside workspace succeed (e.g. <code>read_file</code> of <code>../package.json</code>).</li>
+<li>Missing file returns <code>ERROR: no such file</code>.</li>
+<li>Directory read returns <code>ERROR: is a folder</code>.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-05-03">Stage 8: Sandbox + Write Tools</h4>
+
+<p><strong>What you will learn:</strong> Defense in depth. The <strong>only</strong> place that prints <code>FORBIDDEN</code>. Honest limitations.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>src/sandbox.js</code></li>
+<li><code>test/sandbox.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify:</strong> <code>src/tools.js</code> (add <code>create_file</code>, <code>write_file</code>, <code>edit_file</code>, <code>delete_file</code>); <code>src/cli.js</code> (wire sandbox)</p>
+
+<p><strong>Key concepts (sandbox.js):</strong></p>
+
+<ul>
+<li><code>SANDBOX_DIR = path.resolve(import.meta.dirname, '..', 'workspace')</code>.</li>
+<li><code>ACTIONS = { SAVE: 'save', EDIT: 'edit', DELETE: 'delete' }</code>.</li>
+<li><code>ForbiddenError</code>: carries <code>action</code>, <code>requested</code>, <code>reason</code>; <code>name = 'ForbiddenError'</code>, <code>code = 'FORBIDDEN'</code>.</li>
+<li><code>new Sandbox({ workspace, root, log })</code>.</li>
+<li><code>sandbox.check(action, requested)</code>: delegates to <code>workspace.resolve()</code>, converts <code>PathError</code> to <code>ForbiddenError</code>, increments <code>refusals</code>, prints one <code>ui.forbidden(...)</code> line, then throws.</li>
+<li><code>sandbox.save(requested, content)</code>: <code>check(SAVE)</code>, mkdir parent, write file, return <code>{ existed, bytes }</code>.</li>
+<li><code>sandbox.remove(requested)</code>: <code>check(DELETE)</code>, <code>rmdirSync</code> for empty dirs, <code>unlinkSync</code> for files. Missing returns <code>{ missing: true }</code>. Deleting the sandbox root itself is refused.</li>
+<li><code>ForbiddenError</code> message format: <code>SAVE ../escape.txt - path escapes the workspace: ../escape.txt</code>.</li>
+<li><code>sandbox.summary()</code>: <code>"save, edit, delete - only inside &lt;root&gt;"</code>.</li>
+</ul>
+
+<p><strong>Key concepts (write tools):</strong></p>
+
+<ul>
+<li><code>create_file</code>: <code>sandbox.check(SAVE)</code>, if exists → <code>ERROR: already exists - use edit_file or write_file</code>. Else write, return <code>created &lt;rel&gt; (&lt;bytes&gt; bytes)</code>.</li>
+<li><code>write_file</code>: <code>sandbox.check(SAVE)</code>, create parents, overwrite, return <code>created</code> or <code>overwrote</code>.</li>
+<li><code>edit_file</code>:</li>
+<li>Params: <code>path</code>, <code>old_string</code>, <code>new_string</code>, <code>replace_all</code> (default false).</li>
+<li><code>sandbox.check(EDIT)</code>. Missing file → <code>ERROR</code>.</li>
+<li>Empty <code>old_string</code> → <code>ERROR</code>.</li>
+<li>Count exact occurrences using <code>indexOf</code> loop.</li>
+<li>0 occurrences → <code>ERROR: old_string not found... Read the file and copy exactly, including whitespace.</code></li>
+<li>&gt;1 and no <code>replace_all</code> → <code>ERROR: old_string appears N times...</code></li>
+<li>Replacement literal: <code>source.split(oldStr).join(newStr)</code> or <code>replace</code> with a replacer function so <code>$1</code>, <code>$&amp;</code> are <strong>not</strong> interpreted.</li>
+<li>Return <code>edited &lt;rel&gt;: &lt;n&gt; replacement(s), first at line &lt;line&gt;</code>.</li>
+</ul>
+
+<p><strong>CLI changes:</strong></p>
+
+<ul>
+<li><code>cli.js</code> creates one <code>Sandbox</code> per run and passes it to the tool handlers via <code>ctx</code>.</li>
+<li>A write outside <code>workspace/</code> prints one <code>⛔ FORBIDDEN</code> line and returns <code>FORBIDDEN: ...</code> to the model.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li><code>create_file</code> writes inside workspace.</li>
+<li><code>create_file</code> refuses to clobber.</li>
+<li><code>write_file</code> overwrites.</li>
+<li><code>edit_file</code> works with exact string matching.</li>
+<li><code>edit_file</code> treats <code>$1</code> literally.</li>
+<li><code>edit_file</code> fails on missing file, empty old_string, ambiguous snippet.</li>
+<li>Every escape shape refused for all write/delete actions.</li>
+<li>Deleting sandbox root refused.</li>
+<li>Unknown action to <code>check()</code> throws <code>TypeError</code> (not a refusal).</li>
+<li>A refused write prints exactly one <code>FORBIDDEN</code> line.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-05-04">Stage 9: Command Execution (<code>run_command</code>)</h4>
+
+<p><strong>What you will learn:</strong> Running shell commands safely. Hard deny-lists, environment allow-lists, policy layers (<code>deny</code> / <code>ask</code> / <code>allow</code>).</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>test/shell-sandbox.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify:</strong> <code>src/sandbox.js</code> (add <code>checkCommand</code>, <code>tokenizeCommand</code>, <code>shellWriteTargets</code>); <code>src/tools.js</code> (add <code>run_command</code>)</p>
+
+<p><strong>Key concepts (shell target scanning):</strong></p>
+
+<ul>
+<li><code>tokenizeCommand(text)</code>: split on whitespace honouring single/double quotes. Emit operators as tokens: <code>&gt;</code>, <code>&gt;&gt;</code>, <code>&lt;</code>, <code>|</code>, <code>||</code>, <code>&amp;</code>, <code>&amp;&amp;</code>, <code>;</code>. Quotes stripped.</li>
+<li><code>shellWriteTargets(command)</code>:</li>
+<li>Redirections <code>&gt;</code> / <code>&gt;&gt;</code>: following token is a write target. Handle <code>2&gt; file</code>.</li>
+<li><code>DEST_LAST</code> commands (<code>copy</code>, <code>cp</code>, <code>move</code>, <code>mv</code>, <code>xcopy</code>, <code>ren</code>, <code>rename</code>, <code>ln</code>, <code>install</code>, <code>scp</code>, <code>rsync</code>): last positional is destination (require ≥2 positionals).</li>
+<li><code>robocopy</code>: positional arg 2 is destination.</li>
+<li><code>ALL_POSITIONAL</code> commands (<code>del</code>, <code>erase</code>, <code>rd</code>, <code>rmdir</code>, <code>rm</code>, <code>md</code>, <code>mkdir</code>, <code>touch</code>, <code>tee</code>, <code>unlink</code>, <code>truncate</code>, <code>shred</code>): every positional is a target.</li>
+<li>Downloaders: <code>curl</code> <code>-o</code>/<code>--output</code>/<code>-O</code>/<code>--remote-name</code>; <code>wget</code> <code>-O</code>/<code>--output-document</code>.</li>
+<li>PowerShell: <code>out-file</code>, <code>set-content</code>, <code>add-content</code>, <code>new-item</code>, <code>ni</code>, <code>remove-item</code>, <code>copy-item</code>, <code>move-item</code>, <code>rename-item</code>; target flags <code>-destination</code>, <code>-dest</code>, <code>-path</code>, <code>-filepath</code>, <code>-literalpath</code>.</li>
+<li>Strip <code>.exe</code>, <code>.cmd</code>, <code>.bat</code>, <code>.com</code>, <code>.ps1</code> from command names; compare case-insensitively.</li>
+<li>A switch is <code>--flag</code>, <code>-f</code>, or Windows <code>/x</code>; a POSIX path like <code>/home</code> is not a switch.</li>
+</ul>
+
+<p><strong>Key concepts (<code>run_command</code>):</strong></p>
+
+<ul>
+<li>Trim; empty → <code>ERROR: command is required</code>.</li>
+<li>Hard deny-list <strong>before</strong> policy and approval:</li>
+<li>recursive delete of root path, <code>del /...s</code> or <code>/q</code>, <code>format</code>, <code>diskpart</code>, <code>shutdown</code>, <code>reboot</code>, <code>git push --force</code> / <code>-f</code>, <code>curl</code>/<code>wget</code> piped into <code>sh</code>/<code>bash</code>, fork bomb <code>:(){ ...};:</code>, <code>&gt; /dev/sd...</code>.</li>
+<li>Call <code>sandbox.checkCommand(command)</code> before asking human for approval.</li>
+<li>Policy: <code>deny</code> → <code>DENIED</code>; <code>allow</code> → proceed; <code>ask</code> → confirm via readline (only <code>y</code>/<code>yes</code> = allow; no TTY = deny).</li>
+<li>Execute with <code>node:child_process.exec</code> in <code>workspace.root</code>, <code>timeout: 30000</code>, <code>maxBuffer: 1 MB</code>, <code>windowsHide: true</code>, <code>encoding: 'utf8'</code>.</li>
+<li>Environment: <code>safeEnv(source)</code> keeps only <code>PATH, PATHEXT, HOME, USERPROFILE, TMPDIR, TEMP, TMP, SYSTEMROOT, COMSPEC, SHELL, LANG, LC_ALL, TERM</code>. Child <strong>must not</strong> inherit harness env (no <code>OPENROUTER_API_KEY</code> leak).</li>
+<li>Result format: <code>exit code &lt;n&gt;</code>, optional <code>stdout:</code>, optional <code>stderr:</code>. Add <code>(no output)</code> if both empty.</li>
+<li>Clip each stream to 6,000 chars; append <code>... [&lt;n&gt; chars truncated]</code>.</li>
+<li>Timeout appends <code>[tool] command timed out after 30s</code> to stderr and returns non-zero code.</li>
+</ul>
+
+<p><strong>CLI changes:</strong></p>
+
+<ul>
+<li>Add <code>--yes</code> flag to auto-approve commands (sets policy to <code>allow</code> for that run).</li>
+<li>Add <code>--allow-commands</code> alias.</li>
+<li><code>makeConfirm()</code> function in <code>cli.js</code>.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li><code>run_command</code> returns exit code, stdout, stderr.</li>
+<li>Hard-denied commands refused even with <code>--yes</code>.</li>
+<li><code>CMD_POLICY=deny</code> refuses all commands.</li>
+<li>Shell copy to Desktop refused before running.</li>
+<li>Redirect outside refused before running.</li>
+<li>Quoted arguments with spaces stay one token.</li>
+<li>Child env does not contain <code>OPENROUTER_API_KEY</code>.</li>
+<li>Timeout handled gracefully.</li>
+<li><code>safeEnv</code> keeps only allow-listed names.</li>
+</ul>
+
+<hr>
+
+<h3 id="s01-06">Phase C: Memory &amp; Observability</h3>
+
+<p>Now the agent can remember things across runs, and we can observe its lifecycle.</p>
+
+<hr>
+
+<h4 id="s01-06-01">Stage 10: Long-term Memory (<code>memory.js</code>, <code>remember</code>, <code>recall</code>)</h4>
+
+<p><strong>What you will learn:</strong> File-as-database. No cache, no vector store. A student can open <code>src/memory.md</code> and see exactly what the agent knows.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>src/memory.js</code></li>
+<li><code>src/memory.md</code> (initial store)</li>
+<li><code>test/memory.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify:</strong> <code>src/prompt.js</code> (inject memory digest); <code>src/tools.js</code> (add <code>remember</code>, <code>recall</code>); <code>src/cli.js</code> (wire memory)</p>
+
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li>Format: <code>- [tag] text _(YYYY-MM-DD)_</code>; tag ∈ {<code>fact</code>, <code>pref</code>, <code>fix</code>, <code>gotcha</code>}.</li>
+<li><code>parseMemory</code>: accepts <code>-</code> or <code>*</code>, optional date, normalises whitespace. Ignore prose/headings.</li>
+<li><code>Memory({ root, file, maxEntries=60, maxEntryChars=300, rememberChars=2000, promptChars=1200, promptEntries=12 })</code>.</li>
+<li><code>remember(text, { tag })</code>: normalise, truncate to <code>rememberChars</code>. Empty → error. Duplicate refreshes date instead of appending. New appends; drops oldest if over <code>maxEntries</code>.</li>
+<li><code>forget(match)</code>: delete entries whose text contains match (case-insensitive).</li>
+<li><code>search(query, { limit=20 })</code>: AND over words; every word must match text or tag. Empty query = all. Newest first.</li>
+<li><code>digest({ entries, chars })</code>: eager path injected into system prompt. Newest <code>promptEntries</code> first. Add lines while they fit <code>promptChars</code>. If hidden: <code>(&lt;n&gt; older memory/memories not shown - search &lt;label&gt; with the recall tool)</code>.</li>
+<li><code>summary()</code>: <code>&lt;label&gt; (&lt;n&gt; memory/memories[, newest YYYY-MM-DD])</code>.</li>
+</ul>
+
+<p><strong>Tool contracts:</strong></p>
+
+<ul>
+<li><code>remember</code>: params <code>text</code> (required), <code>tag</code> (optional).</li>
+<li>No memory store → <code>ERROR: no memory store in this run (started with --no-memory)</code>.</li>
+<li>Empty → <code>ERROR: nothing to remember - the note was empty</code>.</li>
+<li>Duplicate → <code>already remembered in &lt;label&gt; (&lt;total&gt; total), date refreshed: &lt;formatted entry&gt;</code>.</li>
+<li>New → <code>remembered in &lt;label&gt; (&lt;total&gt; total[, dropped the N oldest]): &lt;formatted entry&gt;</code>.</li>
+<li><code>recall</code>: params <code>query</code> (optional), <code>limit</code> (default 20).</li>
+<li>No memory → same error.</li>
+<li>No hits → <code>no memories in &lt;label&gt; match "&lt;query&gt;" (&lt;size&gt; stored)</code>.</li>
+<li>Hits → formatted entries.</li>
+</ul>
+
+<p><strong>CLI changes:</strong></p>
+
+<ul>
+<li>Add <code>--memory</code> side-door: prints the store, digest, and raw file; exits 0.</li>
+<li>Add <code>--no-memory</code> flag.</li>
+<li>Memory file location configurable via <code>MEMORY_FILE</code>.</li>
+</ul>
+
+<p><strong>Initial <code>src/memory.md</code>:</strong></p>
+
+<figure class="code"><pre># memory
+
+Long-term notes this agent keeps between runs. One bullet per memory:
+`- [tag] text _(YYYY-MM-DD)_` where tag is fact | pref | fix | gotcha.
+
+This file IS the store - edit it by hand, delete a wrong line, or commit it.
+The agent reads a bounded slice at the start of a run and can search the rest
+with the `recall` tool.
+
+- [pref] The user's name is Craig. _(...)_
+- [pref] The user lives in Brighton, UK. _(...)_
+- [gotcha] The run_command shell in this sandbox is Windows cmd.exe, so Unix tools like `cat`, `ls` may fail; use `type`, `dir` etc. instead. _(...)_
+- [pref] The user is a Python developer. _(...)_
+- [pref] The user has two dogs. _(...)_</pre></figure>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li>Write and read back survive a new <code>Memory</code> instance.</li>
+<li>Duplicate refreshes date; no duplicate bullets.</li>
+<li><code>maxEntries</code> drops oldest.</li>
+<li>Long memory truncated to per-entry cap.</li>
+<li>Empty/whitespace note refused.</li>
+<li>Digest bounded, newest first, states hidden count.</li>
+<li>Empty/disabled store adds and logs nothing.</li>
+<li><code>forget</code> removes matches.</li>
+<li>Hand edits picked up immediately.</li>
+<li><code>remember</code>/<code>recall</code> work through tools.</li>
+<li>No memory store returns error string, not a throw.</li>
+<li><code>--memory</code> prints digest and exits 0.</li>
+<li><code>--no-memory</code> disables memory for that run.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-06-02">Stage 11: Lifecycle Hooks (<code>hooks.js</code>)</h4>
+
+<p><strong>What you will learn:</strong> Extension points that are <strong>asked</strong>, not merely notified. Observe, rewrite, block, replace. Pure payload functions—no model calls, no tools.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>src/hooks.js</code></li>
+<li><code>test/hooks.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify:</strong> <code>src/cli.js</code> (add hook wiring to the manual tool loop)</p>
+
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li>Nine events, exact names, icons, colours:</li>
+</ul>
+
+<div class="table-wrap"><table>
+<tr><th>#</th><th>Name</th><th>Icon</th><th>Colour</th><th>When</th><th>Can</th></tr>
+<tr><td>1</td><td><code>SessionStart</code></td><td>🚀</td><td>cyan</td><td>once, before first model call</td><td>refuse, note</td></tr>
+<tr><td>2</td><td><code>UserPromptSubmit</code></td><td>✍️</td><td>blue</td><td>once, as task enters loop</td><td>rewrite task, block</td></tr>
+<tr><td>3</td><td><code>PreModel</code></td><td>🧠</td><td>magenta</td><td>before every model call</td><td>observe</td></tr>
+<tr><td>4</td><td><code>PostModel</code></td><td>💬</td><td>cyan</td><td>after every reply</td><td>observe</td></tr>
+<tr><td>5</td><td><code>PreToolUse</code></td><td>🛠️</td><td>yellowBright</td><td>before every tool call</td><td><strong>block</strong></td></tr>
+<tr><td>6</td><td><code>PostToolUse</code></td><td>📦</td><td>green</td><td>after every tool call</td><td><strong>replace observation</strong></td></tr>
+<tr><td>7</td><td><code>Stop</code></td><td>🏁</td><td>greenBright</td><td>model answered, loop ending</td><td>observe</td></tr>
+<tr><td>8</td><td><code>StepLimit</code></td><td>⏳</td><td>yellow</td><td>maxSteps reached</td><td>observe</td></tr>
+<tr><td>9</td><td><code>SessionEnd</code></td><td>🔒</td><td>red</td><td>always, finished or not</td><td>observe</td></tr>
+</table></div>
+
+<ul>
+<li>Four deciding hooks can change the run: <code>SessionStart</code>, <code>UserPromptSubmit</code>, <code>PreToolUse</code>, <code>PostToolUse</code>.</li>
+<li>Return shapes:</li>
+<li><code>{ note: 'text' }</code> → print <code>ui.hookNote</code>.</li>
+<li><code>{ task: 'new text' }</code> → rewrite task (UserPromptSubmit only).</li>
+<li><code>{ replace: 'text' }</code> → replace observation (PostToolUse only).</li>
+<li><code>{ block: true, reason }</code> → block. First block wins.</li>
+<li>Thrown hooks reported and ignored; never fatal.</li>
+<li><code>Hooks</code> API: <code>on(name, fn, { id, once })</code>, <code>off(name, id)</code>, <code>count(name)</code>, <code>has(name)</code>, <code>attached()</code>, <code>run(name, payload)</code>.</li>
+<li><code>traceHooks({ log, detail = hookDetail, explain = true })</code>: returns a <code>Hooks</code> with one tracer per event. Prints <code>  &lt;icon&gt;  [HOOK:&lt;Name&gt;] &lt;when&gt; - &lt;detail&gt;</code> via <code>ui.hookTrace</code>.</li>
+<li><code>printHookCatalogue({ log, hooks })</code>: prints full table.</li>
+<li><code>HOOK_SUMMARY = { total: 9, deciding: 4, names: HOOK_NAMES }</code>.</li>
+</ul>
+
+<p><strong>CLI changes:</strong></p>
+
+<ul>
+<li>Add <code>--hooks</code> side-door: prints catalogue and exits 0.</li>
+<li>Add <code>--trace-hooks</code> (default on) and <code>--no-hooks</code>.</li>
+<li>In the manual tool loop inside <code>cli.js</code>, fire hooks at the key moments:</li>
+<li><code>SessionStart</code> before first model call.</li>
+<li><code>UserPromptSubmit</code> before the loop.</li>
+<li><code>PreModel</code> before each model call.</li>
+<li><code>PostModel</code> after each reply.</li>
+<li><code>PreToolUse</code> before each tool call.</li>
+<li><code>PostToolUse</code> after each tool call.</li>
+<li><code>Stop</code> when model answers without tools.</li>
+<li><code>StepLimit</code> when max steps hit.</li>
+<li><code>SessionEnd</code> on every exit.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li>Every hook has icon, colour, when, gets, may, why.</li>
+<li>Catalogue prints all 9; marks attached hooks.</li>
+<li>Unknown hook name throws.</li>
+<li>Handlers run in order; first block wins.</li>
+<li>Throwing hook reported, not fatal.</li>
+<li>Notes print; <code>once</code> handlers detach.</li>
+<li><code>off</code> by id works.</li>
+<li>Trace prints <code>[HOOK:Name]</code> by default.</li>
+<li><code>--no-hooks</code> silences trace.</li>
+<li><code>--hooks</code> prints catalogue with no key.</li>
+</ul>
+
+<hr>
+
+<h3 id="s01-07">Phase D: The Agent Loop &amp; Polish</h3>
+
+<p>Now we extract the loop into a proper library, add the offline demo, and polish the CLI with sessions.</p>
+
+<hr>
+
+<h4 id="s01-07-01">Stage 12: The ReAct Loop (<code>agent.js</code>, <code>heartbeat.js</code>)</h4>
+
+<p><strong>What you will learn:</strong> Formalising the conversation loop as a testable library. The seven beats per step.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>src/agent.js</code></li>
+<li><code>src/heartbeat.js</code></li>
+<li><code>test/agent.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify:</strong> <code>src/cli.js</code> (replace manual tool loop with <code>runTask</code> calls)</p>
+
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li><code>runTask({ task, workspace, sandbox = null, commandPolicy, maxSteps, chatFn, confirm, hooks = null, memory = null, history = [], log = console.log, heartbeatMs = 5000 })</code>.</li>
+<li>Return: <code>{ ok, answer, messages, steps }</code> or <code>{ ok: false, reason, messages }</code>.</li>
+<li>System prompt rebuilt every task (never carried in history). Memory written by previous task appears in next task's fresh system prompt.</li>
+<li>Tool context (<code>ctx</code>): <code>{ workspace, sandbox, commandPolicy, memory, confirm }</code>.</li>
+<li><code>confirm</code> defaults to <code>async () =&gt; 'deny'</code>.</li>
+<li><code>hooks ?? new Hooks()</code> so every call site can call <code>hook.run(...)</code> unconditionally.</li>
+<li><code>agent.js</code> executed directly prints:</li>
+</ul>
+
+<p>  ```</p>
+
+<p>  agent.js is the loop, not the program.</p>
+
+<p>  Run the CLI instead:  node src/cli.js --help</p>
+
+<p>  ```</p>
+
+<ul>
+<li>Do not import <code>cli.js</code> from <code>agent.js</code>.</li>
+</ul>
+
+<p><strong>The seven beats per step (for step = 1..maxSteps):</strong></p>
+
+<ol>
+<li>Print blank line + <code>ui.step(step, maxSteps)</code>.</li>
+<li>Fire <code>PreModel</code> with <code>{ step, maxSteps, messages, tools: TOOL_SCHEMAS }</code>.</li>
+<li>Start <code>heartbeat(log, heartbeatMs)</code> and call <code>chatFn({ messages, tools: TOOL_SCHEMAS })</code>.</li>
+</ol>
+
+<ul>
+<li>Throw: stop heartbeat, print <code>ui.error</code>, fire <code>SessionEnd</code>, return <code>{ ok: false, reason: 'request_failed', messages }</code>.</li>
+<li>Success: stop heartbeat.</li>
+</ul>
+
+<ol>
+<li>Extract <code>choice = reply?.choices?.[0] ?? {}</code>, <code>message = choice.message ?? {}</code>. Fire <code>PostModel</code> with <code>{ step, message, finishReason: choice.finish_reason }</code>.</li>
+<li><strong>Truncation guard:</strong> if <code>finish_reason === 'length'</code> and no tool calls:</li>
+</ol>
+
+<ul>
+<li>append assistant message;</li>
+<li>append user: <code>"You were cut off by the length limit. Continue with smaller tool calls."</code>;</li>
+<li>print <code>ui.warn(...)</code>;</li>
+<li><code>continue</code> to next step. Never dispatch truncated tool calls.</li>
+</ul>
+
+<ol>
+<li>Append <code>sanitizeAssistant(message)</code> to messages. If <code>content</code> non-empty, print <code>ui.think(...)</code>.</li>
+<li><code>calls = message.tool_calls ?? []</code>.</li>
+</ol>
+
+<ul>
+<li><strong>No calls:</strong> print <code>ui.answerRule()</code> + <code>ui.answer(...)</code>. Fire <code>Stop</code>, then <code>SessionEnd</code>. Return <code>{ ok: true, answer, messages, steps: step }</code>.</li>
+<li><strong>Calls:</strong> dispatch each in order:</li>
+</ul>
+
+<ol>
+<li><code>name = call.function?.name ?? '(unnamed)'</code>; <code>rawArgs = call.function?.arguments ?? '{}'</code>.</li>
+<li>Print <code>ui.tool(name, rawArgs)</code>.</li>
+<li>Fire <code>PreToolUse</code> with <code>{ name, args: rawArgs, step }</code>. If blocked, observation = <code>DENIED: a PreToolUse hook blocked this call (&lt;reason&gt;). Try another approach.</code> Otherwise <code>await runTool(name, rawArgs, ctx)</code>.</li>
+<li>Print <code>ui.result(result)</code>.</li>
+<li>Fire <code>PostToolUse</code> with <code>{ name, result, step, ok: !/^(ERROR|DENIED)\b/.test(result) }</code>. If <code>post.replace !== null</code>, use replacement as observation.</li>
+<li>Append exactly one <code>{ role: 'tool', tool_call_id: call.id, content: String(post.replace ?? result) }</code>.</li>
+</ol>
+
+<p><strong>After loop exhausts maxSteps:</strong></p>
+
+<ul>
+<li>Print <code>ui.error('stopped: hit the &lt;maxSteps&gt;-step limit')</code>.</li>
+<li>Fire <code>StepLimit</code> then <code>SessionEnd</code>.</li>
+<li>Return <code>{ ok: false, reason: 'max_steps', messages }</code>.</li>
+</ul>
+
+<p><strong>Entry guards:</strong></p>
+
+<ul>
+<li><code>SessionStart</code> blocked → print error, fire <code>SessionEnd</code>, return <code>{ ok: false, reason: 'blocked_by_hook', messages }</code>.</li>
+<li><code>UserPromptSubmit</code> blocked → same.</li>
+<li><code>UserPromptSubmit</code> rewrite → print dim note, replace <code>messages[taskIndex]</code>.</li>
+</ul>
+
+<p><strong>Heartbeat:</strong></p>
+
+<ul>
+<li><code>heartbeat(log, everyMs = 5000)</code> returns <code>{ stop }</code>.</li>
+<li>Every interval prints <code>ui.waiting('  … still waiting for the model (&lt;seconds&gt;s)')</code>.</li>
+<li>Call <code>timer.unref?.()</code> so it never holds the process open.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li>Loop runs tools then stops on plain answer.</li>
+<li>Failing tool result fed back so model can correct.</li>
+<li>Loop capped at <code>maxSteps</code>.</li>
+<li>Truncated reply not dispatched; model asked to continue smaller.</li>
+<li>Heartbeat prints waiting lines during slow calls.</li>
+<li>Blocked hooks produce correct exit paths.</li>
+<li>Step limit fires <code>StepLimit</code> then <code>SessionEnd</code>.</li>
+<li>Session tests: follow-up task sees previous conversation but fresh system prompt.</li>
+<li>Direct execution prints hint, does not import CLI.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-07-02">Stage 13: Offline Demo (<code>demo.js</code>)</h4>
+
+<p><strong>What you will learn:</strong> Fake model injection. Scripted runs prove every guard holds with no API key.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>src/demo.js</code></li>
+</ul>
+
+<p><strong>Files to modify:</strong> <code>src/cli.js</code> (add <code>--demo</code> flag); <code>test/agent.test.js</code> (add demo assertions)</p>
+
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li><code>demoChat()</code>: returns an async <code>chatFn</code> that walks <code>DEMO_SCRIPT</code>.</li>
+<li>Tool call shape: <code>{ id, type: 'function', function: { name, arguments: JSON.stringify(args) } }</code>.</li>
+<li><code>DEMO_SCRIPT</code>: 14 steps + final answer:</li>
+</ul>
+
+<ol>
+<li><code>list_files</code> <code>{ path: '.' }</code></li>
+<li><code>create_file</code> <code>{ path: 'demo/hello.js', content: "const agent = 'tiny agent';\nconsole.log(\</code>Hello from a ${agent}\<code>);\n" }</code></li>
+<li><code>run_command</code> <code>{ command: 'node demo/hello.js' }</code></li>
+<li><code>edit_file</code> <code>{ path: 'demo/hello.js', old_string: 'Hello from a ${agent}', new_string: 'Hello from a ${agent}, edited by a tool call' }</code></li>
+<li><code>run_command</code> <code>{ command: 'node demo/hello.js' }</code></li>
+<li><code>write_file</code> <code>{ path: '../escape.txt', content: 'must never be written' }</code> → expect FORBIDDEN</li>
+<li><code>read_file</code> <code>{ path: '../package.json', limit: 5 }</code> → allowed</li>
+<li><code>write_file</code> <code>{ path: '~/Desktop/pwned.txt', content: 'sandbox should have stopped this' }</code> → expect FORBIDDEN</li>
+<li><code>run_command</code> <code>{ command: 'copy demo/hello.js %USERPROFILE%\\Desktop\\hello-copy.js' }</code> → expect FORBIDDEN</li>
+<li><code>run_command</code> <code>{ command: 'git push --force origin main' }</code> → expect DENIED</li>
+<li><code>run_command</code> <code>{ command: 'node -e "console.log(\\'OPENROUTER_API_KEY=\\' + (process.env.OPENROUTER_API_KEY ?? \\'absent\\'))"' }</code> → expect absent</li>
+<li><code>run_command</code> <code>{ command: 'node -e "process.exit(1)"' }</code> → expect exit code 1</li>
+<li><code>remember</code> <code>{ text: 'The sandbox demo script lives at demo/hello.js...', tag: 'fact' }</code></li>
+<li><code>recall</code> <code>{ query: 'demo' }</code></li>
+</ol>
+
+<ul>
+<li>Then final answer summarising everything.</li>
+</ul>
+
+<ul>
+<li>Each assistant step has a short natural-language <code>content</code> before its tool call.</li>
+<li><code>maxSteps = DEMO_SCRIPT.length + 1</code> = 15.</li>
+<li><code>sandboxScorecard(messages)</code>: maps <code>tool_call_id</code> → tool result, runs regex checks, returns <code>{ rows: [{ ok, label, seen }], passed, total }</code>.</li>
+<li>Scorecard checks:</li>
+<li>s6: <code>/^FORBIDDEN: SAVE \.\.\/escape\.txt/</code></li>
+<li>s7: <code>/^\.\.\/package\.json \(\d+ lines\)/</code></li>
+<li>s8: <code>/^FORBIDDEN: SAVE ~\/Desktop\/pwned\.txt/</code></li>
+<li>s9: <code>/^FORBIDDEN: COMMAND COPY /</code></li>
+<li>s10: <code>/^DENIED: blocked by policy/</code></li>
+<li>s11: <code>/OPENROUTER_API_KEY=absent/</code></li>
+<li>s12: <code>/^exit code 1\b/</code></li>
+</ul>
+
+<p><strong>CLI changes:</strong></p>
+
+<ul>
+<li><code>--demo</code> sets scripted chat, <code>maxSteps = 15</code>, auto-approves commands, and prints scorecard.</li>
+<li>Demo run exits 0 on 7/7 checks; otherwise <code>process.exitCode = 1</code>.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li><code>node src/cli.js --demo</code> completes 14 steps + final answer.</li>
+<li>Creates/edits/runs <code>workspace/demo/hello.js</code>.</li>
+<li>Refuses <code>../escape.txt</code>, <code>~/Desktop/pwned.txt</code>, shell copy to Desktop.</li>
+<li>Allows read of <code>../package.json</code>.</li>
+<li>Denies <code>git push --force</code>.</li>
+<li>Shows <code>OPENROUTER_API_KEY=absent</code> from child.</li>
+<li>Reports exit code 1 with explanation.</li>
+<li>Remembers and recalls.</li>
+<li>Scorecard: <strong>7/7 checks held</strong>.</li>
+<li>Exits 0 on success.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-07-03">Stage 14: Sessions, History Trimming &amp; Full CLI Polish</h4>
+
+<p><strong>What you will learn:</strong> session management, <code>trimHistory</code>, full banner with config fingerprinting, and exit codes.</p>
+
+<p><strong>Files to create:</strong> none new.</p>
+
+<p><strong>Files to modify:</strong> <code>src/cli.js</code> (major polish); <code>test/session.test.js</code></p>
+
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li><code>MAX_HISTORY = 24</code>.</li>
+<li><code>trimHistory(messages, max = MAX_HISTORY)</code>:</li>
+<li>Drop system messages.</li>
+<li>Keep at most last <code>max</code> messages.</li>
+<li>Move <code>start</code> forward until it lands on a <code>user</code> message. Providers reject history starting with <code>tool</code> or ending with unanswered assistant <code>tool_calls</code>.</li>
+<li>If no safe boundary, return <code>[]</code>.</li>
+<li>Interactive session (<code>runSession</code>):</li>
+<li>Loop: <code>askTask</code> → command or task → <code>runTask({ ...base, task: line, history })</code> → <code>history = trimHistory(result.messages)</code>.</li>
+<li>Every task gets a fresh step budget (<code>runTask</code> is called fresh each time).</li>
+<li>Print summary after each task: divider, pass/fail, message count hint, retry hint.</li>
+<li>On exit: <code>session over - N task(s) run.</code></li>
+<li>Full banner (before step 1):</li>
+</ul>
+
+<p>  ```</p>
+
+<p>  min-coding-js</p>
+
+<p>  workspace : &lt;root&gt;</p>
+
+<p>  sandbox   : save, edit, delete - only inside &lt;root&gt; (reads: anywhere)</p>
+
+<p>  model     : &lt;model&gt; (from &lt;source&gt;) | scripted (no network)</p>
+
+<p>  key       : &lt;fingerprint&gt; from &lt;source&gt; | - in demo</p>
+
+<p>  env file  : &lt;path&gt; | &lt;path&gt; (missing)</p>
+
+<p>  commands  : allow | ask | deny</p>
+
+<p>  timeout   : &lt;seconds&gt;s per model call</p>
+
+<p>  tools     : &lt;comma-separated TOOL_NAMES&gt;</p>
+
+<p>  memory    : &lt;summary&gt; | off (--no-memory)</p>
+
+<p>  hooks     : on: each of 9 prints as [HOOK:name] ... | 9 available, not printed (--no-hooks)</p>
+
+<p>  ```</p>
+
+<ul>
+<li>Warnings:</li>
+<li>live mode + model lacks <code>/</code> → <code>warning: model is not an OpenRouter slug...</code></li>
+<li>config normalised bare name → dim note with final slug.</li>
+<li>Exit codes:</li>
+<li>0: finished / answer / session ended normally.</li>
+<li>1: model request failed or fatal error.</li>
+<li>2: no task and stdin not a terminal.</li>
+<li>3: step limit reached.</li>
+<li><code>taskExitCode(result)</code>:</li>
+<li><code>!ok &amp;&amp; reason === 'request_failed'</code> → 1</li>
+<li><code>!ok &amp;&amp; reason === 'max_steps'</code> → 3</li>
+<li>otherwise 0</li>
+<li><code>main()</code> catches fatal errors, prints <code>fatal: &lt;stack&gt;</code>, sets <code>process.exitCode</code>.</li>
+<li>Only call <code>main()</code> when <code>cli.js</code> is the entry file (<code>import.meta.url === pathToFileURL(process.argv[1]).href</code>).</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li><code>/new</code> clears conversation history but leaves workspace and memory untouched.</li>
+<li><code>/quit</code> and <code>/exit</code> end session.</li>
+<li>Follow-up task sees previous conversation but fresh system prompt containing latest memory.</li>
+<li>Every task starts its own step budget.</li>
+<li>A hook rewriting the task rewrites the new task, not history.</li>
+<li>No task + non-TTY stdin exits 2.</li>
+<li>Step limit reached exits 3.</li>
+<li>Live mode without key exits 1.</li>
+<li>Banner prints on every run.</li>
+<li>Exit note prints plain-English meaning for non-zero codes.</li>
+</ul>
+
+<hr>
+
+<h3 id="s01-08">Phase E: Hardening &amp; Docs</h3>
+
+<hr>
+
+<h4 id="s01-08-01">Stage 15: Full Test Suite</h4>
+
+<p><strong>What you will learn:</strong> offline testability. Fake models, temporary directories, injected loggers.</p>
+
+<p><strong>Files to create:</strong> any remaining test files, plus ensure all prior test files are comprehensive.</p>
+
+<p><strong>Files to modify:</strong> ensure all <code>test/*.test.js</code> files are complete per the original specification.</p>
+
+<p><strong>Required suites (refer to original spec for full detail):</strong></p>
+
+<ul>
+<li><code>test/workspace.test.js</code> — path policy, containment, symlink safety.</li>
+<li><code>test/sandbox.test.js</code> — refusals, root deletion, tool-layer conversion.</li>
+<li><code>test/tools.test.js</code> — all eight tools, validation, safeEnv, policy.</li>
+<li><code>test/shell-sandbox.test.js</code> — tokenization, write-target scanning.</li>
+<li><code>test/agent.test.js</code> — loop behaviour, truncation, heartbeat, demo guards.</li>
+<li><code>test/hooks.test.js</code> — registry, blocking, replacing, tracing, catalogue.</li>
+<li><code>test/memory.test.js</code> — round-trip, duplicates, bounds, digest, forget, search.</li>
+<li><code>test/prompt.test.js</code> — rules, injection, logging.</li>
+<li><code>test/llm.test.js</code> — timeout, errors, sanitization.</li>
+<li><code>test/config.test.js</code> — .env precedence, fingerprint, model normalisation.</li>
+<li><code>test/session.test.js</code> — commands, trimming, follow-up tasks.</li>
+<li><code>test/ui.test.js</code> — styling, verbatim output, result classification.</li>
+<li><code>test/input.test.js</code> — askTask, blank lines, Ctrl-C.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+
+<ul>
+<li><code>npm test</code> runs fully offline.</li>
+<li>All suites pass.</li>
+<li>No real network calls.</li>
+<li>No API key required.</li>
+</ul>
+
+<hr>
+
+<h4 id="s01-08-02">Stage 16: Documentation &amp; Final Acceptance</h4>
+
+<p><strong>What you will learn:</strong> writing a README that teaches architecture, not just commands. Final integration.</p>
+
+<p><strong>Files to create:</strong></p>
+
+<ul>
+<li><code>README.md</code></li>
+<li><code>demo_prompt.md</code></li>
+<li><code>.env.example</code> (if not already present)</li>
+</ul>
+
+<p><strong>README content (teachable structure):</strong></p>
+
+<ul>
+<li>One-paragraph summary.</li>
+<li>Quick start: <code>npm install</code>, copy <code>.env.example</code> to <code>.env</code>, set key, <code>npm start</code>, <code>npm run demo</code>.</li>
+<li>The loop diagram and the seven beats.</li>
+<li>File-by-file tour, with <code>agent.js</code> first.</li>
+<li>The eight tools and what each is for.</li>
+<li>The read/write asymmetry and the shell limitation.</li>
+<li>The nine lifecycle hooks, with a table.</li>
+<li>Long-term memory: file format, eager digest vs lazy recall, <code>--memory</code>.</li>
+<li>Sessions and history trimming.</li>
+<li>Configuration table with defaults and precedence.</li>
+<li>Exit codes.</li>
+<li>Safety model: workspace fence, hard denies, environment allow-list, command policy, and explicit "this is not a container" statement.</li>
+<li>Examples: a Desktop write that ends in <code>FORBIDDEN</code>, a prompt that ends with <code>remember</code>.</li>
+</ul>
+
+<p><strong><code>demo_prompt.md</code>:</strong></p>
+
+<ul>
+<li>Copy-pasteable prompts including:</li>
+<li><code>create hello.js that prints today's date and time, run it and save...</code></li>
+<li><code>save a file test.txt that contains 'HELLO WORLD' and save to the desktop</code> (must end in FORBIDDEN).</li>
+<li><code>npm run demo</code>, <code>node src/cli.js --memory</code>, <code>node src/cli.js --demo</code>.</li>
+<li><code>work out how this package is tested, run the tests, and remember the command...</code></li>
+</ul>
+
+<p><strong>Final acceptance criteria (from spec):</strong></p>
+
+<ol>
+<li><code>npm install</code> succeeds with only <code>chalk</code> as a runtime dependency.</li>
+<li><code>npm test</code> runs fully offline and all suites pass.</li>
+<li><code>node src/cli.js --help</code> prints usage without needing a key.</li>
+<li><code>node src/cli.js --hooks</code> prints the full nine-hook catalogue without needing a key.</li>
+<li><code>node src/cli.js --memory</code> prints the store and the exact digest that would be injected.</li>
+<li><code>node src/cli.js --demo</code> completes the 14-step script with <strong>7/7 checks held</strong>.</li>
+<li>Live mode with a valid key runs a task through OpenRouter.</li>
+<li>Live mode without a key prints missing-key error and exits 1.</li>
+<li>No task + no TTY exits 2.</li>
+<li>Task that never yields answer stops at step limit and exits 3.</li>
+<li>Write outside <code>workspace/</code> prints one <code>⛔ FORBIDDEN</code> line and returns <code>FORBIDDEN:</code> observation without touching disk.</li>
+<li>Read outside <code>workspace/</code> succeeds.</li>
+<li><code>CMD_POLICY=deny</code> refuses all commands; hard-denied commands refused even with <code>--yes</code>.</li>
+<li>Child shell cannot read <code>OPENROUTER_API_KEY</code>.</li>
+<li>Memory survives process restarts; duplicate refreshes; file bounded; hand edits picked up.</li>
+<li>Every normal run prints <code>[HOOK:Name]</code> trace by default; <code>--no-hooks</code> silences it.</li>
+<li><code>/new</code> clears conversation history but leaves workspace and memory untouched; <code>/quit</code> and <code>/exit</code> end session.</li>
+<li>Follow-up task sees previous conversation but freshly rebuilt system prompt containing latest memory.</li>
+<li><code>agent.js</code> executed directly prints hint and does not run CLI.</li>
+<li>No framework, no agent SDK, no database, no hidden global state.</li>
+</ol>
+
+<hr>
+
+<h3 id="s01-09">Checklist</h3>
+
+<div class="table-wrap"><table>
+<tr><th>Stage</th><th>Module</th><th>What you can do after this stage</th><th>Accepted</th></tr>
+<tr><td>0</td><td>Scaffold</td><td><code>npm install</code> works</td><td>☐</td></tr>
+<tr><td>1</td><td><code>ui.js</code></td><td>Print styled terminal output</td><td>☐</td></tr>
+<tr><td>2</td><td><code>config.js</code> + <code>llm.js</code></td><td>Load <code>.env</code>, call OpenRouter</td><td>☐</td></tr>
+<tr><td>3</td><td>Minimal <code>cli.js</code></td><td><strong>Chat with the model</strong> 🎉</td><td>☐</td></tr>
+<tr><td>4</td><td>History in <code>cli.js</code></td><td>Have a <strong>multi-turn conversation</strong></td><td>☐</td></tr>
+<tr><td>5</td><td><code>prompt.js</code></td><td>Inject behavioural rules</td><td>☐</td></tr>
+<tr><td>6</td><td><code>workspace.js</code></td><td>Fence writes, open reads</td><td>☐</td></tr>
+<tr><td>7</td><td>Read tools</td><td>Model <strong>lists and reads files</strong></td><td>☐</td></tr>
+<tr><td>8</td><td>Sandbox + write tools</td><td>Model <strong>creates and edits files</strong> safely</td><td>☐</td></tr>
+<tr><td>9</td><td><code>run_command</code></td><td>Model <strong>runs shell commands</strong> with policy</td><td>☐</td></tr>
+<tr><td>10</td><td><code>memory.js</code></td><td>Model <strong>remembers and recalls</strong> across runs</td><td>☐</td></tr>
+<tr><td>11</td><td><code>hooks.js</code></td><td>Observe/rewrite/block lifecycle events</td><td>☐</td></tr>
+<tr><td>12</td><td><code>agent.js</code></td><td>Extract the loop into a <strong>testable library</strong></td><td>☐</td></tr>
+<tr><td>13</td><td><code>demo.js</code></td><td><strong>Offline demo</strong> proves all guards hold</td><td>☐</td></tr>
+<tr><td>14</td><td>Full CLI polish</td><td><strong>Sessions</strong>, history trimming, banner, exit codes</td><td>☐</td></tr>
+<tr><td>15</td><td>Tests</td><td><code>npm test</code> passes fully offline</td><td>☐</td></tr>
+<tr><td>16</td><td>Docs</td><td>README teaches the architecture</td><td>☐</td></tr>
+</table></div>
+
+
+      <div class="colophon">
+        Built from <code>reverse-engineering.md</code> &middot; 27 sections &middot; mini-coding-js explainer series
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  var toc = document.getElementById('toc');
+  var links = toc.querySelectorAll('a');
+  var sections = [];
+  links.forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({link:a, el:el});
+  });
+  function onScroll(){
+    var y = window.scrollY + 80;
+    var active = null;
+    for (var i = 0; i < sections.length; i++){
+      if (y >= sections[i].el.offsetTop) active = sections[i];
+    }
+    sections.forEach(function(s){ s.link.classList.remove('active'); });
+    if (active) active.link.classList.add('active');
+    var bar = document.getElementById('bar');
+    var doc = document.documentElement;
+    var pct = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+    bar.style.width = Math.max(0, Math.min(1, pct || 0)) * 100 + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+<button id="stylebtn" type="button" aria-expanded="false" aria-controls="stylepanel"
+        aria-label="Site customiser" title="Site customiser">Aa</button>
+
+<aside id="stylepanel" hidden aria-label="Site customiser">
+  <div class="sp-head">
+    <h2>Site customiser</h2>
+    <select id="sp-mode" aria-label="Colour mode">
+      <option value="auto">System</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+    <button id="sp-close" type="button" aria-label="Close site customiser">&#10005;</button>
+  </div>
+  <div class="sp-body" id="sp-body"></div>
+  <div class="sp-foot">
+    <button id="sp-reset" type="button">Reset</button>
+    <span class="spacer"></span>
+    <button id="sp-copy" type="button">Copy CSS</button>
+  </div>
+</aside>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     Site customiser - Light / Dark / System only.
+     The page's CSS custom properties are the settings schema, so
+     the panel can never drift from the stylesheet. Colours are kept
+     per mode, and every control writes to both the TOC sidebar and
+     the content pane because they share the same tokens.
+     ============================================================ */
+
+  var FONT_OPTIONS = {
+    serif: [
+      { label: 'Iowan / Palatino', value: "'Iowan Old Style',Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif" },
+      { label: 'Georgia', value: "Georgia,'Times New Roman',serif" },
+      { label: 'Charter / Cambria', value: "Charter,'Bitstream Charter',Cambria,Georgia,serif" },
+      { label: 'System serif', value: "ui-serif,'New York',Times,serif" }
+    ],
+    sans: [
+      { label: 'System sans', value: "-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif" },
+      { label: 'Inter / Helvetica', value: "Inter,'Helvetica Neue',Helvetica,Arial,sans-serif" },
+      { label: 'Arial', value: "Arial,'Helvetica Neue',Helvetica,sans-serif" },
+      { label: 'Verdana', value: "Verdana,Geneva,Tahoma,sans-serif" }
+    ],
+    mono: [
+      { label: 'JetBrains Mono', value: "'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace" },
+      { label: 'SF Mono / Consolas', value: "ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace" },
+      { label: 'Consolas', value: "Consolas,'Courier New',monospace" },
+      { label: 'Courier', value: "'Courier New',Courier,monospace" }
+    ]
+  };
+
+  var SPEC = [
+    { table: 'type', title: 'Type', items: [
+      { key: 'root_size', cssVar: '--root-size', kind: 'number', unit: 'px', min: 16, max: 40, step: 0.5, def: 24, label: 'Text size' },
+      { key: 'lh_body', cssVar: '--lh-body', kind: 'number', unit: '', min: 1.2, max: 2.2, step: 0.01, def: 1.66, label: 'Line height' },
+      { key: 'fs_code', cssVar: '--fs-code', kind: 'number', unit: 'rem', min: 0.6, max: 1.2, step: 0.005, def: 0.775, label: 'Code size' }
+    ] },
+    { table: 'layout', title: 'Layout', items: [
+      { key: 'sidebar', cssVar: '--sidebar', kind: 'number', unit: 'rem', min: 12, max: 30, step: 0.25, def: 19.25, label: 'Sidebar width' },
+      { key: 'measure', cssVar: '--measure', kind: 'number', unit: 'rem', min: 30, max: 72, step: 1, def: 46, label: 'Reading column' }
+    ] },
+    { table: 'fonts', title: 'Fonts', items: [
+      { key: 'serif', cssVar: '--serif', kind: 'font', options: FONT_OPTIONS.serif, def: FONT_OPTIONS.serif[0].value, label: 'Headings (serif)' },
+      { key: 'sans', cssVar: '--sans', kind: 'font', options: FONT_OPTIONS.sans, def: FONT_OPTIONS.sans[0].value, label: 'Body (sans)' },
+      { key: 'mono', cssVar: '--mono', kind: 'font', options: FONT_OPTIONS.mono, def: FONT_OPTIONS.mono[0].value, label: 'Code (mono)' }
+    ] },
+    { table: 'colors', title: 'Colours', colors: true, items: [
+      { key: 'paper', cssVar: '--paper', kind: 'color', label: 'Page background' },
+      { key: 'surface', cssVar: '--surface', kind: 'color', label: 'Sidebar / panel' },
+      { key: 'ivory', cssVar: '--ivory', kind: 'color', label: 'Cards and inputs' },
+      { key: 'ink', cssVar: '--ink', kind: 'color', label: 'Headings' },
+      { key: 'prose', cssVar: '--prose', kind: 'color', label: 'Body text' },
+      { key: 'muted', cssVar: '--muted', kind: 'color', label: 'Secondary text' },
+      { key: 'stone', cssVar: '--stone', kind: 'color', label: 'Faint labels' },
+      { key: 'line', cssVar: '--line', kind: 'color', label: 'Borders' },
+      { key: 'line_soft', cssVar: '--line-soft', kind: 'color', label: 'Hairlines' },
+      { key: 'tint', cssVar: '--tint', kind: 'color', label: 'Active nav' },
+      { key: 'terra', cssVar: '--terra', kind: 'color', label: 'Accent' },
+      { key: 'terra_dark', cssVar: '--terra-dark', kind: 'color', label: 'Links / eyebrow' },
+      { key: 'amber', cssVar: '--amber', kind: 'color', label: 'Warnings' },
+      { key: 'code_bg', cssVar: '--code-bg', kind: 'color', label: 'Code background' },
+      { key: 'code_bar', cssVar: '--code-bar', kind: 'color', label: 'Code caption bar' },
+      { key: 'code_line', cssVar: '--code-line', kind: 'color', label: 'Code border' },
+      { key: 'code_ink', cssVar: '--code-ink', kind: 'color', label: 'Code text' },
+      { key: 'code_dim', cssVar: '--code-dim', kind: 'color', label: 'Code comments' },
+      { key: 'code_accent', cssVar: '--code-accent', kind: 'color', label: 'Code caption text' }
+    ] }
+  ];
+
+  var DEFAULTS = {
+    base: {
+      root_size: 24, lh_body: 1.66, fs_code: 0.775, sidebar: 19.25, measure: 46,
+      serif: FONT_OPTIONS.serif[0].value,
+      sans: FONT_OPTIONS.sans[0].value,
+      mono: FONT_OPTIONS.mono[0].value
+    },
+    colors: {
+      light: {
+        paper: '#f0eee6', surface: '#fbfaf7', ivory: '#fffdfa', ink: '#1f1e1d',
+        prose: '#33302c', muted: '#55524c', stone: '#8c877c',
+        line: '#e0dbcf', line_soft: '#e9e4d8', tint: '#f6ede6',
+        terra: '#d97757', terra_dark: '#c9633f', amber: '#b9862f',
+        code_bg: '#23211e', code_bar: '#2b2823', code_line: '#3a3732',
+        code_ink: '#f2ece1', code_dim: '#a9a294', code_accent: '#f0b49a'
+      },
+      dark: {
+        paper: '#14171b', surface: '#1b1f24', ivory: '#232830', ink: '#eef2f6',
+        prose: '#c7d0d8', muted: '#9aa7b4', stone: '#7f8c99',
+        line: '#303944', line_soft: '#263039', tint: '#252f3b',
+        terra: '#e08a6a', terra_dark: '#eda07e', amber: '#d3a44a',
+        code_bg: '#111418', code_bar: '#181d22', code_line: '#2b343e',
+        code_ink: '#eef2f6', code_dim: '#8f9ba7', code_accent: '#f0b49a'
+      }
+    }
+  };
+
+  var INIT_MODE = 'auto';
+  var STORE = 'mca-site-customiser:v2';
+
+  var root = document.documentElement;
+  var darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
+  var copy = function (target, source) {
+    Object.keys(target).forEach(function (k) { delete target[k]; });
+    Object.keys(clone(source)).forEach(function (k) { target[k] = clone(source)[k]; });
+  };
+
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { saved = {}; }
+
+  var state = {
+    mode: saved.mode === 'light' || saved.mode === 'dark' || saved.mode === 'auto' ? saved.mode : INIT_MODE,
+    base: Object.assign(clone(DEFAULTS.base), saved.base || {}),
+    colors: {
+      light: Object.assign(clone(DEFAULTS.colors.light), (saved.colors || {}).light || {}),
+      dark: Object.assign(clone(DEFAULTS.colors.dark), (saved.colors || {}).dark || {})
+    }
+  };
+
+  var resolved = function () {
+    return state.mode === 'auto' ? (darkQuery && darkQuery.matches ? 'dark' : 'light') : state.mode;
+  };
+  var currentColors = function () { return state.colors[resolved()]; };
+
+  var cssVal = function (item, value) {
+    return item.unit ? value + item.unit : String(value);
+  };
+
+  var apply = function () {
+    root.setAttribute('data-theme', resolved());
+
+    SPEC.forEach(function (group) {
+      group.items.forEach(function (item) {
+        var value = item.kind === 'color' ? currentColors()[item.key] : state.base[item.key];
+        if (value === undefined || value === null || value === '') root.style.removeProperty(item.cssVar);
+        else root.style.setProperty(item.cssVar, cssVal(item, value));
+      });
+    });
+  };
+
+  var persist = function () {
+    try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* private mode */ }
+  };
+
+  /* ---- build the panel ---- */
+  var panel = document.getElementById('stylepanel');
+  var button = document.getElementById('stylebtn');
+  var panelBody = document.getElementById('sp-body');
+  var modeSelect = document.getElementById('sp-mode');
+  var refs = {};
+
+  var hex6 = function (value) {
+    var v = String(value || '').trim().replace('#', '');
+    if (v.length === 3) v = v.split('').map(function (c) { return c + c; }).join('');
+    return '#' + v.slice(0, 6).padStart(6, '0');
+  };
+
+  var ensureFontOption = function (select, value) {
+    if (!value) return;
+    var found = Array.prototype.some.call(select.options, function (opt) { return opt.value === value; });
+    if (!found) {
+      var option = document.createElement('option');
+      option.value = value;
+      option.textContent = 'Custom';
+      select.appendChild(option);
+    }
+  };
+
+  var addGroup = function (group) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sp-group';
+
+    var title = document.createElement('h3');
+    title.textContent = group.title;
+    if (group.colors) {
+      var tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.id = 'sp-modetag';
+      title.appendChild(tag);
+    }
+    wrap.appendChild(title);
+
+    if (group.colors) {
+      var grid = document.createElement('div');
+      grid.className = 'sp-colors';
+      group.items.forEach(function (item) {
+        var label = document.createElement('label');
+        var swatch = document.createElement('input');
+        swatch.type = 'color';
+        swatch.title = item.label + '  (' + item.cssVar + ')';
+        swatch.setAttribute('aria-label', item.label);
+        var name = document.createElement('span');
+        name.className = 'swatch-label';
+        name.textContent = item.label;
+        var hex = document.createElement('span');
+        hex.className = 'hex';
+        label.append(swatch, name, hex);
+        grid.appendChild(label);
+
+        swatch.addEventListener('input', function () {
+          currentColors()[item.key] = swatch.value;
+          hex.textContent = swatch.value;
+          apply();
+          persist();
+        });
+        refs[item.key] = { swatch: swatch, hex: hex };
+      });
+      wrap.appendChild(grid);
+      panelBody.appendChild(wrap);
+      return;
+    }
+
+    group.items.forEach(function (item) {
+      var row = document.createElement('div');
+      row.className = 'sp-row';
+      var label = document.createElement('label');
+      label.textContent = item.label;
+      row.appendChild(label);
+
+      if (item.kind === 'font') {
+        var select = document.createElement('select');
+        select.setAttribute('aria-label', item.label);
+        (item.options || []).forEach(function (option) {
+          var opt = document.createElement('option');
+          opt.value = option.value;
+          opt.textContent = option.label;
+          select.appendChild(opt);
+        });
+        ensureFontOption(select, state.base[item.key]);
+        select.value = state.base[item.key] || (item.options && item.options[0] ? item.options[0].value : '');
+        label.appendChild(select);
+        select.addEventListener('change', function () {
+          state.base[item.key] = select.value;
+          apply();
+          persist();
+        });
+        refs[item.key] = { select: select };
+      } else {
+        var out = document.createElement('output');
+        row.appendChild(out);
+        var input = document.createElement('input');
+        input.type = 'range';
+        input.min = item.min;
+        input.max = item.max;
+        input.step = item.step;
+        input.setAttribute('aria-label', item.label);
+        row.appendChild(input);
+        input.addEventListener('input', function () {
+          state.base[item.key] = Number(input.value);
+          out.textContent = input.value + (item.unit || '');
+          apply();
+          persist();
+        });
+        refs[item.key] = { input: input, out: out };
+      }
+      wrap.appendChild(row);
+    });
+
+    panelBody.appendChild(wrap);
+  };
+
+  SPEC.forEach(addGroup);
+
+  var refresh = function () {
+    if (modeSelect.value !== state.mode) modeSelect.value = state.mode;
+    var mode = resolved();
+    var modeTag = document.getElementById('sp-modetag');
+    if (modeTag) modeTag.textContent = mode;
+    if (button) button.title = 'Site customiser - ' + mode + ' mode';
+
+    SPEC.forEach(function (group) {
+      group.items.forEach(function (item) {
+        var ref = refs[item.key];
+        if (!ref) return;
+        if (item.kind === 'color') {
+          var value = currentColors()[item.key] || '#000000';
+          ref.swatch.value = hex6(value);
+          ref.hex.textContent = String(value);
+        } else if (item.kind === 'font') {
+          var font = state.base[item.key] || '';
+          ensureFontOption(ref.select, font);
+          ref.select.value = font;
+        } else {
+          var n = state.base[item.key];
+          ref.input.value = n;
+          ref.out.textContent = n + (item.unit || '');
+        }
+      });
+    });
+  };
+
+  var reopen = function () { apply(); refresh(); };
+
+  modeSelect.addEventListener('change', function () {
+    state.mode = modeSelect.value;
+    reopen();
+    persist();
+  });
+
+  var onSystemChange = function () { if (state.mode === 'auto') reopen(); };
+  if (darkQuery) {
+    if (darkQuery.addEventListener) darkQuery.addEventListener('change', onSystemChange);
+    else if (darkQuery.addListener) darkQuery.addListener(onSystemChange);
+  }
+  window.addEventListener('focus', onSystemChange);
+
+  document.getElementById('sp-reset').addEventListener('click', function () {
+    copy(state.base, DEFAULTS.base);
+    copy(state.colors.light, DEFAULTS.colors.light);
+    copy(state.colors.dark, DEFAULTS.colors.dark);
+    state.mode = INIT_MODE;
+    try { localStorage.removeItem(STORE); } catch (e) { /* ignore */ }
+    reopen();
+  });
+
+  var toCss = function () {
+    var lines = [
+      '/* generated by the site customiser - ' + resolved() + ' mode */',
+      '/* paste into the page <style>; rebuild after editing the palette */',
+      ':root{'
+    ];
+    SPEC.forEach(function (group) {
+      if (group.colors) return;
+      group.items.forEach(function (item) {
+        lines.push('  ' + item.cssVar + ':' + cssVal(item, state.base[item.key]) + ';');
+      });
+    });
+    var colorItems = SPEC[SPEC.length - 1].items;
+    colorItems.forEach(function (item) {
+      lines.push('  ' + item.cssVar + ':' + state.colors.light[item.key] + ';');
+    });
+    lines.push('}', '', 'html[data-theme="dark"]{');
+    colorItems.forEach(function (item) {
+      lines.push('  ' + item.cssVar + ':' + state.colors.dark[item.key] + ';');
+    });
+    lines.push('}');
+    return lines.join('\n');
+  };
+
+  var copyText = function (text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return false; });
+    }
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    area.remove();
+    return Promise.resolve(ok);
+  };
+
+  var copyBtn = document.getElementById('sp-copy');
+  copyBtn.addEventListener('click', function () {
+    copyText(toCss()).then(function (ok) {
+      copyBtn.textContent = ok ? 'Copied' : 'Copy failed';
+      setTimeout(function () { copyBtn.textContent = 'Copy CSS'; }, 1600);
+    });
+  });
+
+  var toggle = function (open) {
+    panel.hidden = !open;
+    button.setAttribute('aria-expanded', String(open));
+    if (open) { refresh(); }
+  };
+
+  button.addEventListener('click', function () { toggle(panel.hidden); });
+  document.getElementById('sp-close').addEventListener('click', function () { toggle(false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !panel.hidden) toggle(false);
+  });
+
+  apply();
+  refresh();
+})();
+</script>
+</body>
+</html>
