@@ -86,6 +86,10 @@ The goal of this phase is a working OpenRouter chat client. No tools, no sandbox
 
 **What you will learn:** ES modules project layout, the single-dependency constraint, workspace directory design.
 
+**Key concepts:**
+- All files the agent creates or edits are placed in the `workspace/` directory (the agent's working folder). This is a deliberate containment rule — the agent operates from the repo root but only writes inside `workspace/`.
+- The agent does not create files in subfolders of `workspace/` unless explicitly told to. Relative paths inside `workspace/` are resolved from that folder.
+
 **Files to create:**
 - `package.json`
 - `.gitignore`
@@ -164,7 +168,7 @@ ui.prompt(label) / ui.dim(text)
 
 **Key concepts (config.js):**
 - `PROJECT_ROOT = path.resolve(import.meta.dirname, '..')`.
-- `findEnvFile(startDir)`: nearest `.env` wins, walks up to filesystem root.
+- `findEnvFile(startDir)`: nearest `.env` wins, walks up to filesystem root. In practice this means the script starts looking for `.env` in the repo root (where `package.json` lives) so that a `.env` placed there is found even when execution begins from deeper paths.
 - `loadDotEnv(file)`: supports `KEY=VALUE`, optional `export ` prefix, `#` comments, quoted values, blank values ignored.
 - **Precedence:** `.env` overrides inherited shell variables (so a stale key in `~/.bashrc` does not outrank the project's key).
 - `fingerprint(secret)`: unset → `not set`; length ≤ 12 → all `*`; otherwise `<first5>...<last4>`.

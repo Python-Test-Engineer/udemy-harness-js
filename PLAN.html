@@ -500,6 +500,13 @@ html[data-theme="dark"] .tag{background:#3a2a24; color:#f0b49a}
 
 <p><strong>What you will learn:</strong> ES modules project layout, the single-dependency constraint, workspace directory design.</p>
 
+<p><strong>Key concepts:</strong></p>
+
+<ul>
+<li>All files the agent creates or edits are placed in the <code>workspace/</code> directory (the agent's working folder). This is a deliberate containment rule — the agent operates from the repo root but only writes inside <code>workspace/</code>.</li>
+<li>The agent does not create files in subfolders of <code>workspace/</code> unless explicitly told to. Relative paths inside <code>workspace/</code> are resolved from that folder.</li>
+</ul>
+
 <p><strong>Files to create:</strong></p>
 
 <ul>
@@ -597,7 +604,7 @@ ui.prompt(label) / ui.dim(text)</pre></figure>
 
 <ul>
 <li><code>PROJECT_ROOT = path.resolve(import.meta.dirname, '..')</code>.</li>
-<li><code>findEnvFile(startDir)</code>: nearest <code>.env</code> wins, walks up to filesystem root.</li>
+<li><code>findEnvFile(startDir)</code>: nearest <code>.env</code> wins, walks up to filesystem root. In practice this means the script starts looking for <code>.env</code> in the repo root (where <code>package.json</code> lives) so that a <code>.env</code> placed there is found even when execution begins from deeper paths.</li>
 <li><code>loadDotEnv(file)</code>: supports <code>KEY=VALUE</code>, optional <code>export </code> prefix, <code>#</code> comments, quoted values, blank values ignored.</li>
 <li><strong>Precedence:</strong> <code>.env</code> overrides inherited shell variables (so a stale key in <code>~/.bashrc</code> does not outrank the project's key).</li>
 <li><code>fingerprint(secret)</code>: unset → <code>not set</code>; length ≤ 12 → all <code>*</code>; otherwise <code>&lt;first5&gt;...&lt;last4&gt;</code>.</li>
