@@ -176,6 +176,49 @@ function mdToHtml(md) {
       flushTable();
     }
 
+    // FAQ dropdown: preserve raw <details>/<summary> blocks, but render the
+    // answer Markdown inside so backticks and bold work like the rest of the page.
+    if (/^<details\b/i.test(line.trim())) {
+      flushList();
+      flushBlockquote();
+      const block = [];
+      let k = i;
+      while (k < lines.length) {
+        block.push(lines[k]);
+        if (/<\/details>/i.test(lines[k])) break;
+        k++;
+      }
+
+      let summary = '';
+      const content = [];
+      let paragraph = [];
+      const flushParagraph = () => {
+        if (!paragraph.length) return;
+        content.push(`<p>${inline(paragraph.join(' '))}</p>`);
+        paragraph = [];
+      };
+
+      for (const entry of block) {
+        const trimmed = entry.trim();
+        const summaryMatch = trimmed.match(/^<summary>(.*)<\/summary>$/i);
+        if (summaryMatch) {
+          summary = summaryMatch[1];
+          continue;
+        }
+        if (/^<\/?details\b/i.test(trimmed)) continue;
+        if (trimmed === '') {
+          flushParagraph();
+          continue;
+        }
+        paragraph.push(trimmed);
+      }
+      flushParagraph();
+
+      html += `\n<details class="faq">\n<summary>${summary}</summary>\n${content.join('\n')}\n</details>\n`;
+      i = k + 1;
+      continue;
+    }
+
     // Headings
     const h1Match = line.match(/^#\s+(.+)$/);
     const h2Match = line.match(/^##\s+(.+)$/);
@@ -470,6 +513,29 @@ html[data-theme="dark"] code{background:#2b2521; color:#f0b49a}
 html[data-theme="dark"] .callout{color:var(--prose)}
 html[data-theme="dark"] .callout.warn{background:#2e2a1e; color:#d8cfb8}
 
+/* ---------- FAQ dropdowns ---------- */
+details.faq{
+  margin:0.75rem 0 1rem; border:0.0625rem solid var(--line);
+  border-radius:0.5625rem; background:var(--surface); overflow:hidden;
+}
+details.faq summary{
+  cursor:pointer; padding:0.6875rem 0.875rem; color:var(--ink);
+  font-weight:600; line-height:1.45; list-style:none;
+}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq summary::before{
+  content:'▸'; display:inline-block; width:1.15em; color:var(--terra-dark);
+  transition:transform .15s;
+}
+details.faq[open] summary::before{content:'▾'}
+details.faq[open] summary{border-bottom:0.0625rem solid var(--line-soft)}
+details.faq > p{
+  margin:0; padding:0.75rem 0.875rem 0.875rem 1.9rem;
+  color:var(--prose); font-size:0.925rem; line-height:1.62;
+}
+html[data-theme="dark"] details.faq summary{color:var(--ink)}
+html[data-theme="dark"] details.faq > p{color:var(--prose)}
+
 /* ---------- code ---------- */
 figure.code, figure.ascii{margin:1.125rem 0 1.375rem; border-radius:0.6875rem; overflow:hidden}
 figure.code{margin-left:-1.375rem; margin-right:-1.375rem}
@@ -564,7 +630,7 @@ html[data-theme="dark"] .tag{background:#3a2a24; color:#f0b49a}
   .shell{display:block}
   .pane{padding:0}
   body{background:#fff; font-size:10.5pt}
-  h2{break-after:avoid} figure,table,.callout{break-inside:avoid}
+  h2{break-after:avoid} figure,table,.callout,details.faq{break-inside:avoid}
   figure.code{margin-left:0; margin-right:0}
   a{color:inherit; text-decoration:none}
 }
@@ -1166,21 +1232,34 @@ const titleFallback = isReverse
   ? 'mini-coding-js \u00b7 Reverse-engineering build prompt'
   : `mini-coding-js \u00b7 ${baseName.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}`;
 
+const env = process.env;
+const generatedTitle = env.DOC_TITLE || titleFallback;
+const generatedH1 = env.DOC_H1 || (isReverse
+  ? 'Reverse-engineering mini-coding-js'
+  : baseName.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()));
+const generatedLede = env.DOC_LEDE || (isReverse
+  ? 'A from-scratch specification of the minimal coding-agent harness: one ReAct loop, eight tools, a write sandbox, nine lifecycle hooks, persistent memory, and an offline demo that proves the guards hold.'
+  : 'Converted from Markdown.');
+const generatedEyebrow = env.DOC_EYEBROW || (isReverse ? 'Build prompt \u00b7 complete specification' : 'Reading guide');
+const generatedTocTitle = env.DOC_TOC_TITLE || (isReverse ? 'Reverse-engineering' : baseName.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()));
+const generatedSideSub = env.DOC_SIDE_SUB || (isReverse
+  ? 'The complete build specification: every file, every function, every contract, every test.'
+  : 'Converted from Markdown to styled HTML.');
+const generatedMeta = env.DOC_META
+  ? env.DOC_META.split('|').map((item) => item.trim()).filter(Boolean)
+  : (isReverse ? ['15 sections', '~1400 lines', '15 source files', '1 dependency'] : [`${headings.length} sections`, 'generated page']);
+
 const page = buildPage({
-  title: titleFallback,
-  eyebrow: isReverse ? 'Build prompt \u00b7 complete specification' : 'Reading guide',
-  h1: isReverse ? 'Reverse-engineering mini-coding-js' : baseName.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-  lede: isReverse
-    ? 'A from-scratch specification of the minimal coding-agent harness: one ReAct loop, eight tools, a write sandbox, nine lifecycle hooks, persistent memory, and an offline demo that proves the guards hold.'
-    : 'Converted from Markdown.',
-  meta: isReverse ? ['15 sections', '~1400 lines', '15 source files', '1 dependency'] : [`${headings.length} sections`, 'generated page'],
-  tocTitle: isReverse ? 'Reverse-engineering' : baseName.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-  sideSub: isReverse
-    ? 'The complete build specification: every file, every function, every contract, every test.'
-    : 'Converted from Markdown to styled HTML.',
-  sideFoot: isReverse
+  title: generatedTitle,
+  eyebrow: generatedEyebrow,
+  h1: generatedH1,
+  lede: generatedLede,
+  meta: generatedMeta,
+  tocTitle: generatedTocTitle,
+  sideSub: generatedSideSub,
+  sideFoot: env.DOC_SIDE_FOOT || (isReverse
     ? 'Companion to the animated explainers<br>Every file in <code>src/</code> is specified here'
-    : `Built from <code>${path.basename(mdPath)}</code><br>${headings.length} sections`,
+    : `Built from <code>${path.basename(mdPath)}</code><br>${headings.length} sections`),
   contentHtml: html,
   headings,
 });

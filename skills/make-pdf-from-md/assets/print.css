@@ -240,6 +240,36 @@ blockquote {
 blockquote p { margin: 0; }
 blockquote strong { color: var(--ink); }
 
+/* ---------- FAQ dropdowns ---------- */
+
+details.faq,
+details {
+  margin: .65em 0 .9em;
+  border: .5pt solid var(--line);
+  border-radius: 5px;
+  background: var(--surface);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+details > summary {
+  padding: 6px 9px;
+  color: var(--ink);
+  font: 600 8.8pt/1.45 var(--sans);
+  list-style: none;
+  cursor: default;
+}
+
+details > summary::-webkit-details-marker { display: none; }
+details > summary::marker { content: ''; }
+details[open] > summary { border-bottom: .5pt solid var(--line-soft); }
+details > p {
+  margin: 0;
+  padding: 6px 9px 7px;
+  color: var(--muted);
+  font: 8.8pt/1.5 var(--sans);
+}
+
 /* ---------- avoid a few ugly breaks ---------- */
 
 figure, .table-wrap { break-inside: avoid; }

@@ -191,7 +191,23 @@ def render(browser: str, html_path: Path, pdf_path: Path, timeout: int) -> None:
         raise RuntimeError("Browser wrote an empty PDF.")
 
 
+PDF_LIGATURES = {
+    "\ufb00": "ff",
+    "\ufb01": "fi",
+    "\ufb02": "fl",
+    "\ufb03": "ffi",
+    "\ufb04": "ffl",
+    "\ufb05": "ft",
+    "\ufb06": "st",
+}
+
+
 def page_key(value: str) -> str:
+    # PDF font subsets often extract fi/fl/ff as single ligature glyphs.
+    # Normalise them before matching headings so extraction quirks do not
+    # make a visible heading look missing.
+    for ligature, replacement in PDF_LIGATURES.items():
+        value = value.replace(ligature, replacement)
     return re.sub(r"[^a-z0-9]+", " ", value.lower()).strip()
 
 
@@ -342,7 +358,7 @@ def build_toc(headings: list[Heading]) -> str:
         '<nav class="pdf-toc" aria-label="Contents">'
         '<header class="pdf-toc-head">'
         '<p class="pdf-toc-kicker">Contents</p>'
-        '<p class="pdf-toc-title">What is in this explainer</p>'
+        '<p class="pdf-toc-title">What is in this manual</p>'
         "</header>"
         '<ol class="pdf-toc-list">'
         + "".join(entries)
@@ -383,7 +399,7 @@ TOC_CSS = """<style>
   .pdf-toc-list a,
   .pdf-toc-list li > span{
     display:flex; gap:.65em; align-items:baseline;
-    padding:.38em 0; border-bottom:0.5pt solid var(--line-soft,#e8e4da);
+    padding:.25em 0; border-bottom:0.5pt solid var(--line-soft,#e8e4da);
     color:var(--ink,#1f1e1d); text-decoration:none;
   }
   .pdf-toc-num{
@@ -391,7 +407,7 @@ TOC_CSS = """<style>
     font:600 8pt/1.3 var(--mono,Consolas,monospace); letter-spacing:.05em;
   }
   .pdf-toc-title-text{
-    font:500 10.8pt/1.35 var(--serif,Georgia,'Times New Roman',serif);
+    font:500 10.4pt/1.32 var(--serif,Georgia,'Times New Roman',serif);
   }
   .pdf-toc-dots{
     flex:1; min-width:1.5em; border-bottom:0.5pt dotted #b9b2a5;
@@ -425,6 +441,10 @@ def prepare_html(source: str, headings: list[Heading], with_toc: bool) -> str:
         result,
         flags=re.S,
     )
+
+    # A PDF cannot open a <details> element. Force FAQ answers visible for the
+    # print render while leaving the Markdown source as a real dropdown.
+    result = re.sub(r"<details(?=[ >])", "<details open", result, flags=re.I)
 
     if not with_toc or not chapters:
         return result
