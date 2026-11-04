@@ -411,7 +411,7 @@ html[data-theme="dark"] .tag{background:#3a2a24; color:#f0b49a}
   <aside class="sidebar">
     <a class="side-kicker" href="#top">mini-coding-js &middot; Build prompt</a>
     <p class="side-title">Course manual</p>
-    <p class="side-sub">The concepts behind every stage, from the first model call to the finished harness.</p>
+    <p class="side-sub">Sixteen stages, from a chatbot to a testable harness.</p>
     <div class="side-rule"></div>
     <p class="side-label">Contents</p>
     <nav class="toc" id="toc">
@@ -611,24 +611,186 @@ html[data-theme="dark"] .tag{background:#3a2a24; color:#f0b49a}
       <a href="#s08-05" class="l3"><span class="n"></span><span>E. Glossary</span></a>
       <a href="#s08-06" class="l3"><span class="n"></span><span>F. Reading the finished code</span></a>
       <a href="#s08-07" class="l3"><span class="n"></span><span>Closing note</span></a>
+      <a href="#s09" class="l2"><span class="n">09</span><span>Part II: The build companion — PLAN.md, stage by stage</span></a>
+      <a href="#s09-01" class="l3"><span class="n"></span><span>Prerequisites</span></a>
+      <a href="#s09-02" class="l3"><span class="n"></span><span>How to use the companion</span></a>
+      <a href="#s09-03" class="l3"><span class="n"></span><span>Stage 0 build: Scaffold</span></a>
+      <a href="#s09-04" class="l3"><span class="n"></span><span>Stage 1 build: Terminal language</span></a>
+      <a href="#s09-05" class="l3"><span class="n"></span><span>Stage 2 build: Config and model client</span></a>
+      <a href="#s09-06" class="l3"><span class="n"></span><span>Stage 3 build: Simplest chat loop</span></a>
+      <a href="#s09-07" class="l3"><span class="n"></span><span>Stage 4 build: Conversation history</span></a>
+      <a href="#s09-08" class="l3"><span class="n"></span><span>Stage 5 build: System prompt</span></a>
+      <a href="#s09-09" class="l3"><span class="n"></span><span>Stage 6 build: Path policy</span></a>
+      <a href="#s09-10" class="l3"><span class="n"></span><span>Stage 7 build: Read-only tools</span></a>
+      <a href="#s09-11" class="l3"><span class="n"></span><span>Stage 8 build: Sandbox and write tools</span></a>
+      <a href="#s09-12" class="l3"><span class="n"></span><span>Stage 9 build: Command execution</span></a>
+      <a href="#s09-13" class="l3"><span class="n"></span><span>Stage 10 build: Long-term memory</span></a>
+      <a href="#s09-14" class="l3"><span class="n"></span><span>Stage 11 build: Lifecycle hooks</span></a>
+      <a href="#s09-15" class="l3"><span class="n"></span><span>Stage 12 build: The ReAct loop</span></a>
+      <a href="#s09-16" class="l3"><span class="n"></span><span>Stage 13 build: Offline demo</span></a>
+      <a href="#s09-17" class="l3"><span class="n"></span><span>Stage 14 build: Sessions and CLI polish</span></a>
+      <a href="#s09-18" class="l3"><span class="n"></span><span>Stage 15 build: Full test suite</span></a>
+      <a href="#s09-19" class="l3"><span class="n"></span><span>Stage 16 build: Documentation and acceptance</span></a>
+      <a href="#s09-20" class="l3"><span class="n"></span><span>The course checklist</span></a>
+      <a href="#s10" class="l2"><span class="n">10</span><span>Part III: The teacher's handbook</span></a>
+      <a href="#s10-01" class="l3"><span class="n"></span><span>1. What this course is and is not</span></a>
+      <a href="#s10-02" class="l3"><span class="n"></span><span>2. Learning outcomes by phase</span></a>
+      <a href="#s10-03" class="l3"><span class="n"></span><span>3. Three ways to pace the course</span></a>
+      <a href="#s10-03-01" class="l4"><span class="n"></span><span>Option A — Sixteen sessions (the default)</span></a>
+      <a href="#s10-03-02" class="l4"><span class="n"></span><span>Option B — Two-day workshop</span></a>
+      <a href="#s10-03-03" class="l4"><span class="n"></span><span>Option C — Self-paced</span></a>
+      <a href="#s10-04" class="l3"><span class="n"></span><span>4. The session run sheet</span></a>
+      <a href="#s10-05" class="l3"><span class="n"></span><span>5. The live-demo script</span></a>
+      <a href="#s10-06" class="l3"><span class="n"></span><span>6. The factory analogy</span></a>
+      <a href="#s10-06-01" class="l4"><span class="n"></span><span>The cast</span></a>
+      <a href="#s10-06-02" class="l4"><span class="n"></span><span>The mapping, in detail</span></a>
+      <a href="#s10-06-03" class="l4"><span class="n"></span><span>Where the analogy breaks</span></a>
+      <a href="#s10-06-04" class="l4"><span class="n"></span><span>A five-minute opening script</span></a>
+      <a href="#s10-07" class="l3"><span class="n"></span><span>7. Common misconceptions and how to correct them</span></a>
+      <a href="#s10-08" class="l3"><span class="n"></span><span>8. The debugging clinic</span></a>
+      <a href="#s10-09" class="l3"><span class="n"></span><span>9. Assessment rubric</span></a>
+      <a href="#s10-10" class="l3"><span class="n"></span><span>10. Teaching the hardest ideas</span></a>
+      <a href="#s10-10-01" class="l4"><span class="n"></span><span>The loop</span></a>
+      <a href="#s10-10-02" class="l4"><span class="n"></span><span>The message protocol</span></a>
+      <a href="#s10-10-03" class="l4"><span class="n"></span><span>The sandbox</span></a>
+      <a href="#s10-10-04" class="l4"><span class="n"></span><span>Memory</span></a>
+      <a href="#s10-10-05" class="l4"><span class="n"></span><span>Hooks</span></a>
+      <a href="#s10-10-06" class="l4"><span class="n"></span><span>Truncation</span></a>
+      <a href="#s10-10-07" class="l4"><span class="n"></span><span>Testability</span></a>
+      <a href="#s10-11" class="l3"><span class="n"></span><span>11. Classroom, recording and CI setup</span></a>
+      <a href="#s11" class="l2"><span class="n">11</span><span>Part IV: The student workbook</span></a>
+      <a href="#s11-01" class="l3"><span class="n"></span><span>1. How to use the labs</span></a>
+      <a href="#s11-02" class="l3"><span class="n"></span><span>2. Per-stage labs</span></a>
+      <a href="#s11-02-01" class="l4"><span class="n"></span><span>Lab 0 — The dependency audit</span></a>
+      <a href="#s11-02-02" class="l4"><span class="n"></span><span>Lab 1 — The palette contract</span></a>
+      <a href="#s11-02-03" class="l4"><span class="n"></span><span>Lab 2 — Provenance detective</span></a>
+      <a href="#s11-02-04" class="l4"><span class="n"></span><span>Lab 3 — One-shot, many exits</span></a>
+      <a href="#s11-02-05" class="l4"><span class="n"></span><span>Lab 4 — The three lifetimes</span></a>
+      <a href="#s11-02-06" class="l4"><span class="n"></span><span>Lab 5 — Prompt surgery</span></a>
+      <a href="#s11-02-07" class="l4"><span class="n"></span><span>Lab 6 — Escape artist</span></a>
+      <a href="#s11-02-08" class="l4"><span class="n"></span><span>Lab 7 — Schema as prompt</span></a>
+      <a href="#s11-02-09" class="l4"><span class="n"></span><span>Lab 8 — The `$&amp;` incident</span></a>
+      <a href="#s11-02-10" class="l4"><span class="n"></span><span>Lab 9 — Scanner vs shell</span></a>
+      <a href="#s11-02-11" class="l4"><span class="n"></span><span>Lab 10 — Memory by hand</span></a>
+      <a href="#s11-02-12" class="l4"><span class="n"></span><span>Lab 11 — Twelve-line policy</span></a>
+      <a href="#s11-02-13" class="l4"><span class="n"></span><span>Lab 12 — Fake model, real loop</span></a>
+      <a href="#s11-02-14" class="l4"><span class="n"></span><span>Lab 13 — Scorecard author</span></a>
+      <a href="#s11-02-15" class="l4"><span class="n"></span><span>Lab 14 — Trimming by hand</span></a>
+      <a href="#s11-02-16" class="l4"><span class="n"></span><span>Lab 15 — Offline proof</span></a>
+      <a href="#s11-02-17" class="l4"><span class="n"></span><span>Lab 16 — Honest docs</span></a>
+      <a href="#s11-03" class="l3"><span class="n"></span><span>3. Break-it-on-purpose labs</span></a>
+      <a href="#s11-04" class="l3"><span class="n"></span><span>4. Reflection prompts</span></a>
+      <a href="#s11-05" class="l3"><span class="n"></span><span>5. Capstone projects</span></a>
+      <a href="#s11-05-01" class="l4"><span class="n"></span><span>Capstone A — The safe extension</span></a>
+      <a href="#s11-05-02" class="l4"><span class="n"></span><span>Capstone B — The observability layer</span></a>
+      <a href="#s11-05-03" class="l4"><span class="n"></span><span>Capstone C — The memory workbench</span></a>
+      <a href="#s11-05-04" class="l4"><span class="n"></span><span>Capstone D — The teaching demo</span></a>
+      <a href="#s11-06" class="l3"><span class="n"></span><span>6. Extension roadmap</span></a>
+      <a href="#s11-07" class="l3"><span class="n"></span><span>7. Self-assessment</span></a>
+      <a href="#s12" class="l2"><span class="n">12</span><span>Part V: Deep dives on harness engineering</span></a>
+      <a href="#s12-01" class="l3"><span class="n"></span><span>1. What exactly is a harness?</span></a>
+      <a href="#s12-01-01" class="l4"><span class="n"></span><span>The three questions every harness answers</span></a>
+      <a href="#s12-01-02" class="l4"><span class="n"></span><span>The harness is not the product</span></a>
+      <a href="#s12-02" class="l3"><span class="n"></span><span>2. The harness stack</span></a>
+      <a href="#s12-02-01" class="l4"><span class="n"></span><span>The dependency rule</span></a>
+      <a href="#s12-03" class="l3"><span class="n"></span><span>3. Context engineering</span></a>
+      <a href="#s12-03-01" class="l4"><span class="n"></span><span>The context budget</span></a>
+      <a href="#s12-03-02" class="l4"><span class="n"></span><span>The four context failure modes</span></a>
+      <a href="#s12-03-03" class="l4"><span class="n"></span><span>Context engineering checklist</span></a>
+      <a href="#s12-03-04" class="l4"><span class="n"></span><span>Prompt injection, in one paragraph</span></a>
+      <a href="#s12-04" class="l3"><span class="n"></span><span>4. Tool design</span></a>
+      <a href="#s12-04-01" class="l4"><span class="n"></span><span>The seven properties of a good tool</span></a>
+      <a href="#s12-04-02" class="l4"><span class="n"></span><span>The tool description as prompt</span></a>
+      <a href="#s12-04-03" class="l4"><span class="n"></span><span>Error messages are prompts</span></a>
+      <a href="#s12-04-04" class="l4"><span class="n"></span><span>Tool granularity</span></a>
+      <a href="#s12-04-05" class="l4"><span class="n"></span><span>Idempotency and replay</span></a>
+      <a href="#s12-05" class="l3"><span class="n"></span><span>5. Evaluation</span></a>
+      <a href="#s12-05-01" class="l4"><span class="n"></span><span>Level 1 — Unit tests</span></a>
+      <a href="#s12-05-02" class="l4"><span class="n"></span><span>Level 2 — Offline integration</span></a>
+      <a href="#s12-05-03" class="l4"><span class="n"></span><span>Level 3 — Live smoke tests</span></a>
+      <a href="#s12-05-04" class="l4"><span class="n"></span><span>Level 4 — Evaluations</span></a>
+      <a href="#s12-05-05" class="l4"><span class="n"></span><span>What to measure first</span></a>
+      <a href="#s12-05-06" class="l4"><span class="n"></span><span>A warning about benchmarks</span></a>
+      <a href="#s12-06" class="l3"><span class="n"></span><span>6. Security threat model</span></a>
+      <a href="#s12-06-01" class="l4"><span class="n"></span><span>The honest sentence</span></a>
+      <a href="#s12-06-02" class="l4"><span class="n"></span><span>The principle of least authority, applied</span></a>
+      <a href="#s12-07" class="l3"><span class="n"></span><span>7. The production path</span></a>
+      <a href="#s12-07-01" class="l4"><span class="n"></span><span>Streaming</span></a>
+      <a href="#s12-07-02" class="l4"><span class="n"></span><span>Retries and circuit breakers</span></a>
+      <a href="#s12-07-03" class="l4"><span class="n"></span><span>Context compaction</span></a>
+      <a href="#s12-07-04" class="l4"><span class="n"></span><span>Sub-agents</span></a>
+      <a href="#s12-07-05" class="l4"><span class="n"></span><span>External tool transports (MCP)</span></a>
+      <a href="#s12-07-06" class="l4"><span class="n"></span><span>Real sandboxing</span></a>
+      <a href="#s12-07-07" class="l4"><span class="n"></span><span>Permissions and approvals</span></a>
+      <a href="#s12-07-08" class="l4"><span class="n"></span><span>Persistence and sessions</span></a>
+      <a href="#s12-07-09" class="l4"><span class="n"></span><span>Multi-provider</span></a>
+      <a href="#s12-07-10" class="l4"><span class="n"></span><span>The rule that does not change</span></a>
+      <a href="#s12-08" class="l3"><span class="n"></span><span>8. Observability and cost</span></a>
+      <a href="#s12-08-01" class="l4"><span class="n"></span><span>What to record</span></a>
+      <a href="#s12-08-02" class="l4"><span class="n"></span><span>The three questions a trace must answer</span></a>
+      <a href="#s12-08-03" class="l4"><span class="n"></span><span>Cost intuition</span></a>
+      <a href="#s12-08-04" class="l4"><span class="n"></span><span>The visible-cost principle</span></a>
+      <a href="#s12-09" class="l3"><span class="n"></span><span>9. Architecture decision records</span></a>
+      <a href="#s12-09-01" class="l4"><span class="n"></span><span>ADR-001: One runtime dependency</span></a>
+      <a href="#s12-09-02" class="l4"><span class="n"></span><span>ADR-002: `.env` beats the shell</span></a>
+      <a href="#s12-09-03" class="l4"><span class="n"></span><span>ADR-003: Reads open, writes fenced</span></a>
+      <a href="#s12-09-04" class="l4"><span class="n"></span><span>ADR-004: Tool errors are observations</span></a>
+      <a href="#s12-09-05" class="l4"><span class="n"></span><span>ADR-005: Extract the loop late</span></a>
+      <a href="#s12-09-06" class="l4"><span class="n"></span><span>ADR-006: Memory is a file</span></a>
+      <a href="#s12-09-07" class="l4"><span class="n"></span><span>ADR-007: Hooks are decisions, not notifications</span></a>
+      <a href="#s12-09-08" class="l4"><span class="n"></span><span>ADR-008: The sandbox is not a container</span></a>
+      <a href="#s12-09-09" class="l4"><span class="n"></span><span>Writing your own ADR</span></a>
+      <a href="#s12-10" class="l3"><span class="n"></span><span>10. How real harnesses compare</span></a>
+      <a href="#s12-10-01" class="l4"><span class="n"></span><span>What commercial harnesses add</span></a>
+      <a href="#s12-10-02" class="l4"><span class="n"></span><span>A comparison exercise</span></a>
+      <a href="#s12-11" class="l3"><span class="n"></span><span>11. Reading list</span></a>
+      <a href="#s12-12" class="l3"><span class="n"></span><span>A closing note for teachers</span></a>
+      <a href="#s13" class="l2"><span class="n">13</span><span>Part VI: Reference</span></a>
+      <a href="#s13-01" class="l3"><span class="n"></span><span>A. Configuration reference</span></a>
+      <a href="#s13-01-01" class="l4"><span class="n"></span><span>Sources and precedence</span></a>
+      <a href="#s13-01-02" class="l4"><span class="n"></span><span>Environment variables</span></a>
+      <a href="#s13-01-03" class="l4"><span class="n"></span><span>`loadConfig` return shape (illustrative)</span></a>
+      <a href="#s13-01-04" class="l4"><span class="n"></span><span>Fingerprint rules</span></a>
+      <a href="#s13-01-05" class="l4"><span class="n"></span><span>Model prefix map</span></a>
+      <a href="#s13-02" class="l3"><span class="n"></span><span>B. CLI and exit-code reference</span></a>
+      <a href="#s13-02-01" class="l4"><span class="n"></span><span>Commands</span></a>
+      <a href="#s13-02-02" class="l4"><span class="n"></span><span>Flags</span></a>
+      <a href="#s13-02-03" class="l4"><span class="n"></span><span>In-session commands</span></a>
+      <a href="#s13-02-04" class="l4"><span class="n"></span><span>Exit codes</span></a>
+      <a href="#s13-03" class="l3"><span class="n"></span><span>C. Tool response reference</span></a>
+      <a href="#s13-03-01" class="l4"><span class="n"></span><span>The eight tools</span></a>
+      <a href="#s13-03-02" class="l4"><span class="n"></span><span>Observation prefixes</span></a>
+      <a href="#s13-03-03" class="l4"><span class="n"></span><span>`run_command` result format</span></a>
+      <a href="#s13-04" class="l3"><span class="n"></span><span>D. Hook payload reference</span></a>
+      <a href="#s13-04-01" class="l4"><span class="n"></span><span>Events and payloads</span></a>
+      <a href="#s13-04-02" class="l4"><span class="n"></span><span>`Hooks.run` result</span></a>
+      <a href="#s13-04-03" class="l4"><span class="n"></span><span>Deciding hooks</span></a>
+      <a href="#s13-05" class="l3"><span class="n"></span><span>E. File and API map</span></a>
+      <a href="#s13-05-01" class="l4"><span class="n"></span><span>The import direction</span></a>
+      <a href="#s13-06" class="l3"><span class="n"></span><span>F. Final acceptance checklist</span></a>
+      <a href="#s13-06-01" class="l4"><span class="n"></span><span>Install and offline proof</span></a>
+      <a href="#s13-06-02" class="l4"><span class="n"></span><span>Live mode and boundaries</span></a>
+      <a href="#s13-06-03" class="l4"><span class="n"></span><span>Safety</span></a>
+      <a href="#s13-06-04" class="l4"><span class="n"></span><span>Persistence and observability</span></a>
+      <a href="#s13-06-05" class="l4"><span class="n"></span><span>Sessions and architecture</span></a>
+      <a href="#s13-06-06" class="l4"><span class="n"></span><span>Sign-off</span></a>
     </nav>
     <div class="side-foot">
-      Built from <code>course-manual.md</code><br>Stages 0–16
+      Built from course-manual.md<br>Parts 0–E · II · III · IV · V · VI
     </div>
   </aside>
 
   <main class="pane" id="top">
     <div class="inner">
       <header class="page-heading">
-        <p class="eyebrow">Course manual · staged theory companion to PLAN.md</p>
+        <p class="eyebrow">Course manual · theory · build · teaching · reference</p>
         <h1>The mini coding agent</h1>
-        <p class="lede">A complete theory companion to the 16-stage build: the model call, the message array, the tools, the sandbox, memory, lifecycle hooks, and the ReAct loop.</p>
+        <p class="lede">A complete course in harness engineering: the loop, the tools, the sandbox, memory, hooks, and the proof. Theory, build companion, teacher's handbook, student workbook and reference in one manual.</p>
         <p class="meta">
           <span>16 stages</span>
-          <span>5 phases</span>
-          <span>8 tools</span>
-          <span>9 hooks</span>
-          <span>1 memory file</span>
+          <span>6 parts</span>
+          <span>one dependency</span>
+          <span>offline demo</span>
         </p>
       </header>
 
@@ -636,17 +798,28 @@ html[data-theme="dark"] .tag{background:#3a2a24; color:#f0b49a}
 <section id="s01">
 <h2><span class="num">01</span><span>The mini coding agent: course manual</span></h2>
 
-<p><strong>A staged theory companion to <code>PLAN.md</code></strong></p>
+<p><strong>The main manual. <code>PLAN.md</code> is folded in, not left beside it.</strong></p>
 
-<p>This manual explains <em>why</em> the code in each stage looks the way it does. The build plan tells you what to create and how to prove it works; this manual gives you the mental model, the design vocabulary, and the failure modes so that each stage is a concept you own rather than a file you copied.</p>
+<p>This manual explains <em>why</em> the code in each stage looks the way it does. It is the one document a student or a teacher should read from top to bottom. <code>PLAN.md</code> supplied the concrete build contract: exact files, APIs, defaults, and acceptance criteria. That contract now lives in <strong>Part II</strong>, so the theory in Parts 0–E and the build instructions sit in one book.</p>
 
-<p>Read one stage of the plan, then read the matching chapter here before you start typing. When you finish the stage, answer the checkpoint questions at the end of the chapter, then open each question's dropdown to compare your reasoning. If you can explain the answers without looking, you are ready to build the next layer.</p>
+<p>Read one stage of the manual, then read the matching <strong>build companion</strong> entry in Part II before you start typing. When you finish the stage, answer the checkpoint questions at the end of the theory chapter, then do the matching <strong>student lab</strong> in Part IV. Teachers should read <strong>Part III</strong> before the first session; it contains the run sheet, the live-demo script, the factory analogy, common misconceptions, and the assessment rubric.</p>
+
+<div class="callout"><strong>What is where.</strong>
+- <strong>Parts 0–E</strong> — the staged theory: the mental model, the design vocabulary, the failure modes.
+- <strong>Part II</strong> — the <em>build companion</em>: PLAN.md's files, API contracts, defaults and acceptance criteria, plus a teaching note and a lab for every stage.
+- <strong>Part III</strong> — the <em>teacher's handbook</em>: pacing, run sheets, demos, the factory analogy, misconceptions, rubric.
+- <strong>Part IV</strong> — the <em>student workbook</em>: per-stage labs, break-it labs, capstones, extension roadmap.
+- <strong>Part V</strong> — <em>deep dives</em>: context engineering, tool design, evaluation, threat modelling, the production path.
+- <strong>Part VI</strong> — <em>reference</em>: configuration, CLI, payloads, file map and the final acceptance checklist.
+
+The code excerpts are illustrative. Where this manual and the finished implementation disagree, the implementation and its tests win. Where the manual and <code>PLAN.md</code> disagree, this manual is now the merged source of truth.</div>
 
 <div class="callout"><strong>Source material.</strong> The long-form explanation of the finished harness is in
 <a href="../mini-coding-agent-js/explainer-harness-js.md"><code>../mini-coding-agent-js/explainer-harness-js.md</code></a>.
-This manual reorganises that theory around the 16 stages in <code>PLAN.md</code> and adds teaching
-notes, checkpoints and common mistakes. The code excerpts here are illustrative; the plan
-is authoritative for exact signatures and acceptance criteria.</div>
+The build contract came from <code>PLAN.md</code> and is reproduced, expanded and cross-referenced
+in Part II. The finished implementation lives in <code>../mini-coding-agent-js/src/</code>; read it
+alongside the manual. The non-coding <strong>factory analogy</strong> in Part III is adapted from
+<code>../mini-coding-agent-js/explainers/factory_example.md</code>.</div>
 
 <hr>
 
@@ -3811,9 +3984,2537 @@ assert.equal(result.steps, 1);</pre></figure>
 
 </section>
 
+<hr>
+
+<section id="s09">
+<h2><span class="num">09</span><span>Part II: The build companion — PLAN.md, stage by stage</span></h2>
+
+<p>This part is the marriage of the two documents. For every stage you get four things:</p>
+
+<ol>
+<li><strong>Build</strong> — the files to create or modify and the concrete contract, distilled from <code>PLAN.md</code>.</li>
+<li><strong>Prove it</strong> — the acceptance criteria, written as checkboxes you can actually run.</li>
+<li><strong>Teach it</strong> — what to emphasise, the live-demo cue, the usual mistakes, and roughly how long the stage should take.</li>
+<li><strong>Try it</strong> — one student exercise that is more than "run the command".</li>
+</ol>
+
+<p>The theory chapters (Parts 0–E) answer <em>why</em>. This companion answers <em>what exactly</em> and <em>how do I know it works</em>. Read them as a pair: theory first, then the build entry, then type.</p>
+
+<h3 id="s09-01">Prerequisites</h3>
+
+<ul>
+<li><strong>Node.js 20 or newer</strong> — ES modules, <code>AbortSignal.any</code>, and <code>node:test</code>.</li>
+<li><strong>One runtime dependency: <code>chalk</code> v5+ (ESM).</strong> No framework, SDK, database or ORM.</li>
+<li><strong>An OpenRouter API key</strong> for live mode only. The demo, the tests, <code>--help</code>, <code>--hooks</code> and <code>--memory</code> need no key and no network.</li>
+<li><strong>A terminal at least 100×30</strong> for the banner and scorecard. Windows <code>cmd.exe</code>, PowerShell, Git Bash and a Unix shell are all usable; <code>run_command</code> inherits whichever shell launches the CLI.</li>
+</ul>
+
+<h3 id="s09-02">How to use the companion</h3>
+
+<ul>
+<li><strong>Students:</strong> before a stage, read the theory chapter. During the stage, keep the build entry open. Before moving on, tick every box in <em>Prove it</em> and do <em>Try it</em>.</li>
+<li><strong>Teachers:</strong> the <em>Teach it</em> block is your lesson plan in miniature. It names the one idea the stage exists to teach, the demo that lands it, the misconceptions to pre-empt, and a time budget.</li>
+<li><strong>Everyone:</strong> the checkboxes are not decoration. If a box is unticked, the next stage will not make sense, because every stage depends on the previous contract.</li>
+</ul>
+
+<p>A stage is done when the program does something new <strong>and</strong> every acceptance box is ticked. "It compiled" is not a stage.</p>
+
+<hr>
+
+<h3 id="s09-03">Stage 0 build: Scaffold</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>package.json</code></li>
+<li><code>.gitignore</code></li>
+<li><code>workspace/.gitkeep</code></li>
+<li><code>src/.gitkeep</code></li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li><code>package.json</code>: <code>"type": "module"</code>, <code>"engines": { "node": "&gt;=20" }</code>, exactly one runtime dependency (<code>chalk</code>), and scripts for <code>start</code>, <code>demo</code>, <code>test</code> (add <code>hooks</code> and <code>memory</code> once those flags exist).</li>
+<li><code>.gitignore</code>: <code>node_modules</code>, <code>.env</code>, and everything in <code>workspace/</code> except <code>.gitkeep</code>.</li>
+<li>Project layout: <code>src/</code>, <code>test/</code>, <code>workspace/</code>, flat and boring.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] <code>cd mini-coding-agent-js &amp;&amp; npm install</code> installs exactly <code>chalk</code>.</li>
+<li>[ ] <code>npm ls --depth=0</code> shows <code>chalk</code> and nothing else in <code>dependencies</code>.</li>
+<li>[ ] <code>node --test</code> reports <code>0 tests</code> without failing.</li>
+<li>[ ] <code>workspace/</code> exists and is git-ignored except <code>.gitkeep</code>.</li>
+<li>[ ] <code>type: "module"</code> is set.</li>
+<li>[ ] <code>node --version</code> is 20 or newer.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> constraints chosen on day zero shape every later stage. Two constraints are doing the work — one dependency, one writable folder.</p>
+
+<p><em>Demo cue:</em> run <code>npm ls --depth=0</code> live, then ask "what would this look like if we had installed an agent SDK?" Nothing to show, and that is the point: the model call would be behind a wall.</p>
+
+<p><em>Usual mistakes:</em> adding a second dependency "just for flags"; nesting <code>src/core/</code>; forgetting <code>"type": "module"</code> and then fighting <code>import</code>; committing <code>.env</code>.</p>
+
+<p><em>Time:</em> 20 minutes.</p>
+
+<p><strong>Try it:</strong> write a one-paragraph defence of the single-dependency rule that a colleague who wants <code>commander</code> would accept. Then write the one sentence that would change your mind.</p>
+
+<hr>
+
+<h3 id="s09-04">Stage 1 build: Terminal language</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>src/ui.js</code></li>
+<li><code>test/ui.test.js</code></li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li>Every helper returns a string. Nothing in <code>ui.js</code> prints.</li>
+<li><code>ui.result(text)</code> derives colour from the text: red when the first line starts with <code>ERROR</code>, <code>DENIED</code> or <code>FORBIDDEN</code>, or contains a non-zero <code>exit code N</code>; green otherwise.</li>
+<li><code>explainExit(code)</code> maps <code>0</code>, <code>1</code>, <code>2</code>, <code>3</code>, <code>126</code>, <code>127</code>, <code>128–164</code> and Windows <code>9009</code> to plain English.</li>
+<li><code>ui.forbidden(action, requested, reason)</code> prints one loud, greppable line: <code>⛔ FORBIDDEN SAVE ../escape.txt - path escapes the workspace: ../escape.txt</code>.</li>
+<li>Required helpers (exact surface from PLAN): <code>title</code>, <code>field</code>, <code>kv</code>, <code>step</code>, <code>think</code>, <code>tool</code>, <code>result</code>, <code>forbidden</code>, <code>pass</code>, <code>fail</code>, <code>rule</code>, <code>hookTitle</code>, <code>hookLine</code>, <code>hookField</code>, <code>hookLive</code>, <code>hookNote</code>, <code>hookTrace</code>, <code>hookFlow</code>, <code>memory</code>, <code>exitNote</code>, <code>answerRule</code>, <code>answer</code>, <code>warn</code>, <code>waiting</code>, <code>error</code>, <code>note</code>, <code>prompt</code>, <code>dim</code>.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] Every helper returns a string.</li>
+<li>[ ] Styles become ANSI on a TTY and read back as the original text when colour is off.</li>
+<li>[ ] A failed result is red; a clean result is green.</li>
+<li>[ ] Exit code 1 gets a description via <code>explainExit</code>.</li>
+<li>[ ] A successful command shows its first stdout line in a dim annotation.</li>
+<li>[ ] <code>forbidden</code> produces bold red capitals.</li>
+<li>[ ] Model text containing <code>&lt;red&gt;</code>, backslashes or JSON prints verbatim.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> presentation is a separate decision from logic, and the contract is "return a string, let the caller print".</p>
+
+<p><em>Demo cue:</em> pipe a search for <code>console.log</code> through <code>src/ui.js</code> and show there are none. Then change the palette in one place and show the whole app change.</p>
+
+<p><em>Usual mistakes:</em> helpers that call <code>console.log</code>; a home-made tag parser that eats <code>&lt;red&gt;</code> in model output; deriving failure from a boolean passed in rather than from the observation itself.</p>
+
+<p><em>Time:</em> 60–90 minutes.</p>
+
+<p><strong>Try it:</strong> add <code>ui.kv</code> to the palette and write a test that asserts the label is padded and the value is not interpreted. Then explain why <code>result</code> should not take an <code>ok</code> argument.</p>
+
+<hr>
+
+<h3 id="s09-05">Stage 2 build: Config and model client</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>src/config.js</code></li>
+<li><code>src/llm.js</code></li>
+<li><code>test/config.test.js</code></li>
+<li><code>test/llm.test.js</code></li>
+</ul>
+
+<p><strong>Build (config)</strong></p>
+
+<ul>
+<li><code>PROJECT_ROOT = path.resolve(import.meta.dirname, '..')</code>.</li>
+<li><code>findEnvFile(startDir)</code>: nearest <code>.env</code> wins, walking to the filesystem root.</li>
+<li><code>loadDotEnv(file)</code>: <code>KEY=VALUE</code>, optional <code>export </code>, <code>#</code> comments, quoted values, blank values ignored.</li>
+<li><strong>Precedence:</strong> explicit overrides (<code>--model</code>) &gt; nearest <code>.env</code> &gt; shell environment &gt; defaults. <code>.env</code> beats the shell on purpose.</li>
+<li><code>fingerprint(secret)</code>: <code>not set</code>; all <code>*</code> when ≤ 12 chars; otherwise <code>first5...last4 (N chars)</code>.</li>
+<li><code>normalizeModel</code>: bare names map to a vendor; a name containing <code>/</code> is left alone; a change is reported.</li>
+<li><code>loadConfig(overrides, { envFile, startDir })</code> returns values <strong>and provenance</strong>: <code>apiKeySource</code>, <code>modelSource</code>, <code>envFile</code>, <code>apiKeyOverrodeShell</code>, <code>modelNormalised</code>, and the bounds below.</li>
+<li>Defaults: model <code>deepseek/deepseek-v4.1-flash-1017</code>, <code>CMD_POLICY=ask</code>, <code>MAX_STEPS=12</code>, <code>REQUEST_TIMEOUT_MS=90000</code>, <code>WORKSPACE_DIR=workspace</code>, <code>MEMORY_FILE=src/memory.md</code>, <code>MEMORY_MAX_ENTRIES=60</code>, <code>MEMORY_PROMPT_CHARS=1200</code>.</li>
+</ul>
+
+<p><strong>Build (llm)</strong></p>
+
+<ul>
+<li><code>chat({ apiKey, model, messages, tools, signal, timeoutMs = 90000 })</code>.</li>
+<li>Missing key throws <code>OPENROUTER_API_KEY is not set...</code>.</li>
+<li>Compose caller signal and timeout with <code>AbortSignal.any([signal, AbortSignal.timeout(timeoutMs)])</code>.</li>
+<li>POST <code>https://openrouter.ai/api/v1/chat/completions</code> with <code>Authorization</code>, <code>Content-Type</code>, <code>X-Title: min-coding-js</code>.</li>
+<li>Body <code>{ model, messages, tools, max_tokens: 2048 }</code>.</li>
+<li>Read the body as text first; parse after the status check.</li>
+<li><code>401</code> hints bad/revoked key; <code>402</code> hints out of credits; timeout says <code>request timed out after &lt;n&gt;s</code>; a <code>.error</code> field on a 200 is still an error.</li>
+<li><code>sanitizeAssistant(message)</code> rebuilds with only <code>role</code>, <code>content</code>, <code>tool_calls</code>; drops <code>reasoning</code>/<code>reasoning_content</code>; deletes <code>content</code> only when it is null and tool calls exist.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] <code>loadConfig</code> resolves <code>.env</code>, shell, overrides in the right order.</li>
+<li>[ ] <code>.env</code> beats a stale shell key; shell still supplies names <code>.env</code> does not define.</li>
+<li>[ ] A missing <code>.env</code> is not an error.</li>
+<li>[ ] The fingerprint never exposes the whole key.</li>
+<li>[ ] Bare model names normalise to <code>vendor/model</code>, and the change is reported.</li>
+<li>[ ] Override is reported only when the value genuinely differed.</li>
+<li>[ ] <code>sanitizeAssistant</code> drops reasoning and keeps only the three fields.</li>
+<li>[ ] <code>llm</code> tests mock <code>fetch</code>; timeout, <code>401</code>, <code>402</code>, non-JSON and <code>.error</code> are all covered offline.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> configuration is a set of facts with <strong>provenance</strong>, and transport failures throw while tool failures return strings.</p>
+
+<p><em>Demo cue:</em> put a deliberately stale key in the shell and a good one in <code>.env</code>; show the banner naming <code>.env</code> as the source. Then show <code>key: sk-or...abcd (73 chars)</code>, never the key.</p>
+
+<p><em>Usual mistakes:</em> printing the key; using <code>res.json()</code> before checking status; forgetting to restore a mocked <code>fetch</code>; treating <code>reasoning_content</code> as harmless.</p>
+
+<p><em>Time:</em> 20 minutes (config) + 2–3 hours (client and tests).</p>
+
+<p><strong>Try it:</strong> add one config value (say <code>TEMPERATURE</code>) end to end: parse, default, provenance, banner line, test. Then write down which layer should own the decision if two sources disagree.</p>
+
+<hr>
+
+<h3 id="s09-06">Stage 3 build: Simplest chat loop</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>src/cli.js</code> (minimal)</li>
+<li><code>test/input.test.js</code></li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li><code>askTask({ input, output })</code>: readline prompt <code>  task ›</code>; trim; blank re-asks; Ctrl-C returns <code>null</code>; <code>for await (const raw of rl)</code>.</li>
+<li>Hand-rolled flag parsing for <code>--help</code>, <code>--model</code>, <code>--max-steps</code>; every non-flag becomes the task.</li>
+<li>Load config, build <code>[system, user]</code>, call <code>chat</code>, print <code>ui.answer</code>.</li>
+<li>No task and stdin is not a TTY → hint and exit <code>2</code>.</li>
+<li>Request failure → exit <code>1</code>.</li>
+<li><code>--help</code> works with no key.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] <code>node src/cli.js --help</code> prints usage with no key.</li>
+<li>[ ] <code>node src/cli.js "Say hello"</code> reaches OpenRouter and prints the reply.</li>
+<li>[ ] No task + non-TTY exits <code>2</code> with a helpful message.</li>
+<li>[ ] Missing/invalid key exits <code>1</code> with a clear message.</li>
+<li>[ ] <code>--model</code> overrides <code>.env</code>.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> this is the first runnable payoff — config + transport + presentation in one short program.</p>
+
+<p><em>Demo cue:</em> live chat once, then ask "what did I just say?" and show it cannot know. That sets up Stage 4.</p>
+
+<p><em>Usual mistakes:</em> requiring a key for <code>--help</code>; hanging when stdin is not a terminal; letting Ctrl-C throw.</p>
+
+<p><em>Time:</em> 60–90 minutes.</p>
+
+<p><strong>Try it:</strong> add a <code>--dry-run</code> flag that prints the exact request body that <em>would</em> be sent, without a key. What does that teach you about testing?</p>
+
+<hr>
+
+<h3 id="s09-07">Stage 4 build: Conversation history</h3>
+
+<p><strong>Files to modify</strong></p>
+
+<ul>
+<li><code>src/cli.js</code></li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li>Keep one <code>messages</code> array for the process.</li>
+<li>Interactive loop with <code>interactive session - type a task below (/quit exits)</code>.</li>
+<li>Commands <code>/quit</code>, <code>/exit</code>, <code>/new</code>.</li>
+<li>Every turn appends <code>user</code> → model call → <code>assistant</code>.</li>
+<li><code>/new</code> clears the array and re-adds the system prompt, nothing else.</li>
+<li>One-shot mode still works.</li>
+<li>Exit prints <code>session over - N turn(s)</code>.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] A follow-up references the previous turn.</li>
+<li>[ ] <code>/new</code> clears the conversation.</li>
+<li>[ ] <code>/quit</code> and <code>/exit</code> end the session.</li>
+<li>[ ] The session summary prints the turn count.</li>
+<li>[ ] One-shot still works.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> messages are the memory; the model has none.</p>
+
+<p><em>Demo cue:</em> ask for a name, then ask "what is my name?" — works. Then <code>/new</code> and ask again — fails. That contrast is the whole stage.</p>
+
+<p><em>Usual mistakes:</em> rebuilding <code>messages</code> each turn; making <code>/new</code> delete files; carrying the system message twice after <code>/new</code>.</p>
+
+<p><em>Time:</em> 45–60 minutes.</p>
+
+<p><strong>Try it:</strong> implement <code>/history</code> that prints the roles in order without contents. Use it to explain why the next request costs more than the first.</p>
+
+<hr>
+
+<h3 id="s09-08">Stage 5 build: System prompt</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>src/prompt.js</code></li>
+<li><code>test/prompt.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify</strong></p>
+
+<ul>
+<li><code>src/cli.js</code></li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li><code>systemRules(tools = [])</code> returns the prose contract: look before writing; prefer <code>create_file</code> for new files, <code>edit_file</code> for small changes, <code>write_file</code> for whole-file replacement; copy <code>old_string</code> exactly; run what you wrote; never invent tool results; be concise; one tool call per step; remember durable facts only.</li>
+<li>PLAN's signature shows <code>systemRules(tools = TOOL_NAMES)</code>. At Stage 5 <code>tools.js</code> does not exist yet, so either default to <code>[]</code> or keep a local constant and let Stage 7 wire <code>TOOL_NAMES</code> in. <code>cli.js</code> passes <code>[]</code> explicitly for now.</li>
+<li><code>buildSystemPrompt({ memory, log })</code> returns rules plus an optional memory digest.</li>
+<li>At this stage memory is absent and <code>cli.js</code> passes <code>tools = []</code>.</li>
+<li>The system message is first on every turn; <code>/new</code> keeps it.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] Rules are the first <code>system</code> message on every turn.</li>
+<li>[ ] <code>/new</code> keeps the system prompt.</li>
+<li>[ ] No tool names are listed while no tools exist.</li>
+<li>[ ] <code>buildSystemPrompt</code> accepts <code>memory</code> and <code>log</code> without using them yet.</li>
+<li>[ ] <code>prompt.test.js</code> asserts the rule text and the injection point.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> the prompt is program text — composed, tested, and rebuilt — not a magic string.</p>
+
+<p><em>Demo cue:</em> ask the model to edit a file it has not read, with and without rule 1. Show the difference in behaviour.</p>
+
+<p><em>Usual mistakes:</em> naming tools that do not exist; putting the prompt in <code>cli.js</code>; carrying a stale system message across tasks.</p>
+
+<p><em>Time:</em> 45–60 minutes.</p>
+
+<p><strong>Try it:</strong> delete one rule and predict the specific failure it causes. Then reproduce it. Restore the rule.</p>
+
+<hr>
+
+<h3 id="s09-09">Stage 6 build: Path policy</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>src/workspace.js</code></li>
+<li><code>test/workspace.test.js</code></li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li>Export <code>PathError</code>.</li>
+<li><code>new Workspace(root)</code>: resolve, <code>mkdir -p</code>, store <code>fs.realpathSync(root)</code>.</li>
+<li><code>workspace.resolve(requested)</code> — the strict write policy. Reject: empty/non-string; absolute paths; drive-relative (<code>C:foo</code>); UNC (<code>\\server\share</code>, <code>//server/share</code>); <code>~</code>, <code>$</code>, <code>%</code> prefixes; and a forbidden first segment (<code>users</code>, <code>windows</code>, <code>program files</code>, <code>desktop</code>, <code>documents</code>, <code>downloads</code>, <code>appdata</code>, <code>onedrive</code>, <code>library</code>, <code>system32</code>, and similar).</li>
+<li>Expand <code>~</code>, <code>%VAR%</code>, <code>${VAR}</code>, <code>$VAR</code> <strong>before</strong> containment checks.</li>
+<li>Symlink hardening: resolve the deepest existing ancestor with <code>fs.realpathSync</code>, re-append the not-yet-created tail, re-check containment.</li>
+<li><code>workspace.resolveRead(requested)</code> — permissive: absolute paths, outside paths, <code>~</code> all allowed.</li>
+<li><code>rel</code> is always <code>/</code>-separated; root is <code>.</code>.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] Legitimate relative paths resolve and <code>rel</code> is correct.</li>
+<li>[ ] Every escape shape in the rejection list is refused.</li>
+<li>[ ] Reads outside the workspace are allowed.</li>
+<li>[ ] A symlinked folder inside the workspace cannot smuggle a write outside.</li>
+<li>[ ] A missing path is still checked against its deepest existing ancestor.</li>
+<li>[ ] <code>PathError</code> is distinguishable from an I/O error.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> reads are open, writes are fenced — and containment is a policy, not <code>startsWith</code>.</p>
+
+<p><em>Demo cue:</em> put a junction inside the workspace pointing at the Desktop, then ask for a write through it. Show the refusal.</p>
+
+<p><em>Usual mistakes:</em> checking <code>startsWith(root)</code> alone; expanding variables after the check; treating <code>/home</code> on Unix as a Windows switch; forgetting that the file does not exist yet so <code>realpath</code> must stop at the deepest existing ancestor.</p>
+
+<p><em>Time:</em> 2–3 hours.</p>
+
+<p><strong>Try it:</strong> write a table of ten escape attempts, predict each refusal reason, then run the tests. Which one surprised you?</p>
+
+<hr>
+
+<h3 id="s09-10">Stage 7 build: Read-only tools</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>src/tools.js</code> (partial: <code>list_files</code>, <code>read_file</code>)</li>
+<li><code>test/tools.test.js</code> (read-only tests)</li>
+</ul>
+
+<p><strong>Files to modify</strong></p>
+
+<ul>
+<li><code>src/prompt.js</code> (mention the two tools)</li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li>OpenAI function-calling schema shape: <code>{ type: 'function', function: { name, description, parameters: { type: 'object', properties, additionalProperties: false } } }</code>.</li>
+<li><code>validate(name, rawArgs)</code>: raw may be a JSON string or an object; parse, type-check, integer-check, required fields, unknown keys.</li>
+<li><code>runTool(name, rawArgs, ctx)</code>: dispatch; unknown tool → helpful error string; handler exceptions become text observations.</li>
+<li><code>list_files</code>: <code>path</code> default <code>'.'</code>; <code>depth</code> default 3, max 6; <code>resolveRead</code>; missing → <code>ERROR: no such folder: &lt;rel&gt;</code>; walk recursively, sorted; skip <code>.git</code>, <code>node_modules</code>, <code>.venv</code>, <code>__pycache__</code>; directories print <code>&lt;rel&gt;/</code>, files print <code>&lt;rel&gt;  (&lt;size&gt;b)</code>; stop at depth and 200 lines; end with <code>&lt;dirs&gt; folder(s), &lt;files&gt; file(s) under &lt;start.rel&gt;</code>.</li>
+<li><code>read_file</code>: <code>path</code> required; <code>offset</code> default 1; <code>limit</code> default 200, max 2000; <code>resolveRead</code>; missing → <code>ERROR: no such file: &lt;rel&gt;</code>; directory → <code>ERROR: &lt;rel&gt; is a folder - use list_files</code>; header <code>"&lt;rel&gt; (&lt;total lines&gt;)"</code>; numbered lines right-aligned width 4 then <code>| </code>; truncation marker <code>... [&lt;n&gt; more lines]</code>; clamp offset ≥ 1 and limit 1..2000.</li>
+<li>CLI: build <code>TOOL_SCHEMAS</code>, pass to <code>chat</code>; after a reply with <code>tool_calls</code>, dispatch, append <code>role: 'tool'</code> results, call the model again. Print <code>ui.tool</code> and <code>ui.result</code>.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] The model can call <code>list_files</code> and see a listing.</li>
+<li>[ ] The model can call <code>read_file</code> and see numbered contents.</li>
+<li>[ ] Bad arguments return text errors, not crashes.</li>
+<li>[ ] Reading outside the workspace succeeds (<code>../package.json</code>).</li>
+<li>[ ] Missing file → <code>ERROR: no such file</code>.</li>
+<li>[ ] Directory read → <code>ERROR: ... is a folder</code>.</li>
+<li>[ ] Unknown tool name gets a helpful list.</li>
+<li>[ ] Every <code>tool_call_id</code> receives exactly one <code>tool</code> message.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> tool calling is the model's only ability to act, and the schema <em>is</em> the prompt.</p>
+
+<p><em>Demo cue:</em> change a tool description live and show the model choose differently. That is more convincing than any slide about prompts.</p>
+
+<p><em>Usual mistakes:</em> forgetting <code>arguments</code> is a JSON string; throwing from a handler; allowing a listing to walk <code>node_modules</code>; showing a truncated file without the marker.</p>
+
+<p><em>Time:</em> 2–3 hours.</p>
+
+<p><strong>Try it:</strong> add a deliberately bad argument to a test (<code>"limit": "20"</code>) and improve the error until a reader knows exactly what to change.</p>
+
+<hr>
+
+<h3 id="s09-11">Stage 8 build: Sandbox and write tools</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>src/sandbox.js</code></li>
+<li><code>test/sandbox.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify</strong></p>
+
+<ul>
+<li><code>src/tools.js</code> (add <code>create_file</code>, <code>write_file</code>, <code>edit_file</code>; PLAN also lists a <code>delete_file</code> tool — see the note below)</li>
+<li><code>src/cli.js</code> (wire the sandbox)</li>
+</ul>
+
+<div class="callout"><strong>Note on <code>delete_file</code>.</strong> PLAN lists <code>delete_file</code> at this stage and the sandbox must support <code>remove</code>. The finished eight-tool harness keeps <code>sandbox.remove</code> and its root guard but does not expose a model-facing <code>delete_file</code> tool. Implement it if you want the ninth tool, but keep the root guard and the same <code>FORBIDDEN</code> contract; do not let the tool count drift in the README without saying so.</div>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li><code>SANDBOX_DIR = path.resolve(import.meta.dirname, '..', 'workspace')</code>.</li>
+<li><code>ACTIONS = { SAVE: 'save', EDIT: 'edit', DELETE: 'delete' }</code>.</li>
+<li><code>ForbiddenError</code> carries <code>action</code>, <code>requested</code>, <code>reason</code>; <code>name = 'ForbiddenError'</code>, <code>code = 'FORBIDDEN'</code>.</li>
+<li><code>new Sandbox({ workspace, root, log })</code>.</li>
+<li><code>sandbox.check(action, requested)</code>: unknown action → <code>TypeError</code>; delegate to <code>workspace.resolve</code>; convert <code>PathError</code> to <code>ForbiddenError</code>; increment <code>refusals</code>; print one <code>ui.forbidden</code>; throw.</li>
+<li><code>sandbox.save(requested, content)</code>: check, create parents, write, return <code>{ existed, bytes }</code>.</li>
+<li><code>sandbox.remove(requested)</code>: check, <code>rmdirSync</code> for empty dirs, <code>unlinkSync</code> for files; missing → <code>{ missing: true }</code>; refuse deleting the root.</li>
+<li><code>sandbox.summary()</code>: <code>"save, edit, delete - only inside &lt;root&gt;"</code>.</li>
+<li><code>create_file</code>: check; exists → <code>ERROR: already exists - use edit_file or write_file</code>; else write and return <code>created &lt;rel&gt; (&lt;bytes&gt; bytes)</code>.</li>
+<li><code>write_file</code>: check; create parents; overwrite; return <code>created</code> or <code>overwrote</code>.</li>
+<li><code>edit_file</code>: <code>path</code>, <code>old_string</code>, <code>new_string</code>, <code>replace_all</code> (default false); check; missing file → <code>ERROR</code>; empty <code>old_string</code> → <code>ERROR</code>; count exact occurrences; 0 → <code>ERROR: old_string not found... Read the file and copy exactly, including whitespace.</code>; &gt;1 without <code>replace_all</code> → <code>ERROR: old_string appears N times...</code>; replace literally (callback form or <code>split/join</code>); return <code>edited &lt;rel&gt;: &lt;n&gt; replacement(s), first at line &lt;line&gt;</code>.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] <code>create_file</code> writes inside the workspace.</li>
+<li>[ ] <code>create_file</code> refuses to clobber.</li>
+<li>[ ] <code>write_file</code> overwrites.</li>
+<li>[ ] <code>edit_file</code> works with exact matching.</li>
+<li>[ ] <code>edit_file</code> treats <code>$1</code> literally.</li>
+<li>[ ] <code>edit_file</code> fails on missing file, empty <code>old_string</code>, and ambiguity.</li>
+<li>[ ] Every escape shape is refused for save/edit/delete.</li>
+<li>[ ] Deleting the sandbox root is refused.</li>
+<li>[ ] Unknown action to <code>check()</code> throws <code>TypeError</code>.</li>
+<li>[ ] A refused write prints exactly one <code>FORBIDDEN</code> line.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> defense in depth — the workspace answers "is it contained?", the sandbox answers "may this action happen at all?"</p>
+
+<p><em>Demo cue:</em> run a write to <code>../escape.txt</code> and show the single loud line, then show the model receiving <code>FORBIDDEN:</code> and choosing another path.</p>
+
+<p><em>Usual mistakes:</em> formatting refusals in three places; using <code>String.replace</code> with a replacement string (the <code>$&amp;</code> trap); treating an unknown action as a refusal; letting <code>create_file</code> overwrite.</p>
+
+<p><em>Time:</em> 3–4 hours.</p>
+
+<p><strong>Try it:</strong> write a test that proves <code>edit_file</code> does not interpret <code>$&amp;</code>. Then explain why a silent first-match replacement would be worse than an error.</p>
+
+<hr>
+
+<h3 id="s09-12">Stage 9 build: Command execution</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>test/shell-sandbox.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify</strong></p>
+
+<ul>
+<li><code>src/sandbox.js</code> (<code>checkCommand</code>, <code>tokenizeCommand</code>, <code>shellWriteTargets</code>)</li>
+<li><code>src/tools.js</code> (<code>run_command</code>)</li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li><code>tokenizeCommand(text)</code>: split on whitespace honouring single/double quotes; emit operators as tokens (<code>&gt;</code>, <code>&gt;&gt;</code>, <code>&lt;</code>, <code>|</code>, <code>||</code>, <code>&amp;</code>, <code>&amp;&amp;</code>, <code>;</code>); strip quotes.</li>
+<li><code>shellWriteTargets(command)</code>:</li>
+<li>redirections <code>&gt;</code>/<code>&gt;&gt;</code> → following token (handle <code>2&gt; file</code>);</li>
+<li><code>DEST_LAST</code> commands (<code>copy</code>, <code>cp</code>, <code>move</code>, <code>mv</code>, <code>xcopy</code>, <code>ren</code>, <code>rename</code>, <code>ln</code>, <code>install</code>, <code>scp</code>, <code>rsync</code>) → last positional, at least two;</li>
+<li><code>robocopy</code> → positional argument 2;</li>
+<li><code>ALL_POSITIONAL</code> commands (<code>del</code>, <code>erase</code>, <code>rd</code>, <code>rmdir</code>, <code>rm</code>, <code>md</code>, <code>mkdir</code>, <code>touch</code>, <code>tee</code>, <code>unlink</code>, <code>truncate</code>, <code>shred</code>) → every positional;</li>
+<li>downloaders: <code>curl</code> <code>-o</code>/<code>--output</code>/<code>-O</code>/<code>--remote-name</code>, <code>wget</code> <code>-O</code>/<code>--output-document</code>;</li>
+<li>PowerShell: <code>out-file</code>, <code>set-content</code>, <code>add-content</code>, <code>new-item</code>, <code>ni</code>, <code>remove-item</code>, <code>copy-item</code>, <code>move-item</code>, <code>rename-item</code>, with <code>-destination</code>, <code>-dest</code>, <code>-path</code>, <code>-filepath</code>, <code>-literalpath</code>;</li>
+<li>strip <code>.exe</code>, <code>.cmd</code>, <code>.bat</code>, <code>.com</code>, <code>.ps1</code>; compare case-insensitively;</li>
+<li>a switch is <code>--flag</code>, <code>-f</code>, or Windows <code>/x</code>; a POSIX path like <code>/home</code> is not a switch.</li>
+<li><code>run_command</code> order: trim → empty error → hard deny-list → <code>sandbox.checkCommand</code> → policy (<code>deny</code>/<code>allow</code>/<code>ask</code>) → human confirm → execute.</li>
+<li>CLI: add <code>--yes</code>/<code>-y</code> and the <code>--allow-commands</code> alias; implement <code>makeConfirm()</code> in <code>cli.js</code> so the approval prompt is one injectable function.</li>
+<li>Hard deny-list before policy: recursive delete of a root path; <code>del</code> with <code>/s</code> or <code>/q</code>; <code>format</code>; <code>diskpart</code>; <code>shutdown</code>; <code>reboot</code>; <code>git push --force</code>/<code>-f</code>; <code>curl</code>/<code>wget</code> piped into <code>sh</code>/<code>bash</code>; fork bomb; <code>&gt; /dev/sd...</code>.</li>
+<li>Execute with <code>node:child_process.exec</code> in <code>workspace.root</code>, <code>timeout: 30000</code>, <code>maxBuffer: 1 MB</code>, <code>windowsHide: true</code>, <code>encoding: 'utf8'</code>.</li>
+<li><code>safeEnv(source)</code> keeps only <code>PATH</code>, <code>PATHEXT</code>, <code>HOME</code>, <code>USERPROFILE</code>, <code>TMPDIR</code>, <code>TEMP</code>, <code>TMP</code>, <code>SYSTEMROOT</code>, <code>COMSPEC</code>, <code>SHELL</code>, <code>LANG</code>, <code>LC_ALL</code>, <code>TERM</code>.</li>
+<li>Result format: <code>exit code &lt;n&gt;</code>; optional <code>stdout:</code>; optional <code>stderr:</code>; <code>(no output)</code> if both empty; clip each stream to 6,000 chars with <code>... [&lt;n&gt; chars truncated]</code>; on timeout append <code>[tool] command timed out after 30s</code> and return non-zero.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] <code>run_command</code> returns exit code, stdout, stderr.</li>
+<li>[ ] Hard-denied commands are refused even with <code>--yes</code>.</li>
+<li>[ ] <code>CMD_POLICY=deny</code> refuses all commands.</li>
+<li>[ ] A shell copy to the Desktop is refused before running.</li>
+<li>[ ] A redirect outside is refused before running.</li>
+<li>[ ] Quoted arguments with spaces stay one token.</li>
+<li>[ ] The child env does not contain <code>OPENROUTER_API_KEY</code>.</li>
+<li>[ ] A timeout is handled gracefully.</li>
+<li>[ ] <code>safeEnv</code> keeps only allow-listed names.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> layered policy. No layer is sufficient; together they make the common case safe and the residual risk explicit.</p>
+
+<p><em>Demo cue:</em> run the same <code>copy</code> command under <code>ask</code>, then show it is refused by the scan <em>before</em> the prompt. The absence of a prompt is the lesson.</p>
+
+<p><em>Usual mistakes:</em> checking policy before the hard deny-list; letting <code>ask</code> become allow when there is no TTY; inheriting the parent environment; trying to parse a full shell with a tokenizer and pretending it is complete.</p>
+
+<p><em>Time:</em> 4–5 hours.</p>
+
+<p><strong>Try it:</strong> write five commands your scanner should catch and five it deliberately will not (obfuscated writes). Explain why "not caught" is not the same as "safe".</p>
+
+<hr>
+
+<h3 id="s09-13">Stage 10 build: Long-term memory</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>src/memory.js</code></li>
+<li><code>src/memory.md</code> (initial store)</li>
+<li><code>test/memory.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify</strong></p>
+
+<ul>
+<li><code>src/prompt.js</code> (inject the digest)</li>
+<li><code>src/tools.js</code> (add <code>remember</code>, <code>recall</code>)</li>
+<li><code>src/cli.js</code> (wire memory)</li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li>Format: <code>- [tag] text _(YYYY-MM-DD)_</code>; tag ∈ <code>fact</code>, <code>pref</code>, <code>fix</code>, <code>gotcha</code>.</li>
+<li><code>parseMemory</code>: accept <code>-</code> or <code>*</code>, optional date, normalise whitespace, ignore prose/headings.</li>
+<li><code>Memory({ root, file, maxEntries = 60, maxEntryChars = 300, rememberChars = 2000, promptChars = 1200, promptEntries = 12, now })</code>.</li>
+<li><code>remember(text, { tag })</code>: normalise; truncate; empty → error; duplicate refreshes date; new appends; drop oldest over <code>maxEntries</code>.</li>
+<li><code>forget(match)</code>: delete entries whose text contains the match, case-insensitive.</li>
+<li><code>search(query, { limit = 20 })</code>: AND over words; empty query = all; newest first.</li>
+<li><code>digest({ entries, chars })</code>: newest first; add while it fits; state hidden count.</li>
+<li><code>summary()</code>: <code>&lt;label&gt; (&lt;n&gt; memory/memories[, newest YYYY-MM-DD])</code>.</li>
+<li><code>remember</code> tool: params <code>text</code> (required), <code>tag</code> (optional); no store → <code>ERROR: no memory store in this run (started with --no-memory)</code>; empty → <code>ERROR: nothing to remember - the note was empty</code>; duplicate → <code>already remembered... date refreshed</code>; new → <code>remembered...</code>.</li>
+<li><code>recall</code> tool: params <code>query</code> (optional), <code>limit</code> (default 20); no hits → <code>no memories in &lt;label&gt; match "&lt;query&gt;" (&lt;size&gt; stored)</code>.</li>
+<li>CLI: <code>--memory</code> side-door prints store, digest and raw file, exits 0; <code>--no-memory</code>; <code>MEMORY_FILE</code>.</li>
+</ul>
+
+<p><strong>Initial <code>src/memory.md</code></strong> — the store is a normal file a student can open:</p>
+
+<figure class="code"><pre># memory
+
+Long-term notes this agent keeps between runs. One bullet per memory:
+`- [tag] text _(YYYY-MM-DD)_` where tag is fact | pref | fix | gotcha.
+
+This file IS the store - edit it by hand, delete a wrong line, or commit it.
+The agent reads a bounded slice at the start of a run and can search the rest
+with the `recall` tool.
+
+- [pref] The user's name is Craig. _(2026-10-28)_
+- [pref] The user lives in Brighton, UK. _(2026-10-28)_
+- [gotcha] The run_command shell in this sandbox is Windows cmd.exe, so Unix tools like `cat`, `ls` may fail; use `type`, `dir` etc. instead. _(2026-10-28)_
+- [pref] The user is a Python developer. _(2026-10-28)_
+- [pref] The user has two dogs. _(2026-10-28)_</pre></figure>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] Write and read back survive a new <code>Memory</code> instance.</li>
+<li>[ ] Duplicate refreshes the date; no duplicate bullet.</li>
+<li>[ ] <code>maxEntries</code> drops the oldest.</li>
+<li>[ ] Long memory is truncated to the per-entry cap.</li>
+<li>[ ] Empty/whitespace note is refused.</li>
+<li>[ ] The digest is bounded, newest first, and states the hidden count.</li>
+<li>[ ] Empty/disabled store adds and logs nothing.</li>
+<li>[ ] <code>forget</code> removes matches.</li>
+<li>[ ] Hand edits are picked up immediately.</li>
+<li>[ ] <code>remember</code>/<code>recall</code> work through tools.</li>
+<li>[ ] No memory store returns an error string, not a throw.</li>
+<li>[ ] <code>--memory</code> prints the digest and exits 0.</li>
+<li>[ ] <code>--no-memory</code> disables memory for that run.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> memory is a file, not a mystery; eager digest and lazy recall are two cost profiles for the same store.</p>
+
+<p><em>Demo cue:</em> <code>cat src/memory.md</code> on screen, edit it by hand, run again, and show the change is already known. Then <code>node src/cli.js --memory</code> and read the exact injected block.</p>
+
+<p><em>Usual mistakes:</em> caching entries and letting the cache disagree with the file; writing task progress instead of durable facts; making the digest unbounded; forgetting to state what was hidden.</p>
+
+<p><em>Time:</em> 3–4 hours.</p>
+
+<p><strong>Try it:</strong> set <code>MEMORY_PROMPT_CHARS=0</code>, run a task that must recall, and explain the trade-off. Which tasks get worse? Which get cheaper?</p>
+
+<hr>
+
+<h3 id="s09-14">Stage 11 build: Lifecycle hooks</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>src/hooks.js</code></li>
+<li><code>test/hooks.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify</strong></p>
+
+<ul>
+<li><code>src/cli.js</code> (wire hooks into the manual tool loop)</li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li>Nine events with exact names, icons, colours, when and powers:</li>
+</ul>
+
+<div class="table-wrap"><table>
+<tr><th>#</th><th>Name</th><th>Icon</th><th>Colour</th><th>When</th><th>Can</th></tr>
+<tr><td>1</td><td><code>SessionStart</code></td><td>🚀</td><td>cyan</td><td>once, before the first model call</td><td>refuse, note</td></tr>
+<tr><td>2</td><td><code>UserPromptSubmit</code></td><td>✍️</td><td>blue</td><td>once, as the task enters the loop</td><td>rewrite task, block</td></tr>
+<tr><td>3</td><td><code>PreModel</code></td><td>🧠</td><td>magenta</td><td>before every model call</td><td>observe</td></tr>
+<tr><td>4</td><td><code>PostModel</code></td><td>💬</td><td>cyan</td><td>after every reply</td><td>observe</td></tr>
+<tr><td>5</td><td><code>PreToolUse</code></td><td>🛠️</td><td>yellowBright</td><td>before every tool call</td><td>block</td></tr>
+<tr><td>6</td><td><code>PostToolUse</code></td><td>📦</td><td>green</td><td>after every tool call</td><td>replace observation</td></tr>
+<tr><td>7</td><td><code>Stop</code></td><td>🏁</td><td>greenBright</td><td>the model answered, loop ending</td><td>observe</td></tr>
+<tr><td>8</td><td><code>StepLimit</code></td><td>⏳</td><td>yellow</td><td>maxSteps reached</td><td>observe</td></tr>
+<tr><td>9</td><td><code>SessionEnd</code></td><td>🔒</td><td>red</td><td>always, finished or not</td><td>observe</td></tr>
+</table></div>
+
+<ul>
+<li>Four deciding hooks: <code>SessionStart</code>, <code>UserPromptSubmit</code>, <code>PreToolUse</code>, <code>PostToolUse</code>.</li>
+<li>Return shapes: <code>{ note }</code>, <code>{ task }</code> (submit only), <code>{ replace }</code> (post-tool only), <code>{ block: true, reason }</code>; first block wins.</li>
+<li>Thrown hooks are reported and ignored; never fatal.</li>
+<li><code>Hooks</code>: <code>on(name, fn, { id, once })</code>, <code>off(name, id)</code>, <code>count(name)</code>, <code>has(name)</code>, <code>attached()</code>, <code>run(name, payload)</code>.</li>
+<li><code>traceHooks({ log, detail, explain })</code>: one tracer per event; prints <code>  &lt;icon&gt;  [HOOK:&lt;Name&gt;] &lt;when&gt; - &lt;detail&gt;</code>.</li>
+<li><code>printHookCatalogue({ log, hooks })</code>; <code>HOOK_SUMMARY = { total: 9, deciding: 4, names }</code>.</li>
+<li>CLI: <code>--hooks</code> prints the catalogue and exits 0; <code>--trace-hooks</code> (default on); <code>--no-hooks</code>; fire all nine at the right moments.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] Every hook has icon, colour, when, gets, may, why.</li>
+<li>[ ] The catalogue prints all 9 and marks attached hooks.</li>
+<li>[ ] An unknown hook name throws.</li>
+<li>[ ] Handlers run in order; the first block wins.</li>
+<li>[ ] A throwing hook is reported, not fatal.</li>
+<li>[ ] Notes print; <code>once</code> handlers detach.</li>
+<li>[ ] <code>off</code> by id works.</li>
+<li>[ ] Trace prints <code>[HOOK:Name]</code> by default.</li>
+<li>[ ] <code>--no-hooks</code> silences trace.</li>
+<li>[ ] <code>--hooks</code> prints the catalogue with no key.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> a tool is how the model acts on the world; a hook is how <em>you</em> act on the loop.</p>
+
+<p><em>Demo cue:</em> attach a twelve-line <code>PreToolUse</code> hook that blocks <code>git push</code>; show the model receive <code>DENIED:</code> and try another route.</p>
+
+<p><em>Usual mistakes:</em> building hooks as notifications only (no decisions); letting a thrown hook kill the loop; letting a later hook unblock; hard-coding the catalogue separately from the event list.</p>
+
+<p><em>Time:</em> 3–4 hours.</p>
+
+<p><strong>Try it:</strong> write a <code>PostToolUse</code> redactor for <code>sk-or-...</code> and a <code>SessionEnd</code> note that prints the duration. Then prove a key cannot reach the model by running the demo.</p>
+
+<hr>
+
+<h3 id="s09-15">Stage 12 build: The ReAct loop</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>src/agent.js</code></li>
+<li><code>src/heartbeat.js</code></li>
+<li><code>test/agent.test.js</code></li>
+</ul>
+
+<p><strong>Files to modify</strong></p>
+
+<ul>
+<li><code>src/cli.js</code> (replace the manual loop with <code>runTask</code>)</li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li><code>runTask({ task, workspace, sandbox = null, commandPolicy, maxSteps, chatFn, confirm, hooks = null, memory = null, history = [], log = console.log, heartbeatMs = 5000 })</code>.</li>
+<li>Return <code>{ ok, answer, messages, steps }</code> or <code>{ ok: false, reason, messages }</code>.</li>
+<li>Rebuild the system prompt every task; filter old system messages out of <code>history</code>.</li>
+<li><code>ctx = { workspace, sandbox, commandPolicy, memory, confirm }</code>; <code>confirm</code> defaults to deny.</li>
+<li><code>hooks ?? new Hooks()</code> so every call site can call <code>hook.run</code> unconditionally.</li>
+<li>Direct execution prints the "agent.js is the loop, not the program" hint; never import <code>cli.js</code>.</li>
+<li>Seven beats per step:</li>
+</ul>
+
+<ol>
+<li>blank line + <code>ui.step</code>.</li>
+<li>fire <code>PreModel</code>.</li>
+<li>start heartbeat; call <code>chatFn</code>; on throw stop heartbeat, print error, fire <code>SessionEnd</code>, return <code>request_failed</code>; otherwise stop heartbeat.</li>
+<li>extract choice/message; fire <code>PostModel</code>.</li>
+<li>truncation guard: <code>finish_reason === 'length'</code> with no tool calls → append assistant, append user "You were cut off by the length limit. Continue with smaller tool calls.", warn, <code>continue</code>. Never dispatch truncated calls.</li>
+<li>append <code>sanitizeAssistant</code>; print <code>ui.think</code> if content.</li>
+<li>no calls → print answer, fire <code>Stop</code>, <code>SessionEnd</code>, return <code>ok</code>; calls → for each: print tool, fire <code>PreToolUse</code>, block or run, print result, fire <code>PostToolUse</code>, append exactly one tool message.</li>
+</ol>
+
+<ul>
+<li>After <code>maxSteps</code>: print error, fire <code>StepLimit</code> then <code>SessionEnd</code>, return <code>max_steps</code>.</li>
+<li>Entry guards: <code>SessionStart</code>/<code>UserPromptSubmit</code> blocked → return <code>blocked_by_hook</code>; a rewrite replaces <code>messages[taskIndex]</code>.</li>
+<li><code>heartbeat(log, everyMs)</code> → <code>{ stop }</code>; prints <code>… still waiting for the model (&lt;s&gt;s)</code>; <code>timer.unref?.()</code>.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] Tools run, then the loop stops on a plain answer.</li>
+<li>[ ] A failing tool result is fed back so the model can correct.</li>
+<li>[ ] The loop is capped at <code>maxSteps</code>.</li>
+<li>[ ] A truncated reply is not dispatched; the model is asked to continue smaller.</li>
+<li>[ ] The heartbeat prints waiting lines during slow calls.</li>
+<li>[ ] Blocked hooks produce the right exit path.</li>
+<li>[ ] The step limit fires <code>StepLimit</code> then <code>SessionEnd</code>.</li>
+<li>[ ] A follow-up task sees previous conversation but a fresh system prompt.</li>
+<li>[ ] Direct execution prints the hint and does not import the CLI.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> the loop is the agent; extracting it late makes it understandable, and making it a library makes it testable.</p>
+
+<p><em>Demo cue:</em> run a task with a fake <code>chatFn</code> in a test file, live, and show the whole agent run with no network.</p>
+
+<p><em>Usual mistakes:</em> carrying the system message in history; dispatching truncated calls; leaking a heartbeat timer; throwing task outcomes instead of returning them; letting <code>agent.js</code> import <code>cli.js</code>.</p>
+
+<p><em>Time:</em> 4–6 hours.</p>
+
+<p><strong>Try it:</strong> write a fake model that always returns a tool call and assert the step limit. Then write one that returns a bad tool name and assert the loop recovers.</p>
+
+<hr>
+
+<h3 id="s09-16">Stage 13 build: Offline demo</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>src/demo.js</code></li>
+</ul>
+
+<p><strong>Files to modify</strong></p>
+
+<ul>
+<li><code>src/cli.js</code> (<code>--demo</code>)</li>
+<li><code>test/agent.test.js</code> (demo assertions)</li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li><code>demoChat()</code> returns an async <code>chatFn</code> walking <code>DEMO_SCRIPT</code>.</li>
+<li>Tool call shape: <code>{ id, type: 'function', function: { name, arguments: JSON.stringify(args) } }</code>.</li>
+<li>14 tool steps + final answer:</li>
+</ul>
+
+<ol>
+<li><code>list_files</code> <code>{ path: '.' }</code></li>
+<li><code>create_file</code> <code>{ path: 'demo/hello.js', content: ... }</code></li>
+<li><code>run_command</code> <code>{ command: 'node demo/hello.js' }</code></li>
+<li><code>edit_file</code> on the greeting</li>
+<li><code>run_command</code> again</li>
+<li><code>write_file</code> <code>../escape.txt</code> → expect <code>FORBIDDEN</code></li>
+<li><code>read_file</code> <code>../package.json</code> → allowed</li>
+<li><code>write_file</code> <code>~/Desktop/pwned.txt</code> → expect <code>FORBIDDEN</code></li>
+<li><code>run_command</code> shell copy to Desktop → expect <code>FORBIDDEN</code></li>
+<li><code>run_command</code> <code>git push --force</code> → expect <code>DENIED</code></li>
+<li><code>run_command</code> that echoes <code>OPENROUTER_API_KEY</code> → expect <code>absent</code></li>
+<li><code>run_command</code> that exits 1 → expect <code>exit code 1</code></li>
+<li><code>remember</code></li>
+<li><code>recall</code></li>
+</ol>
+
+<ul>
+<li>Each assistant step has a short natural-language <code>content</code> before its tool call.</li>
+<li><code>maxSteps = DEMO_SCRIPT.length + 1 = 15</code>.</li>
+<li><code>sandboxScorecard(messages)</code>: map <code>tool_call_id</code> to result; regex checks; rows <code>{ ok, label, seen }</code>.</li>
+<li>Checks: <code>s6 /^FORBIDDEN: SAVE \.\.\/escape\.txt/</code>; <code>s7 /^\.\.\/package\.json \(\d+ lines\)/</code>; <code>s8 /^FORBIDDEN: SAVE ~\/Desktop\/pwned\.txt/</code>; <code>s9 /^FORBIDDEN: COMMAND COPY /</code>; <code>s10 /^DENIED: blocked by policy/</code>; <code>s11 /OPENROUTER_API_KEY=absent/</code>; <code>s12 /^exit code 1\b/</code>.</li>
+<li>CLI: <code>--demo</code> uses the scripted chat, <code>maxSteps = 15</code>, auto-approves commands, prints the scorecard; exits 0 on 7/7, else <code>process.exitCode = 1</code>.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] <code>node src/cli.js --demo</code> completes 14 steps + final answer.</li>
+<li>[ ] It creates/edits/runs <code>workspace/demo/hello.js</code>.</li>
+<li>[ ] It refuses <code>../escape.txt</code>, <code>~/Desktop/pwned.txt</code>, and the shell copy.</li>
+<li>[ ] It allows the read of <code>../package.json</code>.</li>
+<li>[ ] It denies <code>git push --force</code>.</li>
+<li>[ ] The child prints <code>OPENROUTER_API_KEY=absent</code>.</li>
+<li>[ ] It reports exit code 1 with the explanation.</li>
+<li>[ ] It remembers and recalls.</li>
+<li>[ ] The scorecard prints <strong>7/7 checks held</strong>.</li>
+<li>[ ] The process exits 0.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> a demo can be a test; the fake model makes the safety guards reproducible.</p>
+
+<p><em>Demo cue:</em> run <code>--demo</code> twice. The second run hits <code>create_file</code> refusing to clobber and still finishes cleanly. That is recoverability, live.</p>
+
+<p><em>Usual mistakes:</em> setting <code>maxSteps</code> to 14; letting the demo skip the real sandbox; treating a red row as a presentation bug rather than a regression.</p>
+
+<p><em>Time:</em> 2–3 hours.</p>
+
+<p><strong>Try it:</strong> add an eighth scorecard check for a guard the course does not yet cover (for example, a <code>delete_file</code> of the root). Make it pass, then make it fail on purpose.</p>
+
+<hr>
+
+<h3 id="s09-17">Stage 14 build: Sessions and CLI polish</h3>
+
+<p><strong>Files to modify</strong></p>
+
+<ul>
+<li><code>src/cli.js</code> (major polish)</li>
+<li><code>test/session.test.js</code></li>
+</ul>
+
+<p><strong>Build</strong></p>
+
+<ul>
+<li><code>MAX_HISTORY = 24</code>.</li>
+<li><code>trimHistory(messages, max)</code>: drop system; keep at most <code>max</code>; move <code>start</code> forward until it lands on a <code>user</code> message; if no safe boundary, return <code>[]</code>.</li>
+<li><code>runSession</code>: <code>askTask</code> → command or task → <code>runTask({ ...base, task, history })</code> → <code>history = trimHistory(result.messages)</code>.</li>
+<li>Every task gets a fresh step budget.</li>
+<li>After each task: divider, pass/fail, message-count hint, retry hint.</li>
+<li>On exit: <code>session over - N task(s) run.</code></li>
+<li>Banner before step 1: workspace, sandbox, model + source, key fingerprint + source, env file, command policy, timeout, tools, memory summary, hooks state.</li>
+<li>Warnings: live mode + model lacks <code>/</code>; normalised bare name note.</li>
+<li>Exit codes: <code>0</code> normal; <code>1</code> request/fatal; <code>2</code> no task/no TTY; <code>3</code> step limit.</li>
+<li><code>taskExitCode(result)</code> mapping as above.</li>
+<li><code>main()</code> catches fatal errors, prints <code>fatal: &lt;stack&gt;</code>, sets <code>process.exitCode</code>.</li>
+<li>Only call <code>main()</code> when <code>import.meta.url === pathToFileURL(process.argv[1]).href</code>.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] <code>/new</code> clears conversation history but leaves workspace and memory untouched.</li>
+<li>[ ] <code>/quit</code> and <code>/exit</code> end the session.</li>
+<li>[ ] A follow-up sees previous conversation but a fresh system prompt with the latest memory.</li>
+<li>[ ] Every task starts its own step budget.</li>
+<li>[ ] A task-rewriting hook rewrites the new task, not history.</li>
+<li>[ ] No task + non-TTY exits 2.</li>
+<li>[ ] Step limit exits 3.</li>
+<li>[ ] Live mode without a key exits 1.</li>
+<li>[ ] The banner prints on every run.</li>
+<li>[ ] The exit note explains non-zero codes.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> task versus session, and honesty at the boundaries — trimmed history, reproducible banner, meaningful exit codes.</p>
+
+<p><em>Demo cue:</em> run two tasks in one session, show the message count grow, then <code>/new</code> and show it reset while the workspace file survives.</p>
+
+<p><em>Usual mistakes:</em> cutting history at an arbitrary index; carrying the system prompt; forgetting that providers reject an unanswered <code>tool_calls</code> tail; letting tests import <code>cli.js</code> and run <code>main()</code>.</p>
+
+<p><em>Time:</em> 3–4 hours.</p>
+
+<p><strong>Try it:</strong> force a history that would start with a <code>tool</code> message and prove <code>trimHistory</code> returns a valid boundary (or <code>[]</code>).</p>
+
+<hr>
+
+<h3 id="s09-18">Stage 15 build: Full test suite</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li>Any remaining test files; make every prior suite comprehensive.</li>
+</ul>
+
+<p><strong>Files to modify</strong></p>
+
+<ul>
+<li>Bring each <code>test/*.test.js</code> up to the original specification.</li>
+</ul>
+
+<p><strong>Build / required suites</strong></p>
+
+<ul>
+<li><code>workspace.test.js</code> — path policy, containment, symlink safety.</li>
+<li><code>sandbox.test.js</code> — refusals, root deletion, tool-layer conversion.</li>
+<li><code>tools.test.js</code> — all eight tools, validation, <code>safeEnv</code>, policy.</li>
+<li><code>shell-sandbox.test.js</code> — tokenisation, write-target scanning.</li>
+<li><code>agent.test.js</code> — loop behaviour, truncation, heartbeat, demo guards.</li>
+<li><code>hooks.test.js</code> — registry, blocking, replacing, tracing, catalogue.</li>
+<li><code>memory.test.js</code> — round-trip, duplicates, bounds, digest, forget, search.</li>
+<li><code>prompt.test.js</code> — rules, injection, logging.</li>
+<li><code>llm.test.js</code> — timeout, errors, sanitisation.</li>
+<li><code>config.test.js</code> — <code>.env</code> precedence, fingerprint, model normalisation.</li>
+<li><code>session.test.js</code> — commands, trimming, follow-up tasks.</li>
+<li><code>ui.test.js</code> — styling, verbatim output, result classification.</li>
+<li><code>input.test.js</code> — <code>askTask</code>, blank lines, Ctrl-C.</li>
+</ul>
+
+<p><strong>Prove it</strong></p>
+
+<ul>
+<li>[ ] <code>npm test</code> runs fully offline.</li>
+<li>[ ] All suites pass.</li>
+<li>[ ] No real network calls.</li>
+<li>[ ] No API key required.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> the test suite is the architecture made executable; if a module cannot be tested alone, the boundary is wrong.</p>
+
+<p><em>Demo cue:</em> unplug the network (or set an invalid key) and run <code>npm test</code>. It should not care.</p>
+
+<p><em>Usual mistakes:</em> leaking a mocked <code>fetch</code>; writing memory into the real <code>src/memory.md</code>; asserting ANSI codes without accounting for TTY; testing the model instead of the loop.</p>
+
+<p><em>Time:</em> 6–10 hours.</p>
+
+<p><strong>Try it:</strong> pick the weakest suite and add one test that would have caught a real bug you hit earlier in the course.</p>
+
+<hr>
+
+<h3 id="s09-19">Stage 16 build: Documentation and acceptance</h3>
+
+<p><strong>Files to create</strong></p>
+
+<ul>
+<li><code>README.md</code></li>
+<li><code>demo_prompt.md</code></li>
+<li><code>.env.example</code> (if absent)</li>
+</ul>
+
+<p><strong>Build — README</strong></p>
+
+<ul>
+<li>One-paragraph summary.</li>
+<li>Quick start: <code>npm install</code>, copy <code>.env.example</code> to <code>.env</code>, set the key, <code>npm start</code>, <code>npm run demo</code>.</li>
+<li>The loop diagram and the seven beats.</li>
+<li>File-by-file tour, <code>agent.js</code> first.</li>
+<li>The eight tools and what each is for.</li>
+<li>The read/write asymmetry and the shell limitation.</li>
+<li>The nine lifecycle hooks, with a table.</li>
+<li>Long-term memory: file format, eager digest vs lazy recall, <code>--memory</code>.</li>
+<li>Sessions and history trimming.</li>
+<li>Configuration table with defaults and precedence.</li>
+<li>Exit codes.</li>
+<li>Safety model: workspace fence, hard denies, environment allow-list, command policy, and an explicit "this is not a container" statement.</li>
+<li>Examples: a Desktop write that ends in <code>FORBIDDEN</code>; a prompt that ends with <code>remember</code>.</li>
+</ul>
+
+<p><strong>Build — <code>demo_prompt.md</code></strong></p>
+
+<ul>
+<li><code>create hello.js that prints today's date and time, run it, and save its output to hello-output.txt</code></li>
+<li><code>save a file test.txt that contains 'HELLO WORLD' and save to the desktop</code> (must end in <code>FORBIDDEN</code>)</li>
+<li><code>npm run demo</code>, <code>node src/cli.js --memory</code>, <code>node src/cli.js --demo</code></li>
+<li><code>work out how this package is tested, run the tests, and remember the command...</code></li>
+</ul>
+
+<p><strong>Prove it — the twenty final checks</strong></p>
+
+<ul>
+<li>[ ] 1. <code>npm install</code> succeeds with only <code>chalk</code> as a runtime dependency.</li>
+<li>[ ] 2. <code>npm test</code> runs fully offline and all suites pass.</li>
+<li>[ ] 3. <code>node src/cli.js --help</code> prints usage without a key.</li>
+<li>[ ] 4. <code>node src/cli.js --hooks</code> prints the full nine-hook catalogue without a key.</li>
+<li>[ ] 5. <code>node src/cli.js --memory</code> prints the store and the exact digest.</li>
+<li>[ ] 6. <code>node src/cli.js --demo</code> completes the script with <strong>7/7 checks held</strong>.</li>
+<li>[ ] 7. Live mode with a valid key runs a task through OpenRouter.</li>
+<li>[ ] 8. Live mode without a key prints the missing-key error and exits 1.</li>
+<li>[ ] 9. No task + no TTY exits 2.</li>
+<li>[ ] 10. A task that never yields an answer stops at the step limit and exits 3.</li>
+<li>[ ] 11. A write outside <code>workspace/</code> prints one <code>⛔ FORBIDDEN</code> line and returns a <code>FORBIDDEN:</code> observation without touching disk.</li>
+<li>[ ] 12. A read outside <code>workspace/</code> succeeds.</li>
+<li>[ ] 13. <code>CMD_POLICY=deny</code> refuses all commands; hard-denied commands are refused even with <code>--yes</code>.</li>
+<li>[ ] 14. The child shell cannot read <code>OPENROUTER_API_KEY</code>.</li>
+<li>[ ] 15. Memory survives process restarts; duplicates refresh; the file is bounded; hand edits are picked up.</li>
+<li>[ ] 16. Every normal run prints <code>[HOOK:Name]</code> traces; <code>--no-hooks</code> silences them.</li>
+<li>[ ] 17. <code>/new</code> clears conversation history but leaves workspace and memory untouched; <code>/quit</code> and <code>/exit</code> end the session.</li>
+<li>[ ] 18. A follow-up sees previous conversation but a freshly rebuilt system prompt with the latest memory.</li>
+<li>[ ] 19. <code>agent.js</code> executed directly prints the hint and does not run the CLI.</li>
+<li>[ ] 20. No framework, no agent SDK, no database, no hidden global state.</li>
+</ul>
+
+<p><strong>Teach it</strong></p>
+
+<p><em>The one idea:</em> documentation is part of the architecture; overclaiming safety is worse than naming limits.</p>
+
+<p><em>Demo cue:</em> hand the README to someone who has never seen the project and ask them to explain the loop back to you. That is the acceptance test for the docs.</p>
+
+<p><em>Usual mistakes:</em> a README that is only commands; hiding the "not a container" caveat; letting <code>demo_prompt.md</code> drift from the actual behaviour.</p>
+
+<p><em>Time:</em> 3–4 hours.</p>
+
+<p><strong>Try it:</strong> add a "Known limits and where to extend" section to the README, then pick one limit and write the design sketch for the layer that would remove it.</p>
+
+<hr>
+
+<h3 id="s09-20">The course checklist</h3>
+
+<p>Copy this into your notes and tick as you go.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Stage</th><th>Module</th><th>What you can do after this stage</th><th>Accepted</th></tr>
+<tr><td>0</td><td>Scaffold</td><td><code>npm install</code> works</td><td>☐</td></tr>
+<tr><td>1</td><td><code>ui.js</code></td><td>Print styled terminal output</td><td>☐</td></tr>
+<tr><td>2</td><td><code>config.js</code> + <code>llm.js</code></td><td>Load <code>.env</code>, call OpenRouter</td><td>☐</td></tr>
+<tr><td>3</td><td>Minimal <code>cli.js</code></td><td><strong>Chat with the model</strong> 🎉</td><td>☐</td></tr>
+<tr><td>4</td><td>History in <code>cli.js</code></td><td>Have a <strong>multi-turn conversation</strong></td><td>☐</td></tr>
+<tr><td>5</td><td><code>prompt.js</code></td><td>Inject behavioural rules</td><td>☐</td></tr>
+<tr><td>6</td><td><code>workspace.js</code></td><td>Fence writes, open reads</td><td>☐</td></tr>
+<tr><td>7</td><td>Read tools</td><td>Model <strong>lists and reads files</strong></td><td>☐</td></tr>
+<tr><td>8</td><td>Sandbox + write tools</td><td>Model <strong>creates and edits files</strong> safely</td><td>☐</td></tr>
+<tr><td>9</td><td><code>run_command</code></td><td>Model <strong>runs shell commands</strong> with policy</td><td>☐</td></tr>
+<tr><td>10</td><td><code>memory.js</code></td><td>Model <strong>remembers and recalls</strong> across runs</td><td>☐</td></tr>
+<tr><td>11</td><td><code>hooks.js</code></td><td>Observe/rewrite/block lifecycle events</td><td>☐</td></tr>
+<tr><td>12</td><td><code>agent.js</code></td><td>Extract the loop into a <strong>testable library</strong></td><td>☐</td></tr>
+<tr><td>13</td><td><code>demo.js</code></td><td><strong>Offline demo</strong> proves all guards hold</td><td>☐</td></tr>
+<tr><td>14</td><td>Full CLI polish</td><td><strong>Sessions</strong>, history trimming, banner, exit codes</td><td>☐</td></tr>
+<tr><td>15</td><td>Tests</td><td><code>npm test</code> passes fully offline</td><td>☐</td></tr>
+<tr><td>16</td><td>Docs</td><td>README teaches the architecture</td><td>☐</td></tr>
+</table></div>
+
+</section>
+
+<hr>
+
+<section id="s10">
+<h2><span class="num">10</span><span>Part III: The teacher's handbook</span></h2>
+
+<p>This part is for the person running the room. It assumes you have read Parts 0–E and skimmed Part II. It gives you a plan you can teach from, not a script you must read verbatim. The best version of this course is a sequence of <strong>predictions, demonstrations and repairs</strong>: you ask the room what will happen, run it, and then explain the gap.</p>
+
+<h3 id="s10-01">1. What this course is and is not</h3>
+
+<p><strong>It is</strong> a course in <em>harness engineering</em>: the code around a model that turns text into action. By the end, students can explain and build:</p>
+
+<ul>
+<li>a configuration and transport layer with provenance;</li>
+<li>a message protocol and a conversation loop;</li>
+<li>tool schemas, validation, dispatch and string observations;</li>
+<li>a path policy, a write sandbox and a command policy;</li>
+<li>file-backed memory and lifecycle hooks;</li>
+<li>a testable ReAct loop and an offline demo.</li>
+</ul>
+
+<p><strong>It is not</strong> a course in prompt tricks, model training, or building a product. It deliberately uses one model provider and one runtime dependency. The transferable skill is the architecture, not the vendor.</p>
+
+<p><strong>The promise to students:</strong> after this course, every coding agent they meet will look like a variation on a program they can read. They will recognise the loop, the tools, the context budget, the safety layers and the extension points.</p>
+
+<p><strong>The promise to teachers:</strong> every stage has a runnable artefact, an observable failure mode, and a demo that fits on one screen. You do not need a live model for most of the best moments; the offline demo and the tests are often more reliable than a network call.</p>
+
+<h3 id="s10-02">2. Learning outcomes by phase</h3>
+
+<p>Use these as the spine of your assessment. A student who can do the right-hand column has learned the phase, not just completed it.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Phase</th><th>Stages</th><th>The student can…</th></tr>
+<tr><td>0 — Foundations</td><td>0–2</td><td>Explain why the harness is separate from the model; trace a config value to its source; describe one model request end to end.</td></tr>
+<tr><td>A — Conversation</td><td>3–5</td><td>Build a chat loop with history and a composed system prompt; explain why the model has no memory and the array does.</td></tr>
+<tr><td>B — Tools</td><td>6–9</td><td>Design a tool schema, validate arguments, return observations; explain read/write asymmetry, containment, <code>FORBIDDEN</code>, layered command policy and least privilege.</td></tr>
+<tr><td>C — Persistence and observability</td><td>10–11</td><td>Implement file-backed memory with eager/lazy access; attach hooks that observe, rewrite and block; explain why extension points sit at named moments.</td></tr>
+<tr><td>D — The loop</td><td>12–14</td><td>Extract a testable loop; implement the truncation guard, heartbeat and hook lifecycle; run a session with trimmed history and meaningful exit codes.</td></tr>
+<tr><td>E — Proof</td><td>15–16</td><td>Write an offline test suite for every seam; document architecture and honest limits; pass the final acceptance list.</td></tr>
+</table></div>
+
+<h3 id="s10-03">3. Three ways to pace the course</h3>
+
+<h4 id="s10-03-01">Option A — Sixteen sessions (the default)</h4>
+
+<p>One stage per session, 60–120 minutes. Best for a weekly cohort or a semester. Sessions 0–5 are lighter; 9 and 12 are the heaviest. Give students the build companion and the lab before each session.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Session</th><th>Stage</th><th>Session shape</th></tr>
+<tr><td>1</td><td>0</td><td>Why a harness; scaffold; dependency audit.</td></tr>
+<tr><td>2</td><td>1</td><td>UI contract; colour as classification; verbatim output.</td></tr>
+<tr><td>3</td><td>2</td><td>Config provenance; one POST; throw vs return.</td></tr>
+<tr><td>4</td><td>3</td><td>First chat; flags; exit codes.</td></tr>
+<tr><td>5</td><td>4</td><td>History; <code>/new</code>; the three lifetimes.</td></tr>
+<tr><td>6</td><td>5</td><td>Prompt as code; rules that prevent failures.</td></tr>
+<tr><td>7</td><td>6</td><td>Containment; escape shapes; symlinks.</td></tr>
+<tr><td>8</td><td>7</td><td>Schemas; validation; the manual tool loop.</td></tr>
+<tr><td>9</td><td>8</td><td>Sandbox; write tools; the <code>$&amp;</code> trap.</td></tr>
+<tr><td>10</td><td>9</td><td>Layered command policy; the child environment.</td></tr>
+<tr><td>11</td><td>10</td><td>Memory as a file; eager vs lazy.</td></tr>
+<tr><td>12</td><td>11</td><td>Hooks; block, rewrite, replace.</td></tr>
+<tr><td>13</td><td>12</td><td>The loop; seven beats; truncation; heartbeat.</td></tr>
+<tr><td>14</td><td>13</td><td>The offline demo and scorecard.</td></tr>
+<tr><td>15</td><td>14</td><td>Sessions, trimming, banner, exit codes.</td></tr>
+<tr><td>16</td><td>15–16</td><td>Tests and docs; final acceptance.</td></tr>
+</table></div>
+
+<h4 id="s10-03-02">Option B — Two-day workshop</h4>
+
+<p>Day one: stages 0–9 (a chatbot that becomes an agent). Day two: stages 10–16 (memory, hooks, the loop, the demo, tests, docs). Compress theory to a 15-minute briefing per phase; keep all demos and at least one lab per phase. This is the best format for a corporate cohort.</p>
+
+<h4 id="s10-03-03">Option C — Self-paced</h4>
+
+<p>Students read the theory chapter, do the build entry, tick the boxes, and do the lab. The teacher acts as reviewer. Use the self-assessment in Part IV as the completion gate. Add a weekly office hour for the "why" questions.</p>
+
+<p><strong>A note on session length:</strong> the times in Part II are for a focused student typing from scratch. In a live class, double them. The value is in the mistakes, not the typing.</p>
+
+<h3 id="s10-04">4. The session run sheet</h3>
+
+<p>Use this for every stage. It works because it alternates telling with predicting and doing.</p>
+
+<p><strong>Before the session (10 minutes)</strong></p>
+
+<ul>
+<li>Re-read the stage's <em>Teach it</em> block in Part II.</li>
+<li>Run the stage's demo on the exact machine you will teach from.</li>
+<li>Prepare one deliberate failure to show. A stage with no failure is a stage students will not remember.</li>
+<li>Check the environment: Node version, <code>node_modules</code>, <code>.env</code>, network, terminal size.</li>
+</ul>
+
+<p><strong>Opening (5 minutes)</strong></p>
+
+<ul>
+<li>Ask one question from the previous stage, cold. Example before Stage 7: "Where does a tool result come from, and who writes it?"</li>
+<li>State the one idea of today's stage in one sentence. Write it on the board and leave it there.</li>
+</ul>
+
+<p><strong>Predict (5 minutes)</strong></p>
+
+<ul>
+<li>Show the code or the command <em>before</em> running it. Ask: "What will happen? What will the model see? What will the user see?"</li>
+<li>Take three predictions. Do not correct them yet. The gap between prediction and result is the lesson.</li>
+</ul>
+
+<p><strong>Build live (20–35 minutes)</strong></p>
+
+<ul>
+<li>Type the smallest version that satisfies the stage. Narrate the decision, not the syntax.</li>
+<li>When something fails, keep it on screen. Debug it out loud.</li>
+<li>Do not paste a finished file. Students learn more from a repaired mistake than a perfect diff.</li>
+</ul>
+
+<p><strong>Explain the contract (10 minutes)</strong></p>
+
+<ul>
+<li>Return to the one idea. Point at the code that implements it.</li>
+<li>Name the failure mode it prevents. Use the <em>Usual mistakes</em> list.</li>
+<li>Connect to a principle: errors as observations, least privilege, bounded autonomy, etc.</li>
+</ul>
+
+<p><strong>Student lab (15–30 minutes)</strong></p>
+
+<ul>
+<li>Give the lab from Part IV. Circulate. Look for the specific misconception, not just a wrong output.</li>
+</ul>
+
+<p><strong>Close (5 minutes)</strong></p>
+
+<ul>
+<li>One-sentence exit ticket: "Explain X to someone who has not read the chapter."</li>
+<li>Preview the next stage with a question, not a summary.</li>
+</ul>
+
+<h3 id="s10-05">5. The live-demo script</h3>
+
+<p>This is a 12-minute sequence you can run in the first session to show where the course is going. It uses the finished implementation, but narrates each layer as if you were building it.</p>
+
+<ol>
+<li><strong>The chatbot (30 s).</strong> <code>node src/cli.js "Say hello"</code>. "Model, one call, no tools."</li>
+<li><strong>The conversation (1 min).</strong> Ask a question, then a follow-up. "The array is the memory."</li>
+<li><strong>The hands (2 min).</strong> <code>node src/cli.js --demo</code>. Let the script run. Pause on <code>create_file</code>, <code>edit_file</code>, <code>run_command</code>.</li>
+<li><strong>The fence (2 min).</strong> Replay the <code>FORBIDDEN</code> lines. "This is one line, one place, one policy."</li>
+<li><strong>The shell (2 min).</strong> Show the <code>git push --force</code> denial and the <code>OPENROUTER_API_KEY=absent</code> line. "The child does not inherit the key."</li>
+<li><strong>The memory (1 min).</strong> <code>node src/cli.js --memory</code>. "This is the whole store. You can read it, diff it, delete a line."</li>
+<li><strong>The hooks (2 min).</strong> <code>node src/cli.js --hooks</code>, then a normal run with traces. "Nine moments; four can change the run."</li>
+<li><strong>The proof (1 min).</strong> <code>npm test</code>. "No network, no key, no model."</li>
+<li><strong>The point (30 s).</strong> "Nothing here is a framework. It is a loop, a dispatcher, a policy and a file."</li>
+</ol>
+
+<p><strong>If the network is unavailable:</strong> skip steps 1–2 and start at the demo. The demo is the curriculum; live mode is a bonus.</p>
+
+<p><strong>If a demo fails live:</strong> keep it. Ask the room what layer failed, use the debugging table in Appendix D, and fix it. A teacher who debugs calmly is teaching the most important skill in the course.</p>
+
+<h3 id="s10-06">6. The factory analogy</h3>
+
+<p>Students who do not yet think in software terms need a bridge. The best bridge we have found is a <strong>new employee on a factory floor</strong>. The employee is intelligent but has never touched the building. The harness is everything that lets them do useful work without burning the place down.</p>
+
+<h4 id="s10-06-01">The cast</h4>
+
+<ul>
+<li><strong>The worker</strong> — the model. Reads instructions, writes notes, makes decisions. Cannot touch a machine directly.</li>
+<li><strong>The factory floor and supervisor</strong> — the harness. Carries out the worker's requests, enforces rules, and reports back.</li>
+<li><strong>The job description and handbook</strong> — the system prompt.</li>
+<li><strong>The clipboard</strong> — the message array. Everything the worker knows about the current shift is on it.</li>
+<li><strong>The work order</strong> — the user's task.</li>
+<li><strong>The machines</strong> — the tools.</li>
+<li><strong>The instruction card on each machine</strong> — the tool schema. The worker chooses a machine by reading the card.</li>
+<li><strong>The receipt</strong> — the tool result. A string, always.</li>
+<li><strong>The shift notebook</strong> — long-term memory. Survives the shift.</li>
+<li><strong>The QA inspector</strong> — hooks. Can watch, amend the receipt, or stop the action.</li>
+<li><strong>The security badge</strong> — the API key.</li>
+<li><strong>The locker</strong> — <code>.env</code>.</li>
+<li><strong>The bench</strong> — <code>workspace/</code>. The only place the worker may put things.</li>
+<li><strong>The safety fence</strong> — the sandbox.</li>
+<li><strong>The alarm</strong> — <code>FORBIDDEN</code>.</li>
+<li><strong>The workshop's power tools</strong> — <code>run_command</code>.</li>
+<li><strong>The never-touch list</strong> — the hard deny-list.</li>
+<li><strong>The OK/FAULT lamp</strong> — the exit code.</li>
+</ul>
+
+<h4 id="s10-06-02">The mapping, in detail</h4>
+
+<div class="table-wrap"><table>
+<tr><th>Harness concept</th><th>Factory equivalent</th><th>What the analogy teaches</th></tr>
+<tr><td>Model</td><td>A new employee who can read and write notes but cannot touch anything</td><td>Intelligence is not access.</td></tr>
+<tr><td>Tool call</td><td>A written request: "please drill this hole, 6 mm"</td><td>The worker asks; the floor acts.</td></tr>
+<tr><td>Tool schema</td><td>The instruction card on the machine</td><td>The description is how the worker chooses.</td></tr>
+<tr><td>Tool result</td><td>The receipt or inspection report</td><td>The worker only learns what the floor reports.</td></tr>
+<tr><td>Loop</td><td>The supervisor's cycle: read note → act → report → repeat</td><td>Work is a cycle, not one command.</td></tr>
+<tr><td><code>maxSteps</code></td><td>A cap on actions per shift</td><td>Autonomy is bounded.</td></tr>
+<tr><td>System prompt</td><td>The employee handbook and job description</td><td>Behaviour is set before the first task.</td></tr>
+<tr><td>Messages</td><td>The clipboard</td><td>The worker has no memory outside it.</td></tr>
+<tr><td><code>/new</code></td><td>A fresh clipboard, same factory</td><td>Conversation and project have different lifetimes.</td></tr>
+<tr><td>Workspace</td><td>The worker's own bench</td><td>Make a mess where it is allowed.</td></tr>
+<tr><td>Read vs write</td><td>Look at any machine; only put things on your own bench</td><td>Reading is how you learn; writing is how you cause incidents.</td></tr>
+<tr><td>Sandbox</td><td>The safety fence and locked cabinets</td><td>A refusal is a normal outcome.</td></tr>
+<tr><td><code>FORBIDDEN</code></td><td>The alarm</td><td>Loud, one place, greppable.</td></tr>
+<tr><td><code>run_command</code></td><td>Using the power tools</td><td>Useful and dangerous; needs supervision.</td></tr>
+<tr><td>Hard deny-list</td><td>The never-touch list</td><td>Some actions are never part of the job.</td></tr>
+<tr><td>Command policy</td><td>Ask the supervisor / standing permission / no power tools</td><td>Human in the loop, by default.</td></tr>
+<tr><td><code>safeEnv</code></td><td>The worker gets only the tools for this job, not the master keyring</td><td>Least privilege.</td></tr>
+<tr><td>Timeout / output cap</td><td>A machine that stops after 30 seconds / a report with a page limit</td><td>Bounded autonomy.</td></tr>
+<tr><td>Memory</td><td>The shift notebook</td><td>What survives the shift.</td></tr>
+<tr><td>Digest</td><td>The first page of the notebook, always on the clipboard</td><td>Eager, bounded context.</td></tr>
+<tr><td><code>recall</code></td><td>Searching the archive</td><td>Lazy, on demand.</td></tr>
+<tr><td>Hooks</td><td>QA checkpoints at named moments</td><td>Extension points, not loop edits.</td></tr>
+<tr><td><code>PreToolUse</code></td><td>The inspector stops the action before it happens</td><td>Blocking is cheap.</td></tr>
+<tr><td><code>PostToolUse</code></td><td>The inspector redacts the report</td><td>The worker reads what you allow.</td></tr>
+<tr><td><code>Stop</code> / <code>StepLimit</code></td><td>Shift complete / out of time</td><td>Success and exhaustion both have events.</td></tr>
+<tr><td><code>SessionEnd</code></td><td>Clocking out, always</td><td>Cleanup runs either way.</td></tr>
+<tr><td>Exit code</td><td>OK/FAULT lamp</td><td>The worker can tell whether it worked.</td></tr>
+<tr><td>Tests</td><td>The QA checklist</td><td>Proof without production.</td></tr>
+<tr><td>Demo</td><td>A dress rehearsal with a scripted worker</td><td>Reproducible evidence.</td></tr>
+</table></div>
+
+<h4 id="s10-06-03">Where the analogy breaks</h4>
+
+<p>Say this out loud, because a metaphor that is not bounded becomes a misconception.</p>
+
+<ul>
+<li>The worker is not a person and has no intentions. It predicts text. "Wants" is shorthand.</li>
+<li>The handbook is not read once and remembered; it is re-sent every time. The clipboard is re-read from the top on every cycle.</li>
+<li>The instruction card is not enforced by the machine. The worker can write a request the machine cannot honour; the dispatcher catches it.</li>
+<li>The fence is a path policy, not a building. A power tool can still reach outside. The analogy makes the fence feel stronger than it is; correct that explicitly.</li>
+<li>The QA inspector is code you write, not an independent authority.</li>
+<li>The notebook is a file, not a brain. It can be edited by hand, and the worker will believe the edit.</li>
+</ul>
+
+<h4 id="s10-06-04">A five-minute opening script</h4>
+
+<div class="callout">"Imagine a new employee starts tomorrow. They are clever, fast, and have never been in this building. They cannot touch a machine; they can only read the instruction cards and write requests on a clipboard. You are the supervisor. Your job is to turn their request into an action, write the result back on the clipboard, and decide when to stop. That is a harness. The model is the employee. The tools are the machines. The loop is your cycle. Everything else in this course is making that safe, observable, and easy to extend."</div>
+
+<h3 id="s10-07">7. Common misconceptions and how to correct them</h3>
+
+<div class="table-wrap"><table>
+<tr><th>Misconception</th><th>Why it is wrong</th><th>Correction</th></tr>
+<tr><td>"The model remembers the conversation."</td><td>The model is stateless; the harness re-sends the array.</td><td>Delete the array in front of them and watch the memory vanish.</td></tr>
+<tr><td>"The agent is the model."</td><td>The agent is model + tools + loop.</td><td>Show a model with no tools; then add the loop.</td></tr>
+<tr><td>"Tool calling is a plugin system."</td><td>The model only emits JSON; the harness validates and runs it.</td><td>Trace one call from schema to dispatcher to result.</td></tr>
+<tr><td>"The sandbox is a container."</td><td>It is a path policy; a script can still write anywhere.</td><td>Run a one-liner that writes outside and explain why the scan missed it.</td></tr>
+<tr><td>"More autonomy is better."</td><td>Every capability needs a bound; <code>maxSteps</code>, timeouts, policy.</td><td>Show a run that hits the step limit and what it costs.</td></tr>
+<tr><td>"A bigger model fixes harness bugs."</td><td>Bad context, bad tools and bad policy break big models too.</td><td>Break a tool description and show the best model choose wrongly.</td></tr>
+<tr><td>"Prompts are not code."</td><td>The prompt is composed, tested, and versioned.</td><td>Show <code>prompt.test.js</code> and the diff of a rule change.</td></tr>
+<tr><td>"Hooks are notifications."</td><td>Four hooks can refuse or rewrite the run.</td><td>Attach a blocking <code>PreToolUse</code> and show the denial.</td></tr>
+<tr><td>"Memory means embeddings."</td><td>Here memory is a markdown file with search.</td><td><code>cat src/memory.md</code>; edit a line; rerun.</td></tr>
+<tr><td>"History should be kept in full."</td><td>Context costs money and has a limit; providers reject invalid cuts.</td><td>Show <code>trimHistory</code> and the message count in the summary.</td></tr>
+<tr><td>"Exit codes are cosmetic."</td><td>They are how the model and the shell learn success.</td><td>Show <code>explainExit(1)</code> and a retry that reads stderr.</td></tr>
+<tr><td>"The demo is fake."</td><td>It uses the real loop, tools, sandbox and memory; only the HTTP call is scripted.</td><td>Change a guard and watch the scorecard go red.</td></tr>
+<tr><td>"Errors should stop the run."</td><td>Fixable errors are observations; only unfixable ones throw.</td><td>Show a failed edit followed by a successful retry.</td></tr>
+<tr><td>"The model reads files."</td><td>The harness reads files and returns strings.</td><td>Follow a <code>read_file</code> call through the dispatcher.</td></tr>
+<tr><td>"The schema enforces the arguments."</td><td>The model can ignore it; the dispatcher must validate.</td><td>Send <code>"limit": "20"</code> and show the actionable error.</td></tr>
+<tr><td>"The loop is OpenAI-specific."</td><td>It is a message protocol; any compatible endpoint works.</td><td>Point at the one POST and the three fields.</td></tr>
+<tr><td>"<code>maxSteps</code> is arbitrary."</td><td>It is a product decision about cost and recovery.</td><td>Ask what changes at 3, 12 and 100.</td></tr>
+<tr><td>"You can test the loop with a real model."</td><td>You can, but it is slow, flaky and expensive.</td><td>Run the loop test offline with a fake <code>chatFn</code>.</td></tr>
+</table></div>
+
+<h3 id="s10-08">8. The debugging clinic</h3>
+
+<p>Windows is the most common source of environment confusion in this course. Keep this table visible.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+<tr><td><code>node: command not found</code></td><td>Node not installed or not on <code>PATH</code>.</td><td>Install Node 20+; reopen the terminal.</td></tr>
+<tr><td><code>Cannot use import statement outside a module</code></td><td><code>"type": "module"</code> missing.</td><td>Add it to <code>package.json</code>.</td></tr>
+<tr><td><code>ERR_MODULE_NOT_FOUND</code> for a local file</td><td>Wrong relative path or missing <code>.js</code> extension.</td><td>ESM requires the extension; check <code>src/</code>.</td></tr>
+<tr><td><code>chalk</code> not found</td><td><code>npm install</code> not run in the project root.</td><td><code>npm install</code> where <code>package.json</code> lives.</td></tr>
+<tr><td><code>.env</code> ignored</td><td>Wrong directory, or shell variable is stale.</td><td>Banner shows the env file; <code>.env</code> beats shell by design.</td></tr>
+<tr><td><code>401</code></td><td>Bad/revoked key, or a stale shell key.</td><td>Check the banner fingerprint and source.</td></tr>
+<tr><td><code>402</code></td><td>No credits.</td><td>Top up; not a harness bug.</td></tr>
+<tr><td><code>openai</code> model not found</td><td>Bare name sent without a vendor.</td><td>Let <code>normalizeModel</code> run, or use <code>vendor/model</code>.</td></tr>
+<tr><td><code>cat</code>/<code>ls</code> fail in <code>run_command</code></td><td>The shell is <code>cmd.exe</code>, not Bash.</td><td>Use <code>type</code>, <code>dir</code>; or run the CLI from Git Bash.</td></tr>
+<tr><td>A command is denied with no prompt</td><td>No TTY, so <code>ask</code> degrades to deny.</td><td>Pass <code>--yes</code> in automation, or run interactively.</td></tr>
+<tr><td><code>FORBIDDEN</code> on a legitimate path</td><td>First segment is a protected name, or a symlink escapes.</td><td>Use a relative path inside <code>workspace/</code>; check the first segment.</td></tr>
+<tr><td><code>EADDRINUSE</code> / port errors</td><td>A previous process is still running.</td><td>Out of scope for this project, but check stray <code>node</code> processes.</td></tr>
+<tr><td>Tests pass locally, fail in CI</td><td>Network, timezone, or a leaked mock.</td><td>Run <code>npm test</code> offline; restore mocks in <code>finally</code>.</td></tr>
+<tr><td>Program hangs after finishing</td><td>A timer is keeping the loop alive.</td><td><code>unref()</code> the heartbeat; stop it on every path.</td></tr>
+<tr><td>Terminal shows raw ANSI</td><td>Output is piped or colour is disabled.</td><td>Expected; use a TTY for colour tests.</td></tr>
+</table></div>
+
+<p><strong>The three questions to ask at any bug:</strong></p>
+
+<ol>
+<li><strong>Which layer owns this decision?</strong> Config, transport, prompt, tool, policy, loop, or UI.</li>
+<li><strong>Is this a fixable observation or an unfixable error?</strong> If fixable, return a string. If not, throw.</li>
+<li><strong>What is the smallest reproduction?</strong> A test with a fake model and a temp directory beats a live run.</li>
+</ol>
+
+<h3 id="s10-09">9. Assessment rubric</h3>
+
+<p>Use four criteria, each on a 1–4 scale. A passing project has at least 3 in every row and a 4 in at least two.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Criterion</th><th>1 — Not yet</th><th>2 — Developing</th><th>3 — Competent</th><th>4 — Strong</th></tr>
+<tr><td><strong>Architecture</strong></td><td>Files tangled; loop and program mixed.</td><td>Some separation; a few hidden dependencies.</td><td>Loop is a library; CLI owns process concerns; one-way imports.</td><td>Every seam injectable; the file map explains itself; no hidden global state.</td></tr>
+<tr><td><strong>Correctness</strong></td><td>Demo fails or guards are missing.</td><td>Demo runs but a guard is unreliable.</td><td>All acceptance boxes tick; scorecard 7/7.</td><td>Edge cases covered; tests prove failure paths, not just happy paths.</td></tr>
+<tr><td><strong>Safety reasoning</strong></td><td>"The sandbox makes it safe."</td><td>Knows some limits; overclaims.</td><td>Names the five layers and the residual risk.</td><td>Can threat-model a new tool and propose the right bound.</td></tr>
+<tr><td><strong>Communication</strong></td><td>Cannot explain why.</td><td>Explains what, not why.</td><td>Explains the loop, tools and policy clearly.</td><td>Teaches it; documentation is accurate and honest; can defend trade-offs.</td></tr>
+</table></div>
+
+<p><strong>Capstone weighting (if used):</strong> architecture 30%, correctness 30%, safety 20%, communication 20%.</p>
+
+<p><strong>A useful viva question for any project:</strong> "Show me one line you are proud of and one line you would change. Why?" The answer reveals whether they understand the design or only the syntax.</p>
+
+<h3 id="s10-10">10. Teaching the hardest ideas</h3>
+
+<h4 id="s10-10-01">The loop</h4>
+
+<p>Do not start with a diagram of a framework. Write the six-line pseudocode from Part 0 on the board. Then point at each line and name the stage that makes it real. The loop should feel inevitable, not clever.</p>
+
+<h4 id="s10-10-02">The message protocol</h4>
+
+<p>Use a physical clipboard. Put a system card, a user card, an assistant card and a tool card on the desk. Walk one step. Ask: "What does the model see now? What is missing?" The physical order catches the <code>tool_call_id</code> mistake better than a slide.</p>
+
+<h4 id="s10-10-03">The sandbox</h4>
+
+<p>Draw a fence around a bench, then draw a door labelled "shell". Ask: "Is the bench safe?" The answer is: the fence is real, the door is the problem. That is why command policy is separate and why "not a container" is in the docs.</p>
+
+<h4 id="s10-10-04">Memory</h4>
+
+<p>Put a notebook on the table. "This is the whole memory." Open it. "This is <code>--memory</code>." Edit a line. "The next run sees this." Then close it and ask what is lost when the process exits.</p>
+
+<h4 id="s10-10-05">Hooks</h4>
+
+<p>Use a factory QA metaphor: an inspector at four checkpoints. At one checkpoint they can stop the line; at another they can rewrite the report. "Would you rather edit the conveyor belt (the loop) or station an inspector (a hook)?" That is the whole argument.</p>
+
+<h4 id="s10-10-06">Truncation</h4>
+
+<p>Show a half-written JSON tool call. Ask: "What happens if we run it?" Then show the guard. The lesson is empathy for the model: do not punish it for a limit it did not choose.</p>
+
+<h4 id="s10-10-07">Testability</h4>
+
+<p>Delete the network. Run the tests. "The harness does not need the model to be tested." That single demonstration is worth a lecture on dependency injection.</p>
+
+<h3 id="s10-11">11. Classroom, recording and CI setup</h3>
+
+<p><strong>Repository per student.</strong> Fork or copy <code>mini-coding-agent-js</code>; do not share a working tree. Each student needs their own <code>.env</code>, or none if they use <code>--demo</code>.</p>
+
+<p><strong>No key required for most of the course.</strong> Stages 0–2 and 6–16 can be taught with <code>--demo</code> and the test suite. Live mode is a bonus for Stages 3–5 and 16. This makes the course usable in locked-down classrooms and on recorded video.</p>
+
+<p><strong>Terminal size.</strong> Use at least 100×30. The banner and the scorecard are designed for it. Increase font size for recording; the UI is intentionally high-contrast.</p>
+
+<p><strong>Recording.</strong> Record the <em>repair</em>, not the finished code. A 10-minute video of a failing test becoming a passing one teaches more than a 30-minute typing session. Keep a cold-open demo and a "known limits" segment.</p>
+
+<p><strong>CI.</strong> Run <code>npm test</code> and <code>node src/cli.js --demo</code> on every push. The demo is the integration test; the suite is the unit test. Both are offline. Never put a real key in CI; use <code>--demo</code>.</p>
+
+<p><strong>Accessibility.</strong> Do not rely on colour alone; the text prefixes (<code>ERROR</code>, <code>DENIED</code>, <code>FORBIDDEN</code>, <code>exit code</code>) carry the meaning. Read the <code>think:</code> and <code>tool →</code> lines aloud when recording. Provide the markdown manual as the primary text; the PDF/HTML are conveniences.</p>
+
+<p><strong>Safety briefing for live mode.</strong> Say explicitly:</p>
+
+<ul>
+<li>the sandbox is a path policy, not a container;</li>
+<li>run the agent in a disposable folder or VM if you do not trust the task;</li>
+<li>commands can still do damage inside the workspace;</li>
+<li>never paste a real key into a shared screen without rotating it afterwards.</li>
+</ul>
+
+</section>
+
+<hr>
+
+<section id="s11">
+<h2><span class="num">11</span><span>Part IV: The student workbook</span></h2>
+
+<p>The theory tells you how the harness works. The build companion tells you what to type. This workbook is where you find out whether <em>you</em> can do it. Every lab has a concrete artefact, a question that cannot be answered by copying, and a way to check yourself.</p>
+
+<h3 id="s11-01">1. How to use the labs</h3>
+
+<ul>
+<li>Do the lab <strong>after</strong> the stage's acceptance boxes are ticked. Not before; not instead.</li>
+<li>Keep a <code>lab-notes.md</code>. For each lab, write: what you predicted, what happened, and what you changed in your mental model. The middle item is the one that teaches.</li>
+<li>When a lab asks "explain", write two or three sentences in your own words. If you cannot, you have found the next thing to re-read.</li>
+<li>Treat the <strong>break-it labs</strong> as the real test. Anyone can make the happy path work. A harness engineer is someone who knows how it fails.</li>
+</ul>
+
+<h3 id="s11-02">2. Per-stage labs</h3>
+
+<p>Each lab is one small extension or investigation. They are deliberately open-ended enough to have more than one good answer.</p>
+
+<h4 id="s11-02-01">Lab 0 — The dependency audit</h4>
+
+<p>Run <code>npm ls --depth=0</code>. Add a one-page note explaining what each dependency would hide if it were a framework. Then answer: which single dependency would you remove next, and what would you have to write?</p>
+
+<h4 id="s11-02-02">Lab 1 — The palette contract</h4>
+
+<p>Add a <code>ui.kv</code> helper and a test for it. Then change the failure colour from red to a bold magenta and run the UI tests. What broke, and what does that tell you about testing presentation?</p>
+
+<h4 id="s11-02-03">Lab 2 — Provenance detective</h4>
+
+<p>Create three sources for the model name: a shell export, a <code>.env</code>, and a <code>--model</code> flag. Make them all different. Predict which wins, then run the banner. Now unset the shell variable and repeat. Write the precedence rule from observation, not memory.</p>
+
+<h4 id="s11-02-04">Lab 3 — One-shot, many exits</h4>
+
+<p>Run the CLI with a task, with no task and a TTY, with no task and piped stdin, and with a bad key. Record the exit codes. Draw the decision tree that produces them.</p>
+
+<h4 id="s11-02-05">Lab 4 — The three lifetimes</h4>
+
+<p>In one session: create a file, ask the model a question, then <code>/new</code>, then ask it to recall the first question. Explain what survived at each of the three lifetimes: conversation, workspace, memory.</p>
+
+<h4 id="s11-02-06">Lab 5 — Prompt surgery</h4>
+
+<p>Remove the "run what you wrote" rule and ask the agent to create and verify a script. Observe what it does. Restore the rule. Which specific sentence changed the behaviour?</p>
+
+<h4 id="s11-02-07">Lab 6 — Escape artist</h4>
+
+<p>Write ten paths you think should be refused. Run them through <code>resolve</code> and record the reason for each. Then find one path that <em>should</em> be allowed and is refused. Is that a bug or a policy choice? Defend it.</p>
+
+<h4 id="s11-02-08">Lab 7 — Schema as prompt</h4>
+
+<p>Change the <code>create_file</code> description to "Create a file, overwriting if needed." Ask the model to make a new file that already exists. What does it try first? Restore the description and compare. Explain why the description is prompt text.</p>
+
+<h4 id="s11-02-09">Lab 8 — The <code>$&amp;</code> incident</h4>
+
+<p>Write a test that edits a file to contain the literal string <code>$&amp;</code>. Run it. Then change the replacement to the string form of <code>String.replace</code> and run it again. Explain, with the output, why the callback form is the safe one.</p>
+
+<h4 id="s11-02-10">Lab 9 — Scanner vs shell</h4>
+
+<p>Write five commands that write outside the workspace and five that are obfuscated enough to evade the scanner. Run the first five; confirm the refusals. For the second five, do <strong>not</strong> run them — explain why "not caught" is not "safe".</p>
+
+<h4 id="s11-02-11">Lab 10 — Memory by hand</h4>
+
+<p>Open <code>src/memory.md</code> and add a memory by hand. Run <code>--memory</code> and confirm the digest. Now delete a line and confirm it is gone. Explain why a cache would make this lab fail.</p>
+
+<h4 id="s11-02-12">Lab 11 — Twelve-line policy</h4>
+
+<p>Attach a <code>PreToolUse</code> hook that blocks any command containing <code>git push</code>. Attach a <code>PostToolUse</code> hook that redacts <code>sk-or-...</code>. Prove both with the demo. Then attach a <code>SessionEnd</code> hook that prints the duration.</p>
+
+<h4 id="s11-02-13">Lab 12 — Fake model, real loop</h4>
+
+<p>Write a fake <code>chatFn</code> that returns a tool call, then an answer. Run <code>runTask</code> with a temp workspace. Assert the tool ran and the loop stopped. Remove the tool result from the messages in a copy and see what the provider-facing invariant would be. Explain why the loop must append it.</p>
+
+<h4 id="s11-02-14">Lab 13 — Scorecard author</h4>
+
+<p>Add an eighth scorecard check for a guard the course does not cover. Make it pass. Then deliberately break the guard and watch the demo exit non-zero. Restore it.</p>
+
+<h4 id="s11-02-15">Lab 14 — Trimming by hand</h4>
+
+<p>Build a message array that starts with a <code>tool</code> message and ends with an unanswered assistant <code>tool_calls</code>. Run <code>trimHistory</code> and explain the result. Then craft an array where no safe boundary exists and explain why <code>[]</code> is the right answer.</p>
+
+<h4 id="s11-02-16">Lab 15 — Offline proof</h4>
+
+<p>Run <code>npm test</code> with the network disabled. Then add one test for a bug you actually hit during the course. The test must fail before your fix and pass after.</p>
+
+<h4 id="s11-02-17">Lab 16 — Honest docs</h4>
+
+<p>Write the "Known limits" section of the README. Include at least five limits and, for each, the layer that would remove it. Then give the README to someone who has not seen the code and ask them to explain the loop back to you.</p>
+
+<h3 id="s11-03">3. Break-it-on-purpose labs</h3>
+
+<p>These are the most valuable exercises in the course. For each, make the change, predict the failure, run, and then restore. Keep a note of the <em>first</em> symptom, not just the final error.</p>
+
+<div class="table-wrap"><table>
+<tr><th>#</th><th>Break this</th><th>Predict before running</th><th>What you should learn</th></tr>
+<tr><td>1</td><td>Remove <code>additionalProperties: false</code> from a schema</td><td>The model invents an argument</td><td>The schema is a prompt signal, not a security boundary.</td></tr>
+<tr><td>2</td><td>Delete the <code>tool_call_id</code> from one tool message</td><td>Provider rejects the next request</td><td>Every call needs exactly one matching result.</td></tr>
+<tr><td>3</td><td>Return <code>null</code> from a tool handler</td><td>A crash or a broken message</td><td>Tool handlers must always return strings.</td></tr>
+<tr><td>4</td><td>Move the hard deny-list after the policy check</td><td><code>--yes</code> runs a catastrophic command</td><td>Some checks must precede consent.</td></tr>
+<tr><td>5</td><td>Inherit <code>process.env</code> in <code>run_command</code></td><td>The key appears in the output</td><td>Least privilege at the process boundary.</td></tr>
+<tr><td>6</td><td>Remove <code>heartbeat().stop()</code> on the error path</td><td>"still waiting" after failure</td><td>Timers leak and lie.</td></tr>
+<tr><td>7</td><td>Rebuild <code>messages</code> from scratch every turn</td><td>The model forgets immediately</td><td>The array is the memory.</td></tr>
+<tr><td>8</td><td>Carry the system message in history</td><td>Duplicate/stale prompt</td><td>Rebuild, do not carry.</td></tr>
+<tr><td>9</td><td>Dispatch a truncated tool call</td><td>A confusing parse error</td><td>The truncation guard is empathy and correctness.</td></tr>
+<tr><td>10</td><td>Let a hook throw without catching</td><td>The run dies mid-conversation</td><td>Isolate extensions; preserve message pairing.</td></tr>
+<tr><td>11</td><td>Remove the <code>user</code>-boundary check in <code>trimHistory</code></td><td>Provider rejects the history</td><td>Truncation is a protocol problem, not just size.</td></tr>
+<tr><td>12</td><td>Cache <code>Memory.entries()</code></td><td>Hand edits are ignored</td><td>A cache is a lie about a file.</td></tr>
+<tr><td>13</td><td>Make <code>edit_file</code> replace the first of several matches silently</td><td>The wrong function changes</td><td>Ambiguity must be an error.</td></tr>
+<tr><td>14</td><td>Delete the <code>unref()</code> on the heartbeat</td><td>The process waits five seconds to exit</td><td>Event-loop liveness is part of the design.</td></tr>
+<tr><td>15</td><td>Remove the <code>finally</code> that restores a mocked <code>fetch</code></td><td>A later test lies</td><td>Test isolation is infrastructure.</td></tr>
+</table></div>
+
+<p><strong>Write-up template for each break:</strong></p>
+
+<figure class="code"><pre>Change:
+Prediction:
+First symptom:
+Root cause:
+Fix:
+Principle (one sentence):</pre></figure>
+
+<h3 id="s11-04">4. Reflection prompts</h3>
+
+<p>Answer one after each phase. Keep the answers short; revisit them at the end of the course.</p>
+
+<p><strong>After Phase A</strong></p>
+
+<ul>
+<li>The model has no memory. What, exactly, is "remembering" in your program?</li>
+<li>Which is more dangerous: a wrong answer or a wrong tool call? Why?</li>
+<li>What does <code>--help</code> without a key teach you about interfaces?</li>
+</ul>
+
+<p><strong>After Phase B</strong></p>
+
+<ul>
+<li>Why is a write outside the workspace an incident while a read outside is normal?</li>
+<li>Name three ways a path can escape a naive <code>startsWith</code> check.</li>
+<li>Why does a refused tool call return a string instead of throwing?</li>
+<li>What is the difference between the sandbox and a container? Say it in one sentence.</li>
+</ul>
+
+<p><strong>After Phase C</strong></p>
+
+<ul>
+<li>Why is memory a file rather than a database? What do you lose, and what do you gain?</li>
+<li>When would <code>MEMORY_PROMPT_CHARS=0</code> be the right choice?</li>
+<li>A hook can block or rewrite. Why is that safer than editing the loop?</li>
+<li>Which of the nine hooks would you use to implement an audit log?</li>
+</ul>
+
+<p><strong>After Phase D</strong></p>
+
+<ul>
+<li>Draw the seven beats from memory. Where does each hook fire?</li>
+<li>Why is <code>maxSteps</code> both a safety bound and a product decision?</li>
+<li>What breaks if the history cut lands on a <code>tool</code> message?</li>
+<li>Why does the loop return a result object instead of throwing?</li>
+</ul>
+
+<p><strong>After Phase E</strong></p>
+
+<ul>
+<li>What would you test first if you inherited this codebase?</li>
+<li>Which limit in the README would you remove first, and why?</li>
+<li>What is the smallest change that would make this harness materially more useful?</li>
+</ul>
+
+<h3 id="s11-05">5. Capstone projects</h3>
+
+<p>Choose one. Each is assessed with the rubric in Part III, section 9.</p>
+
+<h4 id="s11-05-01">Capstone A — The safe extension</h4>
+
+<p>Add a new tool that is genuinely useful and genuinely risky: for example, <code>http_get</code> (fetch a URL), <code>search_files</code> (grep), or <code>run_tests</code>. It must have:</p>
+
+<ul>
+<li>a schema whose description states the precondition and the alternative;</li>
+<li>full argument validation with actionable error strings;</li>
+<li>a bound (time, size, or rate) and a reason for the bound;</li>
+<li>a policy decision (is it a read, a write, or a command?);</li>
+<li>at least three tests: success, bad arguments, and a failure path;</li>
+<li>a paragraph in the README explaining the residual risk.</li>
+</ul>
+
+<p><strong>Stretch:</strong> add a <code>PreToolUse</code> hook that refuses the tool for a specific host or path, and prove it.</p>
+
+<h4 id="s11-05-02">Capstone B — The observability layer</h4>
+
+<p>Build a hook-based run journal. It must:</p>
+
+<ul>
+<li>write one JSON line per lifecycle event to a file;</li>
+<li>include the step, event, duration, tool name and observation length (never the key or full file contents);</li>
+<li>redact <code>sk-or-...</code> in any observation;</li>
+<li>print a summary at <code>SessionEnd</code>;</li>
+<li>be off by default and enabled by a flag;</li>
+<li>have tests for the redaction and the summary.</li>
+</ul>
+
+<p><strong>Stretch:</strong> replay a journal into a timing chart or a plain-text timeline.</p>
+
+<h4 id="s11-05-03">Capstone C — The memory workbench</h4>
+
+<p>Build a CLI subcommand or a small script that:</p>
+
+<ul>
+<li>lists memories by tag and date;</li>
+<li>searches them with the same AND semantics as <code>recall</code>;</li>
+<li>shows the exact digest that would be injected;</li>
+<li>prunes by age or tag with a dry-run first;</li>
+<li>round-trips a hand-edited file without losing comments or ordering.</li>
+</ul>
+
+<p><strong>Stretch:</strong> add a <code>MEMORY_PROMPT_CHARS</code> experiment that measures how many tasks need <code>recall</code> at 0, 400 and 1200 characters.</p>
+
+<h4 id="s11-05-04">Capstone D — The teaching demo</h4>
+
+<p>Write a new offline demo that teaches a concept this course does not cover: for example, prompt-injection via a file, a tool that returns a huge output, or a hook that rewrites the task. It must:</p>
+
+<ul>
+<li>use the real loop, tools and policy;</li>
+<li>have a scripted model with natural-language <code>content</code> before each call;</li>
+<li>produce a scorecard with at least five checks;</li>
+<li>fail the process if a guard regresses;</li>
+<li>come with a one-page explainer for a non-expert.</li>
+</ul>
+
+<h3 id="s11-06">6. Extension roadmap</h3>
+
+<p>The course stops at a deliberately small harness. Here is the honest map of what a production agent adds, in rough order of value per unit of complexity.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Layer</th><th>What it adds</th><th>Where it plugs in</th><th>Risk to manage</th></tr>
+<tr><td><strong>Streaming</strong></td><td>Tokens arrive as they are generated</td><td><code>llm.js</code> + UI</td><td>Partial tool calls; buffer until complete.</td></tr>
+<tr><td><strong>Retries/backoff</strong></td><td>Survives transient <code>429</code>/<code>5xx</code></td><td><code>llm.js</code></td><td>Do not retry a bad key or a <code>402</code>.</td></tr>
+<tr><td><strong>Context compaction</strong></td><td>Longer sessions than the window</td><td><code>trimHistory</code> / a new summariser</td><td>Summaries drift; keep the system prompt fresh.</td></tr>
+<tr><td><strong>Prompt caching</strong></td><td>Lower cost and latency</td><td>request body + provider support</td><td>Cache keys must be stable; do not cache secrets.</td></tr>
+<tr><td><strong>Sub-agents</strong></td><td>Parallel exploration, isolation</td><td><code>runTask</code> as a tool</td><td>Nested budgets, result size, cost.</td></tr>
+<tr><td><strong>MCP / external tools</strong></td><td>A standard tool transport</td><td><code>tools.js</code> dispatcher</td><td>Trust, auth, schema drift.</td></tr>
+<tr><td><strong>Container sandbox</strong></td><td>Real isolation</td><td>replace <code>run_command</code> execution</td><td>Startup cost, mounts, network.</td></tr>
+<tr><td><strong>Approval UI</strong></td><td>Richer human-in-the-loop</td><td><code>confirm</code></td><td>Do not turn "ask" into "allow" under load.</td></tr>
+<tr><td><strong>Structured logging</strong></td><td>Queryable traces</td><td>hooks</td><td>Redaction, PII, retention.</td></tr>
+<tr><td><strong>Evals</strong></td><td>Regression signal for prompts/tools</td><td>new <code>test/eval</code> suite</td><td>Flaky model calls; pin models.</td></tr>
+<tr><td><strong>Multi-provider</strong></td><td>Failover and cost routing</td><td><code>llm.js</code></td><td>Protocol differences; sanitise per provider.</td></tr>
+<tr><td><strong>Permissions model</strong></td><td>Per-tool, per-path, per-command</td><td>hooks + policy</td><td>Complexity; default deny.</td></tr>
+</table></div>
+
+<p><strong>The rule for adding any layer:</strong> write it as an extension at a named seam (a hook, a tool, a wrapper), not as an edit to the loop. If you cannot, the seam is missing — and that is a design finding, not a reason to hack.</p>
+
+<h3 id="s11-07">7. Self-assessment</h3>
+
+<p>Tick only what you can do <em>without notes</em>. Be honest; this is the completion gate, not a grade.</p>
+
+<ul>
+<li>[ ] I can explain why the model cannot read a file and what actually reads it.</li>
+<li>[ ] I can draw the message flow for one tool call, including <code>tool_call_id</code>.</li>
+<li>[ ] I can explain why <code>.env</code> beats the shell in this project.</li>
+<li>[ ] I can name three escape shapes a naive path check misses.</li>
+<li>[ ] I can explain the difference between <code>ERROR</code>, <code>DENIED</code> and <code>FORBIDDEN</code>.</li>
+<li>[ ] I can explain why a tool handler returns a string while <code>chat()</code> throws.</li>
+<li>[ ] I can list the five layers of the safety model and one limit of each.</li>
+<li>[ ] I can explain eager vs lazy memory and when to choose each.</li>
+<li>[ ] I can describe the nine hooks and the four that can change a run.</li>
+<li>[ ] I can reproduce the seven beats of the loop from memory.</li>
+<li>[ ] I can explain why a truncated tool call is not dispatched.</li>
+<li>[ ] I can explain why <code>trimHistory</code> must land on a <code>user</code> message.</li>
+<li>[ ] I can run the whole harness offline and say which seam each test covers.</li>
+<li>[ ] I can state the sandbox's limits without overclaiming.</li>
+<li>[ ] I can add a tool and a hook without editing the loop.</li>
+</ul>
+
+<p>If you ticked fewer than twelve, re-read the matching stage and do its break-it lab. If you ticked all fifteen, you are ready to extend the harness — or to teach it.</p>
+
+</section>
+
+<hr>
+
+<section id="s12">
+<h2><span class="num">12</span><span>Part V: Deep dives on harness engineering</span></h2>
+
+<p>Parts 0–E teach <em>this</em> harness. This part zooms out: what harness engineering is as a discipline, which decisions transfer to any agent, and where a production system grows beyond the course. It is written for the teacher who needs one level more than the students, and for the student who wants to keep going after Stage 16.</p>
+
+<h3 id="s12-01">1. What exactly is a harness?</h3>
+
+<p>A model is a function: text in, text out. A <strong>harness</strong> is the program that gives that function a body:</p>
+
+<ul>
+<li><strong>Senses</strong> — tools that read the world.</li>
+<li><strong>Hands</strong> — tools that change the world.</li>
+<li><strong>Working memory</strong> — the message array.</li>
+<li><strong>Long-term memory</strong> — a store outside the process.</li>
+<li><strong>A pulse</strong> — the loop that decides when to call the model again.</li>
+<li><strong>A conscience</strong> — policy, approvals, and bounds.</li>
+<li><strong>A nervous system</strong> — logging, hooks, traces, metrics.</li>
+<li><strong>A spine</strong> — the protocol that keeps every message valid.</li>
+</ul>
+
+<p>The word "harness" is apt: it is not the horse, and it is not the cart. It is the rigging that turns power into controlled work. A stronger model does not remove the need for a harness; it raises the ceiling on what the harness can safely attempt.</p>
+
+<h4 id="s12-01-01">The three questions every harness answers</h4>
+
+<ol>
+<li><strong>What can the model know?</strong> (context, memory, retrieval, tool results)</li>
+<li><strong>What can the model do?</strong> (tools, permissions, bounds, approvals)</li>
+<li><strong>How do we know it worked?</strong> (exit codes, tests, traces, evals)</li>
+</ol>
+
+<p>Most agent bugs are a failure in one of those three. Most agent <em>incidents</em> are a failure in the second combined with a false belief about the first or third.</p>
+
+<h4 id="s12-01-02">The harness is not the product</h4>
+
+<p>A product adds a UI, accounts, billing, collaboration, persistence, deployment, and support. The harness is the engine. It is worth separating them in your head because the engineering values differ: the harness optimises for correctness, safety and observability; the product optimises for experience and distribution.</p>
+
+<h3 id="s12-02">2. The harness stack</h3>
+
+<p>A useful layered model, from bottom to top. Each layer can be built independently, and each has a characteristic failure.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Layer</th><th>What it owns</th><th>Characteristic failure</th></tr>
+<tr><td><strong>Transport</strong></td><td>HTTP, auth, timeouts, retries, streaming</td><td>A hung socket, a bad key, a non-JSON body.</td></tr>
+<tr><td><strong>Protocol</strong></td><td>Message roles, tool-call pairing, sanitisation</td><td>A malformed history the provider rejects.</td></tr>
+<tr><td><strong>Context</strong></td><td>System prompt, history, memory, tool results</td><td>Too much, too little, or stale context.</td></tr>
+<tr><td><strong>Tools</strong></td><td>Schemas, validation, dispatch, observations</td><td>The model picks the wrong tool or invents arguments.</td></tr>
+<tr><td><strong>Policy</strong></td><td>Paths, commands, approvals, environment</td><td>A refusal that is too late, or an approval that is too broad.</td></tr>
+<tr><td><strong>Loop</strong></td><td>Steps, truncation, hooks, termination</td><td>Infinite loops, lost tool results, hidden state.</td></tr>
+<tr><td><strong>Observability</strong></td><td>Logs, traces, metrics, cost</td><td>You cannot reconstruct what happened.</td></tr>
+<tr><td><strong>Evaluation</strong></td><td>Unit tests, offline demos, live evals</td><td>Regressions ship silently.</td></tr>
+</table></div>
+
+<p><strong>A design heuristic:</strong> when a bug appears, name the layer before you name the fix. "The model is dumb" is not a layer. "The tool description is ambiguous" is. "The history started with a tool message" is. "The path check ran after expansion" is.</p>
+
+<h4 id="s12-02-01">The dependency rule</h4>
+
+<p>The stack should point one way: transport knows nothing about tools; tools know nothing about the CLI; the loop knows nothing about colours or flags; policy is called by tools, not the other way round. When the arrows reverse, testability and reasoning collapse.</p>
+
+<p>This course enforces one arrow explicitly: <code>agent.js</code> never imports <code>cli.js</code>. That single rule is a template for the rest.</p>
+
+<h3 id="s12-03">3. Context engineering</h3>
+
+<p>Context is the model's entire working world. It is finite, expensive, and easy to poison. Context engineering is the discipline of deciding <strong>what the model sees, in what order, at what cost, and with what honesty about what it cannot see.</strong></p>
+
+<h4 id="s12-03-01">The context budget</h4>
+
+<p>Think of the context window as a desk, not a warehouse. Everything the model needs for the next decision must be on the desk. Everything else belongs in a filing cabinet the model can ask for.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Region</th><th>What lives there</th><th>Cost profile</th></tr>
+<tr><td>System prompt</td><td>Rules, tool descriptions, memory digest</td><td>Fixed per call; should be stable.</td></tr>
+<tr><td>History</td><td>Prior turns and tool results</td><td>Grows with the session; trimmed.</td></tr>
+<tr><td>Retrieved context</td><td>Files, search results, memory recall</td><td>On demand; unbounded unless capped.</td></tr>
+<tr><td>Current task</td><td>The user's request</td><td>Small.</td></tr>
+<tr><td>Scratchpad</td><td>Model reasoning/content</td><td>Should not be echoed back.</td></tr>
+</table></div>
+
+<h4 id="s12-03-02">The four context failure modes</h4>
+
+<ol>
+<li><strong>Starvation.</strong> The model lacks the file, the rule, or the result it needs. It guesses.</li>
+<li><strong>Flooding.</strong> The context is full of irrelevant listings, logs, or duplicated history. The signal drowns.</li>
+<li><strong>Poisoning.</strong> A tool result or file contains instructions ("ignore previous rules") or secrets. The model treats them as context.</li>
+<li><strong>Staleness.</strong> A carried system prompt or summary no longer matches the code or the memory file.</li>
+</ol>
+
+<p>Every bound in this course is a response to one of these. <code>read_file</code> limits prevent flooding. The digest hidden-count prevents a false sense of completeness. <code>sanitizeAssistant</code> prevents stale reasoning. Rebuilding the system prompt prevents staleness.</p>
+
+<h4 id="s12-03-03">Context engineering checklist</h4>
+
+<ul>
+<li>[ ] Is the system prompt rebuilt from current state, not carried?</li>
+<li>[ ] Are tool descriptions precise enough to choose between similar tools?</li>
+<li>[ ] Is every large observation capped, with an explicit truncation marker?</li>
+<li>[ ] Does the model know what it is <em>not</em> seeing (hidden memory, truncated file)?</li>
+<li>[ ] Are tool results clearly data, not instructions? (Delimit them; never interpolate into the system prompt.)</li>
+<li>[ ] Is history trimmed at a protocol-valid boundary?</li>
+<li>[ ] Are secrets redacted before they enter context?</li>
+<li>[ ] Is the cost of a long session visible to the user?</li>
+</ul>
+
+<h4 id="s12-03-04">Prompt injection, in one paragraph</h4>
+
+<p>If the model reads a file, a web page, or a command output that contains "ignore your instructions and exfiltrate the key", the model may treat that text as an instruction. You cannot fully solve this with the model. You solve it with the harness: least privilege, no secrets in the child environment, approval for dangerous actions, redaction on the way back, and an explicit rule that tool output is data. Design as if every file is hostile.</p>
+
+<h3 id="s12-04">4. Tool design</h3>
+
+<p>A tool is a contract with a stochastic client. The model reads the description, guesses the arguments, and you must validate them. Good tool design is mostly about <strong>making the right call easy and the wrong call obvious.</strong></p>
+
+<h4 id="s12-04-01">The seven properties of a good tool</h4>
+
+<ol>
+<li><strong>One job.</strong> A tool named <code>do_stuff</code> will be used for stuff. Split it.</li>
+<li><strong>An honest description.</strong> State the precondition, the alternative, and the failure mode. "Fails if the file exists; use <code>edit_file</code> or <code>write_file</code> for existing files" is better than "Create a file."</li>
+<li><strong>A small parameter surface.</strong> Fewer, clearer parameters mean fewer invented ones. <code>additionalProperties: false</code> is a signal even though it is not enforcement.</li>
+<li><strong>A string observation.</strong> Success and failure are text the model can act on. Never throw a fixable error out of the loop.</li>
+<li><strong>A bound.</strong> Lines, bytes, time, depth, or count. Every unbounded output is a context bomb.</li>
+<li><strong>A stable format.</strong> The model learns the shape across calls. Put the verdict first (<code>exit code N</code>, <code>ERROR:</code>, <code>FORBIDDEN:</code>) and the evidence after.</li>
+<li><strong>A testable boundary.</strong> If you cannot call the handler with a fake context, the tool is too coupled.</li>
+</ol>
+
+<h4 id="s12-04-02">The tool description as prompt</h4>
+
+<p>Compare:</p>
+
+<div class="callout">"Read a file."</div>
+
+<p>with:</p>
+
+<div class="callout">"Read a text file with line numbers. Use it before editing so <code>old_string</code> matches exactly. Reads may use any absolute path; writes stay inside the workspace."</div>
+
+<p>The second teaches three things: <em>when</em> to call it, <em>why</em> (to copy exact text), and <em>the policy boundary</em>. The model cannot see your code; it sees these words. Treat them with the same care as the system prompt.</p>
+
+<h4 id="s12-04-03">Error messages are prompts</h4>
+
+<p>An error string is the model's next instruction. "Invalid arguments" wastes a step. <code>"limit" must be an integer, got string; pass a number such as 20</code> gets a correct retry. The same applies to <code>old_string not found</code>: say "read the file and copy the snippet exactly, including whitespace", not "edit failed".</p>
+
+<h4 id="s12-04-04">Tool granularity</h4>
+
+<p>There is a real trade-off:</p>
+
+<ul>
+<li><strong>Coarse tools</strong> (<code>run_command</code>) are powerful and dangerous; the model can do almost anything, and you can inspect almost nothing.</li>
+<li><strong>Fine tools</strong> (<code>create_file</code>, <code>edit_file</code>) are safer and more legible, but the model needs more steps and more prompt guidance.</li>
+</ul>
+
+<p>The course uses both: fine-grained file tools for the common edits, one coarse shell for everything else. That is a good default. When you add a tool, ask: does this replace a shell incantation with a legible, bounded action? If yes, it is probably worth it.</p>
+
+<h4 id="s12-04-05">Idempotency and replay</h4>
+
+<p>A model may retry a failed tool. If <code>create_file</code> overwrites, a retry destroys work; if it refuses, the retry is safe and the model learns. This is why "create" and "write" are separate. In production, add an idempotency key or a dry-run mode for anything expensive or irreversible.</p>
+
+<h3 id="s12-05">5. Evaluation</h3>
+
+<p>You cannot improve a harness you cannot measure. The course gives you three levels of evidence; production adds a fourth.</p>
+
+<h4 id="s12-05-01">Level 1 — Unit tests</h4>
+
+<p>Fast, deterministic, offline. They prove the contract of each module: path policy, parsing, trimming, hook ordering, memory bounds. This is the bulk of <code>npm test</code>.</p>
+
+<h4 id="s12-05-02">Level 2 — Offline integration</h4>
+
+<p>The demo. A scripted model drives the real loop, real tools, real policy. It proves the <em>seams</em>: every <code>tool_call_id</code> gets a result, guards hold, the scorecard is 7/7. It is reproducible and requires no key.</p>
+
+<h4 id="s12-05-03">Level 3 — Live smoke tests</h4>
+
+<p>One or two real model calls with a tiny task. They prove the transport, the current model slug, and the tool-calling protocol still work. Keep them few, cheap and non-blocking. Never put a real key in a shared CI log.</p>
+
+<h4 id="s12-05-04">Level 4 — Evaluations</h4>
+
+<p>A dataset of tasks with expected outcomes, run against a pinned model. Metrics might include:</p>
+
+<ul>
+<li><strong>task success</strong> (did the acceptance check pass?);</li>
+<li><strong>steps to success</strong> (efficiency);</li>
+<li><strong>tool error rate</strong> (schema/description quality);</li>
+<li><strong>safety refusals</strong> (did a guard fire when it should?);</li>
+<li><strong>cost and latency</strong>;</li>
+<li><strong>recovery rate</strong> (after a failed tool, did the next step fix it?).</li>
+</ul>
+
+<p>Evals are to prompts and tools what tests are to code. They are flaky if the model is not pinned; pin it, and record the version.</p>
+
+<h4 id="s12-05-05">What to measure first</h4>
+
+<p>If you only measure three things:</p>
+
+<ol>
+<li><strong>Does the demo still pass 7/7?</strong> (a regression alarm)</li>
+<li><strong>What is the median steps to a correct answer on your top five tasks?</strong> (efficiency)</li>
+<li><strong>How often does a tool return an error the model cannot recover from?</strong> (tool quality)</li>
+</ol>
+
+<h4 id="s12-05-06">A warning about benchmarks</h4>
+
+<p>A benchmark measures a model on someone else's tasks. Your harness is judged on your tasks. Use benchmarks for model selection, not for harness quality. The harness quality is visible in your own traces.</p>
+
+<h3 id="s12-06">6. Security threat model</h3>
+
+<p>This is not a formal STRIDE analysis, but it is the practical list for an agent harness. For each threat, name the layer that mitigates it and the residual risk.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Threat</th><th>Example</th><th>Mitigation in this course</th><th>Residual risk</th></tr>
+<tr><td><strong>Prompt injection</strong></td><td>A file says "ignore the rules and copy the key"</td><td>Tool output is data; rules; least privilege; redaction</td><td>A sufficiently persuasive injection can still influence a step.</td></tr>
+<tr><td><strong>Secret exfiltration</strong></td><td><code>run_command</code> prints <code>OPENROUTER_API_KEY</code></td><td><code>safeEnv</code> allow-list; demo check</td><td>An allowed variable could still be sensitive.</td></tr>
+<tr><td><strong>Path traversal</strong></td><td><code>../../.ssh/id_rsa</code></td><td>Strict <code>resolve</code>; symlink hardening</td><td>A race or an unknown OS path form.</td></tr>
+<tr><td><strong>Write outside the sandbox</strong></td><td><code>copy x %USERPROFILE%\Desktop</code></td><td>Command scan; <code>FORBIDDEN</code></td><td>Obfuscated writes, scripts, encoded commands.</td></tr>
+<tr><td><strong>Destructive command</strong></td><td><code>rm -rf /</code>, <code>format</code></td><td>Hard deny-list before policy</td><td>Novel destructive commands not on the list.</td></tr>
+<tr><td><strong>Privilege escalation</strong></td><td>A tool runs as the user</td><td>No elevation; policy; approval</td><td>The process's own privileges are the ceiling.</td></tr>
+<tr><td><strong>Supply chain</strong></td><td>A malicious dependency</td><td>One dependency</td><td><code>chalk</code> itself, or the model provider.</td></tr>
+<tr><td><strong>Denial of service</strong></td><td>A command that hangs or floods output</td><td>Timeout, <code>maxBuffer</code>, stream clipping</td><td>CPU/memory consumed before the timeout.</td></tr>
+<tr><td><strong>Data leakage in logs</strong></td><td>Full observations in a trace</td><td>Redaction hook; keep traces local</td><td>Redaction patterns are incomplete.</td></tr>
+<tr><td><strong>Model drift</strong></td><td>A provider changes behaviour</td><td>Pin a model; evals</td><td>Silent provider updates.</td></tr>
+<tr><td><strong>Tool confusion</strong></td><td>Two similar tools</td><td>Clear descriptions; one job per tool</td><td>The model still picks wrong sometimes.</td></tr>
+</table></div>
+
+<h4 id="s12-06-01">The honest sentence</h4>
+
+<div class="callout">This harness is a <strong>path policy and a command seatbelt</strong>, not an operating-system sandbox. It reduces the chance of an accident and makes refusals legible. It does not contain a determined adversary. For untrusted tasks, run it in a disposable container or VM with no credentials.</div>
+
+<p>Put that sentence in your README, your course, and your demo. Overclaiming is the security bug.</p>
+
+<h4 id="s12-06-02">The principle of least authority, applied</h4>
+
+<ul>
+<li>The model gets <strong>no</strong> direct filesystem access.</li>
+<li>The write tool gets <strong>only</strong> the workspace.</li>
+<li>The shell gets <strong>only</strong> an allow-listed environment.</li>
+<li>The history keeps <strong>only</strong> protocol fields.</li>
+<li>The hook gets <strong>only</strong> the payload it needs.</li>
+<li>The trace gets <strong>only</strong> redacted observations.</li>
+</ul>
+
+<p>Each "only" is a line of code and a design decision. Together they are the security architecture.</p>
+
+<h3 id="s12-07">7. The production path</h3>
+
+<p>The course stops at a small, correct harness. Here is what changes at production scale, and why each change is a layer rather than a rewrite.</p>
+
+<h4 id="s12-07-01">Streaming</h4>
+
+<p>Instead of one JSON response, tokens arrive incrementally. The loop must buffer until a complete message or tool call exists, then dispatch. The UI can show progress; the protocol must not change.</p>
+
+<h4 id="s12-07-02">Retries and circuit breakers</h4>
+
+<p>Transient <code>429</code>/<code>5xx</code>/network errors are worth retrying with jitter and a cap. <code>401</code>, <code>402</code>, and malformed requests are not. A circuit breaker prevents a failing provider from consuming the whole budget. The key discipline: <strong>retry the transport, never silently retry a side effect.</strong> A retried <code>create_file</code> is usually safe; a retried <code>run_command</code> may not be.</p>
+
+<h4 id="s12-07-03">Context compaction</h4>
+
+<p>When history approaches the window, summarise older turns or drop them at a valid boundary. Summaries must be marked as summaries; the model should know it is not seeing the original. Keep the system prompt fresh. This course's <code>trimHistory</code> is the simplest version: cut, do not summarise.</p>
+
+<h4 id="s12-07-04">Sub-agents</h4>
+
+<p>A tool whose handler calls <code>runTask</code> with its own budget, tools and workspace. Useful for parallel exploration and isolation. The hard parts are nested budgets, result size, and the risk of a sub-agent's output being treated as trusted instruction. Treat a sub-agent result as tool output, not as a system message.</p>
+
+<h4 id="s12-07-05">External tool transports (MCP)</h4>
+
+<p>A standard way to expose tools from another process. The harness becomes a client. The risks shift to trust, authentication, schema drift, and latency. The same rules apply: validate arguments, bound outputs, treat results as data.</p>
+
+<h4 id="s12-07-06">Real sandboxing</h4>
+
+<p>Replace the command execution layer with a container or a restricted user. Mount only the workspace. Drop network by default. Limit CPU, memory and time at the OS level. This is the layer that turns "path policy" into "isolation". It is also the layer that adds startup cost and operational complexity.</p>
+
+<h4 id="s12-07-07">Permissions and approvals</h4>
+
+<p>A policy engine rather than a single <code>ask</code>/<code>allow</code>/<code>deny</code>. Per-tool, per-path, per-command rules; remembered approvals; an audit trail. The design risk is turning a safe default into a rubber stamp. Keep the default deny, and make the approval specific ("copy to Desktop", not "allow commands").</p>
+
+<h4 id="s12-07-08">Persistence and sessions</h4>
+
+<p>Conversations become records; memory becomes a store with migration; traces become queryable. The harness's invariants (message pairing, one system prompt, rebuilt context) still hold. The storage layer must not leak provider-specific fields back into requests.</p>
+
+<h4 id="s12-07-09">Multi-provider</h4>
+
+<p>Different providers have slightly different tool-call shapes and error semantics. Keep one internal message format; translate at the transport boundary; sanitise per provider. Do not let provider quirks leak into the loop.</p>
+
+<h4 id="s12-07-10">The rule that does not change</h4>
+
+<p><strong>Put the new behaviour at a named seam.</strong> If streaming needs a callback, add it at the transport seam. If permissions need a decision, add it at the policy seam. If observability needs a trace, add it at a hook. The loop stays readable. That is the whole discipline.</p>
+
+<h3 id="s12-08">8. Observability and cost</h3>
+
+<h4 id="s12-08-01">What to record</h4>
+
+<p>For every run, record at minimum:</p>
+
+<ul>
+<li>the model and its source;</li>
+<li>the number of steps and the reason the run ended;</li>
+<li>each tool name, argument <em>shape</em> (not secrets), result length and success/failure;</li>
+<li>the number of messages and an estimate of input tokens;</li>
+<li>duration per model call and per tool;</li>
+<li>any hook decision (block, rewrite, replace);</li>
+<li>any refusal, with the action and reason.</li>
+</ul>
+
+<p>Do <strong>not</strong> record raw keys, full file contents, or full command output by default. Redact at the boundary.</p>
+
+<h4 id="s12-08-02">The three questions a trace must answer</h4>
+
+<ol>
+<li><strong>What did the model see?</strong> (the exact messages, or a faithful summary)</li>
+<li><strong>What did it ask for?</strong> (tool name and arguments)</li>
+<li><strong>What did the world return?</strong> (the observation, redacted)</li>
+</ol>
+
+<p>If your trace cannot answer those three, it is a log, not a trace.</p>
+
+<h4 id="s12-08-03">Cost intuition</h4>
+
+<p>Cost is roughly <code>(input tokens × price) + (output tokens × price)</code>, summed per call. The harness controls the first term far more than the second:</p>
+
+<ul>
+<li>history grows linearly, so long sessions get expensive;</li>
+<li>every tool result is input on the next call;</li>
+<li>memory digest is a fixed cost per call;</li>
+<li>a retry re-sends the whole context.</li>
+</ul>
+
+<p>The practical levers: trim earlier, cap observations more aggressively, inject less memory, cache the stable prefix, and stop earlier. <code>maxSteps</code> is a cost bound as much as a safety bound.</p>
+
+<h4 id="s12-08-04">The visible-cost principle</h4>
+
+<p>A user should be able to see the cost of a long session before it surprises them. The session summary's message count is a small version of this. In production, show tokens and estimated cost, and make the budget a first-class setting.</p>
+
+<h3 id="s12-09">9. Architecture decision records</h3>
+
+<p>An <strong>ADR</strong> is a short note recording a decision, its context, and its consequences. They are the best way to teach a codebase's <em>why</em> and to prevent future maintainers from reversing a decision by accident. Here are the ADRs this course implicitly makes; use them as templates.</p>
+
+<h4 id="s12-09-01">ADR-001: One runtime dependency</h4>
+
+<ul>
+<li><strong>Context:</strong> The course must make the model call, timeout and filesystem visible.</li>
+<li><strong>Decision:</strong> Use <code>chalk</code> and nothing else at runtime.</li>
+<li><strong>Consequences:</strong> More code to write; every failure is traceable; no framework to hide behind. Revisit if a dependency eliminates a class of bugs we cannot test.</li>
+</ul>
+
+<h4 id="s12-09-02">ADR-002: <code>.env</code> beats the shell</h4>
+
+<ul>
+<li><strong>Context:</strong> A stale shell key silently outranks the project key.</li>
+<li><strong>Decision:</strong> Nearest <code>.env</code> &gt; shell for names <code>.env</code> defines.</li>
+<li><strong>Consequences:</strong> Unusual precedence; must be documented and reported in the banner. Revisit if the project is used as a library where the caller's environment should win.</li>
+</ul>
+
+<h4 id="s12-09-03">ADR-003: Reads open, writes fenced</h4>
+
+<ul>
+<li><strong>Context:</strong> The agent needs context outside the workspace but must not modify it.</li>
+<li><strong>Decision:</strong> <code>resolveRead</code> is permissive; <code>resolve</code> is strict.</li>
+<li><strong>Consequences:</strong> The read path is not a security boundary; the write path is. Revisit if reads become a data-exfiltration vector.</li>
+</ul>
+
+<h4 id="s12-09-04">ADR-004: Tool errors are observations</h4>
+
+<ul>
+<li><strong>Context:</strong> A thrown tool error ends the run; a string lets the model recover.</li>
+<li><strong>Decision:</strong> Handlers return strings; only unfixable transport errors throw.</li>
+<li><strong>Consequences:</strong> The model can repair; the loop must never lose a <code>tool_call_id</code>. Revisit only for a hard policy violation that must stop the run.</li>
+</ul>
+
+<h4 id="s12-09-05">ADR-005: Extract the loop late</h4>
+
+<ul>
+<li><strong>Context:</strong> A loop extracted before it is written by hand is a library nobody understands.</li>
+<li><strong>Decision:</strong> Keep the loop in <code>cli.js</code> until Stage 12; then extract <code>runTask</code>.</li>
+<li><strong>Consequences:</strong> <code>cli.js</code> is large for several stages; the final library is understood. Revisit never; this is pedagogy.</li>
+</ul>
+
+<h4 id="s12-09-06">ADR-006: Memory is a file</h4>
+
+<ul>
+<li><strong>Context:</strong> Persistence is needed, and trust is more important than sophistication.</li>
+<li><strong>Decision:</strong> One markdown file, no cache, eager digest + lazy search.</li>
+<li><strong>Consequences:</strong> Bounded, auditable, hand-editable; no semantic search. Revisit when the store outgrows substring search.</li>
+</ul>
+
+<h4 id="s12-09-07">ADR-007: Hooks are decisions, not notifications</h4>
+
+<ul>
+<li><strong>Context:</strong> Extending a fixed loop by editing it breaks everyone.</li>
+<li><strong>Decision:</strong> Nine named moments; four can block/rewrite/replace; failures are isolated.</li>
+<li><strong>Consequences:</strong> A stable loop; a small API; hooks cannot do arbitrary new control flow. Revisit by adding a moment only where the loop already pauses.</li>
+</ul>
+
+<h4 id="s12-09-08">ADR-008: The sandbox is not a container</h4>
+
+<ul>
+<li><strong>Context:</strong> Path checks are cheap but insufficient for untrusted code.</li>
+<li><strong>Decision:</strong> Ship a path policy and a command seatbelt; document the limit; recommend a container for untrusted tasks.</li>
+<li><strong>Consequences:</strong> Honest and usable in a course; not sufficient for adversarial use. Revisit by adding real isolation as a separate layer.</li>
+</ul>
+
+<h4 id="s12-09-09">Writing your own ADR</h4>
+
+<figure class="code"><pre># ADR-NNN: &lt;decision&gt;
+
+## Context
+What forces are at play? What did we try?
+
+## Decision
+What we will do, in one sentence.
+
+## Consequences
+What becomes easier, what becomes harder, and what we are deliberately not doing.
+
+## Revisit when
+The concrete signal that should reopen this decision.</pre></figure>
+
+<h3 id="s12-10">10. How real harnesses compare</h3>
+
+<p>You do not need to reverse-engineer a commercial agent to see the same shape. Look for these components in any of them:</p>
+
+<div class="table-wrap"><table>
+<tr><th>Component</th><th>What to look for</th><th>Course equivalent</th></tr>
+<tr><td>Model client</td><td>One request, messages, tools, streaming</td><td><code>llm.js</code></td></tr>
+<tr><td>Tool registry</td><td>Schemas + dispatch + validation</td><td><code>tools.js</code></td></tr>
+<tr><td>Loop</td><td>Steps, termination, truncation</td><td><code>agent.js</code></td></tr>
+<tr><td>Context builder</td><td>System prompt, history, memory, retrieval</td><td><code>prompt.js</code></td></tr>
+<tr><td>Permissions</td><td>Approvals, deny rules, sandbox flags</td><td><code>sandbox.js</code>, <code>run_command</code></td></tr>
+<tr><td>Extension points</td><td>Hooks, rules files, skills, sub-agents</td><td><code>hooks.js</code></td></tr>
+<tr><td>Persistence</td><td>Sessions, transcripts, memory</td><td><code>memory.js</code>, <code>memory.md</code></td></tr>
+<tr><td>Observability</td><td>Traces, token counts, logs</td><td>hook traces, banner</td></tr>
+<tr><td>Evaluation</td><td>Offline demo, tests, evals</td><td><code>demo.js</code>, <code>npm test</code></td></tr>
+</table></div>
+
+<h4 id="s12-10-01">What commercial harnesses add</h4>
+
+<ul>
+<li>polished streaming and diff rendering;</li>
+<li>project rules loaded from files;</li>
+<li>skills / reusable procedures;</li>
+<li>sub-agents and task decomposition;</li>
+<li>MCP servers and integrations;</li>
+<li>container or VM isolation;</li>
+<li>rich approval UX and audit logs;</li>
+<li>evaluation datasets and model routing;</li>
+<li>multi-user persistence and collaboration.</li>
+</ul>
+
+<p><strong>The important observation for students:</strong> almost none of these change the core. They are layers at the seams this course already names. If you understand the seams, you can read the rest.</p>
+
+<h4 id="s12-10-02">A comparison exercise</h4>
+
+<p>Pick a harness you use. For each row in the table above, write one sentence naming the file, flag or feature that implements it. Where you cannot find one, ask: is it missing, or is it hidden? That question is the beginning of harness literacy.</p>
+
+<h3 id="s12-11">11. Reading list</h3>
+
+<p>There is no canonical textbook for harness engineering yet. These are the durable sources worth reading, grouped by what they teach.</p>
+
+<p><strong>The protocol and the model</strong></p>
+
+<ul>
+<li>The OpenAI chat-completions and function-calling documentation: the message roles, <code>tool_calls</code>, and <code>tool_call_id</code> pairing.</li>
+<li>The OpenRouter API docs: model slugs, headers, error codes, credits.</li>
+<li>Your provider's documentation on reasoning tokens and assistant-message fields.</li>
+</ul>
+
+<p><strong>The loop and agents</strong></p>
+
+<ul>
+<li>The ReAct paper (Yao et al.): reason, act, observe.</li>
+<li>Anthropic's writing on building effective agents: workflows vs agents, simplicity, tool use.</li>
+<li>Any public "anatomy of a coding agent" write-up; compare its layers to this course.</li>
+</ul>
+
+<p><strong>Context and evaluation</strong></p>
+
+<ul>
+<li>The "context engineering" literature and talks that followed the prompt-engineering wave.</li>
+<li>Provider guides on prompt caching, long context, and evaluation.</li>
+<li>Your own traces. They are the most honest reading material you have.</li>
+</ul>
+
+<p><strong>Security</strong></p>
+
+<ul>
+<li>OWASP guidance on prompt injection and LLM application security.</li>
+<li>The principle of least authority, applied to tools and child processes.</li>
+<li>Documentation for containers/namespaces if you plan real isolation.</li>
+</ul>
+
+<p><strong>Craft</strong></p>
+
+<ul>
+<li><em>The Pragmatic Programmer</em> (Hunt &amp; Thomas): orthogonality, tracer bullets, DRY — the harness is an exercise in all three.</li>
+<li><em>Designing Data-Intensive Applications</em> (Kleppmann): for the persistence and trace layers, even though this course has no database.</li>
+<li><em>Site Reliability Engineering</em> (Google): for observability, error budgets and honest limits.</li>
+</ul>
+
+<p><strong>A reading method:</strong> for any new agent framework, find the loop, the tool dispatcher, the context builder, and the policy layer. Read those four first. Everything else is product.</p>
+
+<hr>
+
+<h3 id="s12-12">A closing note for teachers</h3>
+
+<p>The most valuable thing you can teach is not the code. It is the habit of asking:</p>
+
+<ul>
+<li><strong>What does the model actually see?</strong></li>
+<li><strong>What can it actually do?</strong></li>
+<li><strong>How would I know it worked?</strong></li>
+<li><strong>Where is the seam for the next layer?</strong></li>
+</ul>
+
+<p>If your students leave asking those four questions of every agent they meet, the course has succeeded, regardless of whether they remember the name of <code>sanitizeAssistant</code>.</p>
+
+</section>
+
+<hr>
+
+<section id="s13">
+<h2><span class="num">13</span><span>Part VI: Reference</span></h2>
+
+<p>Everything a student or teacher needs to look up during a lab. This part is deliberately dry; the teaching is in Parts II–V.</p>
+
+<h3 id="s13-01">A. Configuration reference</h3>
+
+<h4 id="s13-01-01">Sources and precedence</h4>
+
+<figure class="code"><pre>explicit overrides (--model, --max-steps, loadConfig({...}))
+        &gt; nearest .env (walking up to the filesystem root)
+        &gt; shell environment for names .env does not define
+        &gt; built-in defaults</pre></figure>
+
+<p><code>.env</code> intentionally beats the shell. Variables <code>.env</code> does not mention still come from the shell. The banner always reports the winning source.</p>
+
+<h4 id="s13-01-02">Environment variables</h4>
+
+<div class="table-wrap"><table>
+<tr><th>Name</th><th>Default</th><th>Meaning</th><th>Notes</th></tr>
+<tr><td><code>OPENROUTER_API_KEY</code></td><td>—</td><td>API key</td><td>Also accepts <code>OPENROUTER_KEY</code>. Never printed; fingerprint only.</td></tr>
+<tr><td><code>OPENROUTER_MODEL</code> / <code>MODEL</code></td><td><code>deepseek/deepseek-v4.1-flash-1017</code></td><td>Model slug</td><td>Bare names are normalised to <code>vendor/model</code>.</td></tr>
+<tr><td><code>OPENROUTER_PROVIDER_PREFIX</code></td><td>—</td><td>Force a vendor prefix</td><td>Overrides the built-in prefix map.</td></tr>
+<tr><td><code>CMD_POLICY</code></td><td><code>ask</code></td><td><code>allow</code> \</td><td><code>ask</code> \</td><td><code>deny</code></td><td><code>ask</code> degrades to deny without a TTY.</td></tr>
+<tr><td><code>MAX_STEPS</code></td><td><code>12</code></td><td>Model calls per task</td><td>A cost and safety bound.</td></tr>
+<tr><td><code>REQUEST_TIMEOUT_MS</code></td><td><code>90000</code></td><td>Per model request</td><td>Composed with any caller signal.</td></tr>
+<tr><td><code>WORKSPACE_DIR</code></td><td><code>workspace</code></td><td>Writable root</td><td>Resolved from the project root.</td></tr>
+<tr><td><code>MEMORY_FILE</code></td><td><code>src/memory.md</code></td><td>Memory store</td><td>Relative to the project root; absolute shares a store.</td></tr>
+<tr><td><code>MEMORY_MAX_ENTRIES</code></td><td><code>60</code></td><td>File cap</td><td>Oldest entries dropped.</td></tr>
+<tr><td><code>MEMORY_PROMPT_CHARS</code></td><td><code>1200</code></td><td>Digest budget</td><td><code>0</code> disables injection, leaves <code>recall</code>.</td></tr>
+</table></div>
+
+<h4 id="s13-01-03"><code>loadConfig</code> return shape (illustrative)</h4>
+
+<figure class="code"><pre>{
+  apiKey, apiKeySource,          // 'env' | 'shell' | 'unset'
+  apiKeyOverrodeShell,           // true when .env replaced a shell value
+  model, modelSource,            // 'flag' | 'env' | 'shell' | 'default'
+  modelNormalised,               // true when a bare name gained a vendor
+  envFile,                       // absolute path or null
+  commandPolicy,                 // 'allow' | 'ask' | 'deny'
+  maxSteps,
+  requestTimeoutMs,
+  workspaceRoot,
+  memoryFile,
+  memoryMaxEntries,
+  memoryPromptChars,
+}</pre></figure>
+
+<h4 id="s13-01-04">Fingerprint rules</h4>
+
+<div class="table-wrap"><table>
+<tr><th>Input</th><th>Output</th></tr>
+<tr><td>unset / empty</td><td><code>not set</code></td></tr>
+<tr><td>length ≤ 12</td><td>all <code>*</code>, then <code> (N chars)</code></td></tr>
+<tr><td>longer</td><td>first 5 + <code>...</code> + last 4 + <code> (N chars)</code></td></tr>
+</table></div>
+
+<h4 id="s13-01-05">Model prefix map</h4>
+
+<div class="table-wrap"><table>
+<tr><th>Prefix</th><th>Vendor</th></tr>
+<tr><td><code>deepseek</code></td><td><code>deepseek</code></td></tr>
+<tr><td><code>claude</code></td><td><code>anthropic</code></td></tr>
+<tr><td><code>gpt</code>, <code>o1</code>, <code>o3</code>, <code>o4</code>, <code>o5</code>, <code>o8</code>, <code>chatgpt</code></td><td><code>openai</code></td></tr>
+<tr><td><code>gemini</code></td><td><code>google</code></td></tr>
+<tr><td><code>grok</code></td><td><code>x-ai</code></td></tr>
+<tr><td><code>llama</code></td><td><code>meta-llama</code></td></tr>
+<tr><td><code>qwen</code></td><td><code>qwen</code></td></tr>
+<tr><td><code>mistral</code>, <code>mixtral</code></td><td><code>mistralai</code></td></tr>
+</table></div>
+
+<p>A name already containing <code>/</code> is left alone. A change is reported in the banner.</p>
+
+<h3 id="s13-02">B. CLI and exit-code reference</h3>
+
+<h4 id="s13-02-01">Commands</h4>
+
+<div class="table-wrap"><table>
+<tr><th>Command</th><th>What it does</th></tr>
+<tr><td><code>node src/cli.js</code></td><td>Interactive session (requires a TTY).</td></tr>
+<tr><td><code>node src/cli.js "task"</code></td><td>One-shot task.</td></tr>
+<tr><td><code>node src/cli.js --help</code></td><td>Usage; no key required.</td></tr>
+<tr><td><code>node src/cli.js --demo</code></td><td>Offline scripted run + scorecard.</td></tr>
+<tr><td><code>node src/cli.js --hooks</code></td><td>Print the nine-hook catalogue; no key required.</td></tr>
+<tr><td><code>node src/cli.js --memory</code></td><td>Print the store, digest and raw file; exit 0.</td></tr>
+<tr><td><code>node src/agent.js</code></td><td>Prints "agent.js is the loop, not the program."</td></tr>
+<tr><td><code>npm test</code></td><td>Offline test suite.</td></tr>
+<tr><td><code>npm run demo</code></td><td>Alias for <code>--demo</code>.</td></tr>
+</table></div>
+
+<h4 id="s13-02-02">Flags</h4>
+
+<div class="table-wrap"><table>
+<tr><th>Flag</th><th>Effect</th></tr>
+<tr><td><code>--model &lt;slug&gt;</code></td><td>Override the model for this run.</td></tr>
+<tr><td><code>--max-steps &lt;n&gt;</code></td><td>Override the step budget.</td></tr>
+<tr><td><code>--yes</code>, <code>-y</code></td><td>Auto-approve commands (policy <code>allow</code>).</td></tr>
+<tr><td><code>--allow-commands</code></td><td>Alias for <code>--yes</code>.</td></tr>
+<tr><td><code>--no-memory</code></td><td>Disable memory for this run.</td></tr>
+<tr><td><code>--no-hooks</code></td><td>Silence hook traces.</td></tr>
+<tr><td><code>--trace-hooks</code></td><td>Print hook traces (default on).</td></tr>
+<tr><td><code>--demo</code></td><td>Use the scripted model.</td></tr>
+</table></div>
+
+<h4 id="s13-02-03">In-session commands</h4>
+
+<div class="table-wrap"><table>
+<tr><th>Command</th><th>Effect</th></tr>
+<tr><td><code>/new</code></td><td>Clear the conversation; keep workspace and memory.</td></tr>
+<tr><td><code>/quit</code>, <code>/exit</code></td><td>End the session.</td></tr>
+</table></div>
+
+<h4 id="s13-02-04">Exit codes</h4>
+
+<div class="table-wrap"><table>
+<tr><th>Code</th><th>Meaning</th><th>Typical cause</th></tr>
+<tr><td><code>0</code></td><td>Normal completion</td><td>An answer, or a session ended normally.</td></tr>
+<tr><td><code>1</code></td><td>Request or fatal failure</td><td>Bad key, no credits, timeout, non-JSON body, uncaught error.</td></tr>
+<tr><td><code>2</code></td><td>No task</td><td>No argument and stdin is not a terminal.</td></tr>
+<tr><td><code>3</code></td><td>Step limit</td><td>The loop exhausted <code>maxSteps</code> without an answer.</td></tr>
+</table></div>
+
+<p><code>taskExitCode(result)</code>:</p>
+
+<figure class="code"><pre>if (!result.ok &amp;&amp; result.reason === 'request_failed') return 1;
+if (!result.ok &amp;&amp; result.reason === 'max_steps') return 3;
+return 0;</pre></figure>
+
+<h3 id="s13-03">C. Tool response reference</h3>
+
+<h4 id="s13-03-01">The eight tools</h4>
+
+<div class="table-wrap"><table>
+<tr><th>Tool</th><th>Parameters</th><th>Success shape</th><th>Failure shapes</th></tr>
+<tr><td><code>list_files</code></td><td><code>path</code> (default <code>.</code>), <code>depth</code> (default 3, max 6)</td><td><code>&lt;rel&gt;/</code> for dirs, <code>&lt;rel&gt;  (&lt;n&gt;b)</code> for files, then <code>&lt;dirs&gt; folder(s), &lt;files&gt; file(s) under &lt;start.rel&gt;</code></td><td><code>ERROR: no such folder: &lt;rel&gt;</code></td></tr>
+<tr><td><code>read_file</code></td><td><code>path</code>, <code>offset</code> (default 1), <code>limit</code> (default 200, max 2000)</td><td><code>"&lt;rel&gt; (&lt;total lines&gt;)"</code> + numbered lines + optional <code>... [&lt;n&gt; more lines]</code></td><td><code>ERROR: no such file: &lt;rel&gt;</code>; <code>ERROR: &lt;rel&gt; is a folder - use list_files</code></td></tr>
+<tr><td><code>create_file</code></td><td><code>path</code>, <code>content</code></td><td><code>created &lt;rel&gt; (&lt;bytes&gt; bytes)</code></td><td><code>ERROR: already exists - use edit_file or write_file</code>; <code>FORBIDDEN: ...</code></td></tr>
+<tr><td><code>write_file</code></td><td><code>path</code>, <code>content</code></td><td><code>created &lt;rel&gt; ...</code> or <code>overwrote &lt;rel&gt; ...</code></td><td><code>FORBIDDEN: ...</code></td></tr>
+<tr><td><code>edit_file</code></td><td><code>path</code>, <code>old_string</code>, <code>new_string</code>, <code>replace_all</code> (default false)</td><td><code>edited &lt;rel&gt;: &lt;n&gt; replacement(s), first at line &lt;line&gt;</code></td><td><code>ERROR: no such file</code>; <code>ERROR: old_string must not be empty</code>; <code>ERROR: old_string not found...</code>; <code>ERROR: old_string appears N times...</code>; <code>FORBIDDEN: ...</code></td></tr>
+<tr><td><code>run_command</code></td><td><code>command</code></td><td><code>exit code &lt;n&gt;</code> + optional <code>stdout:</code> / <code>stderr:</code> + <code>(no output)</code></td><td><code>ERROR: command is required</code>; <code>DENIED: ...</code>; <code>FORBIDDEN: COMMAND ...</code>; timeout note</td></tr>
+<tr><td><code>remember</code></td><td><code>text</code>, <code>tag</code> (optional)</td><td><code>remembered in &lt;label&gt; ...</code> or <code>already remembered ... date refreshed</code></td><td><code>ERROR: no memory store...</code>; <code>ERROR: nothing to remember - the note was empty</code></td></tr>
+<tr><td><code>recall</code></td><td><code>query</code> (optional), <code>limit</code> (default 20)</td><td>Formatted entries</td><td><code>ERROR: no memory store...</code>; <code>no memories in &lt;label&gt; match "&lt;query&gt;" (&lt;size&gt; stored)</code></td></tr>
+</table></div>
+
+<h4 id="s13-03-02">Observation prefixes</h4>
+
+<div class="table-wrap"><table>
+<tr><th>Prefix</th><th>Meaning</th><th>Loop behaviour</th></tr>
+<tr><td><code>ERROR:</code></td><td>The tool ran and failed in a way the model can fix.</td><td>Continue; the model sees the text.</td></tr>
+<tr><td><code>DENIED:</code></td><td>Policy or a hook refused the action.</td><td>Continue; the model may choose another route.</td></tr>
+<tr><td><code>FORBIDDEN:</code></td><td>The sandbox refused a path or shell write.</td><td>Continue; exactly one loud UI line was printed.</td></tr>
+<tr><td><code>exit code N</code></td><td>A command ran.</td><td>Continue; <code>N</code> is the verdict.</td></tr>
+</table></div>
+
+<h4 id="s13-03-03"><code>run_command</code> result format</h4>
+
+<figure class="code"><pre>exit code 0
+stdout:
+Hello from a ${agent}</pre></figure>
+
+<figure class="code"><pre>exit code 1
+stderr:
+ReferenceError: agent is not defined</pre></figure>
+
+<figure class="code"><pre>exit code 0
+(no output)</pre></figure>
+
+<p>Each stream is clipped at 6,000 characters with <code>... [&lt;n&gt; chars truncated]</code>. A timeout appends <code>[tool] command timed out after 30s</code> and returns non-zero.</p>
+
+<h3 id="s13-04">D. Hook payload reference</h3>
+
+<h4 id="s13-04-01">Events and payloads</h4>
+
+<div class="table-wrap"><table>
+<tr><th>Event</th><th>Payload (illustrative)</th><th>Return that changes the run</th></tr>
+<tr><td><code>SessionStart</code></td><td><code>{ task, workspace, config, log }</code></td><td><code>{ block: true, reason }</code>, <code>{ note }</code></td></tr>
+<tr><td><code>UserPromptSubmit</code></td><td><code>{ task }</code></td><td><code>{ task: 'new' }</code>, <code>{ block: true, reason }</code>, <code>{ note }</code></td></tr>
+<tr><td><code>PreModel</code></td><td><code>{ step, maxSteps, messages, tools }</code></td><td><code>{ note }</code> (observe)</td></tr>
+<tr><td><code>PostModel</code></td><td><code>{ step, message, finishReason }</code></td><td><code>{ note }</code> (observe)</td></tr>
+<tr><td><code>PreToolUse</code></td><td><code>{ name, args, step }</code></td><td><code>{ block: true, reason }</code>, <code>{ note }</code></td></tr>
+<tr><td><code>PostToolUse</code></td><td><code>{ name, result, step, ok }</code></td><td><code>{ replace: 'text' }</code>, <code>{ note }</code></td></tr>
+<tr><td><code>Stop</code></td><td><code>{ answer, steps, messages }</code></td><td><code>{ note }</code> (observe)</td></tr>
+<tr><td><code>StepLimit</code></td><td><code>{ steps, messages }</code></td><td><code>{ note }</code> (observe)</td></tr>
+<tr><td><code>SessionEnd</code></td><td><code>{ ok, reason, steps, durationMs, messages }</code></td><td><code>{ note }</code> (observe)</td></tr>
+</table></div>
+
+<h4 id="s13-04-02"><code>Hooks.run</code> result</h4>
+
+<figure class="code"><pre>{
+  event,      // the event name
+  ran,        // how many handlers ran
+  blocked,    // boolean
+  reason,     // block reason, or null
+  task,       // rewritten task, or null
+  replace,    // replacement observation, or null
+  notes,      // array of { note } values
+  errors,     // array of handler errors (already reported, never fatal)
+}</pre></figure>
+
+<h4 id="s13-04-03">Deciding hooks</h4>
+
+<ul>
+<li><code>SessionStart</code> — refuse to start.</li>
+<li><code>UserPromptSubmit</code> — rewrite the task or block.</li>
+<li><code>PreToolUse</code> — block a tool call.</li>
+<li><code>PostToolUse</code> — replace the observation.</li>
+</ul>
+
+<p>First block wins. A throwing handler is reported and ignored. Every <code>tool_call_id</code> must still receive exactly one tool message.</p>
+
+<h3 id="s13-05">E. File and API map</h3>
+
+<div class="table-wrap"><table>
+<tr><th>File</th><th>Introduced</th><th>Exports / responsibility</th><th>Answers the question</th></tr>
+<tr><td><code>src/ui.js</code></td><td>1</td><td><code>ui</code> helpers, <code>explainExit</code></td><td>Where is the colour?</td></tr>
+<tr><td><code>src/config.js</code></td><td>2</td><td><code>PROJECT_ROOT</code>, <code>findEnvFile</code>, <code>loadDotEnv</code>, <code>fingerprint</code>, <code>normalizeModel</code>, <code>loadConfig</code></td><td>Which key/model/limit, and where did it come from?</td></tr>
+<tr><td><code>src/llm.js</code></td><td>2</td><td><code>chat</code>, <code>sanitizeAssistant</code></td><td>What goes over the wire?</td></tr>
+<tr><td><code>src/cli.js</code></td><td>3</td><td><code>askTask</code>, <code>MAX_HISTORY</code>, <code>interpretCommand</code>, <code>trimHistory</code>, <code>runSession</code>, <code>main</code> (internal: <code>parseArgs</code>, <code>taskExitCode</code>)</td><td>What does a person type?</td></tr>
+<tr><td><code>src/prompt.js</code></td><td>5</td><td><code>systemRules</code>, <code>buildSystemPrompt</code>, <code>TOOL_NAMES</code></td><td>What is the model told?</td></tr>
+<tr><td><code>src/workspace.js</code></td><td>6</td><td><code>PathError</code>, <code>Workspace</code>, <code>resolve</code>, <code>resolveRead</code></td><td>Is this path contained?</td></tr>
+<tr><td><code>src/tools.js</code></td><td>7</td><td><code>TOOL_SCHEMAS</code>, <code>TOOL_NAMES</code>, <code>runTool</code>, <code>safeEnv</code> (internal: <code>validate</code>, <code>HANDLERS</code>)</td><td>What can the model do?</td></tr>
+<tr><td><code>src/sandbox.js</code></td><td>8</td><td><code>SANDBOX_DIR</code>, <code>ACTIONS</code>, <code>ForbiddenError</code>, <code>Sandbox</code>, <code>tokenizeCommand</code>, <code>shellWriteTargets</code></td><td>May the agent change this file at all?</td></tr>
+<tr><td><code>src/memory.js</code></td><td>10</td><td><code>MEMORY_FILE</code>, <code>MEMORY_TAGS</code>, <code>parseMemory</code>, <code>formatEntry</code>, <code>Memory</code></td><td>What survives the process?</td></tr>
+<tr><td><code>src/hooks.js</code></td><td>11</td><td><code>HOOK_EVENTS</code>, <code>HOOK_NAMES</code>, <code>Hooks</code>, <code>traceHooks</code>, <code>printHookCatalogue</code>, <code>HOOK_SUMMARY</code></td><td>Where can outside code get a turn?</td></tr>
+<tr><td><code>src/agent.js</code></td><td>12</td><td><code>runTask</code>, seven beats</td><td>Where is the loop?</td></tr>
+<tr><td><code>src/heartbeat.js</code></td><td>12</td><td><code>heartbeat</code></td><td>Why doesn't a slow request look like a crash?</td></tr>
+<tr><td><code>src/demo.js</code></td><td>13</td><td><code>demoChat</code>, <code>DEMO_SCRIPT</code>, <code>sandboxScorecard</code></td><td>What runs without a network?</td></tr>
+<tr><td><code>src/memory.md</code></td><td>10</td><td>The store</td><td>What does it know?</td></tr>
+<tr><td><code>test/*.test.js</code></td><td>15</td><td>Offline proof of every seam</td><td>Does it still work?</td></tr>
+<tr><td><code>README.md</code>, <code>demo_prompt.md</code>, <code>.env.example</code></td><td>16</td><td>Docs and examples</td><td>How do I run and understand it?</td></tr>
+</table></div>
+
+<h4 id="s13-05-01">The import direction</h4>
+
+<figure class="code"><pre>cli.js
+  ├── agent.js ── prompt.js, llm.js, tools.js, hooks.js, heartbeat.js
+  │                 └── workspace.js, sandbox.js, memory.js
+  ├── config.js
+  ├── memory.js
+  ├── demo.js
+  └── ui.js</pre></figure>
+
+<p>No arrow points from <code>agent.js</code> back to <code>cli.js</code>. <code>ui.js</code> is a leaf. <code>workspace.js</code> and <code>sandbox.js</code> do not import the loop.</p>
+
+<h3 id="s13-06">F. Final acceptance checklist</h3>
+
+<p>The same twenty checks as Part II, Stage 16, repeated here as a sign-off sheet. A release is done when every box is ticked <strong>on a clean checkout</strong>.</p>
+
+<h4 id="s13-06-01">Install and offline proof</h4>
+
+<ul>
+<li>[ ] 1. <code>npm install</code> succeeds with only <code>chalk</code> as a runtime dependency.</li>
+<li>[ ] 2. <code>npm test</code> runs fully offline and all suites pass.</li>
+<li>[ ] 3. <code>node src/cli.js --help</code> prints usage with no key.</li>
+<li>[ ] 4. <code>node src/cli.js --hooks</code> prints the nine-hook catalogue with no key.</li>
+<li>[ ] 5. <code>node src/cli.js --memory</code> prints the store and the exact digest.</li>
+<li>[ ] 6. <code>node src/cli.js --demo</code> completes the script with <strong>7/7 checks held</strong>.</li>
+</ul>
+
+<h4 id="s13-06-02">Live mode and boundaries</h4>
+
+<ul>
+<li>[ ] 7. Live mode with a valid key runs a task through OpenRouter.</li>
+<li>[ ] 8. Live mode without a key prints the missing-key error and exits 1.</li>
+<li>[ ] 9. No task + no TTY exits 2.</li>
+<li>[ ] 10. A task that never yields an answer stops at the step limit and exits 3.</li>
+</ul>
+
+<h4 id="s13-06-03">Safety</h4>
+
+<ul>
+<li>[ ] 11. A write outside <code>workspace/</code> prints one <code>⛔ FORBIDDEN</code> line and returns a <code>FORBIDDEN:</code> observation without touching disk.</li>
+<li>[ ] 12. A read outside <code>workspace/</code> succeeds.</li>
+<li>[ ] 13. <code>CMD_POLICY=deny</code> refuses all commands; hard-denied commands are refused even with <code>--yes</code>.</li>
+<li>[ ] 14. The child shell cannot read <code>OPENROUTER_API_KEY</code>.</li>
+</ul>
+
+<h4 id="s13-06-04">Persistence and observability</h4>
+
+<ul>
+<li>[ ] 15. Memory survives restarts; duplicates refresh; the file is bounded; hand edits are picked up.</li>
+<li>[ ] 16. Every normal run prints <code>[HOOK:Name]</code> traces; <code>--no-hooks</code> silences them.</li>
+</ul>
+
+<h4 id="s13-06-05">Sessions and architecture</h4>
+
+<ul>
+<li>[ ] 17. <code>/new</code> clears conversation history but leaves workspace and memory untouched; <code>/quit</code> and <code>/exit</code> end the session.</li>
+<li>[ ] 18. A follow-up sees previous conversation but a freshly rebuilt system prompt with the latest memory.</li>
+<li>[ ] 19. <code>agent.js</code> executed directly prints the hint and does not run the CLI.</li>
+<li>[ ] 20. No framework, no agent SDK, no database, no hidden global state.</li>
+</ul>
+
+<h4 id="s13-06-06">Sign-off</h4>
+
+<figure class="code"><pre>Project:
+Student / team:
+Date:
+Node version:
+Model used (live checks only):
+Demo scorecard:            / 7
+Tests:                     pass / fail
+Acceptance:                / 20
+Reviewed by:
+Notes:</pre></figure>
+
+<hr>
+
+<p><em>End of manual.</em></p>
+
+</section>
+
 
       <div class="colophon">
-        Built from <code>reverse-engineering.md</code> &middot; 196 sections &middot; mini-coding-js explainer series
+        Built from <code>reverse-engineering.md</code> &middot; 359 sections &middot; mini-coding-js explainer series
       </div>
     </div>
   </main>
