@@ -126,6 +126,15 @@ const VENDOR_BY_PREFIX = [
   [/^mistral|^mixtral/i, 'mistralai'],
 ];
 
+/**
+ * Expand a bare model name into the `vendor/model` slug OpenRouter expects.
+ *
+ * Names that already contain a `/` pass through unchanged. A bare name uses
+ * `OPENROUTER_PROVIDER_PREFIX` when set, otherwise the VENDOR_BY_PREFIX table.
+ *
+ * @param {string} model - Model name as supplied by the user.
+ * @returns {{model: string, normalised: boolean}} The resolved slug and whether it was rewritten.
+ */
 export function normalizeModel(model) {
   const value = String(model ?? '').trim();
   if (!value || value.includes('/')) return { model: value, normalised: false };
@@ -137,6 +146,16 @@ export function normalizeModel(model) {
   return hit ? { model: `${hit[1]}/${value}`, normalised: true } : { model: value, normalised: false };
 }
 
+/**
+ * Resolve all runtime configuration from overrides, the nearest `.env` and the
+ * shell environment, recording where each value came from.
+ *
+ * Precedence: explicit overrides > `.env` > shell environment > defaults.
+ *
+ * @param {{apiKey?: string, model?: string}} [overrides={}] - Values that win over every source.
+ * @param {{envFile?: string, startDir?: string}} [options={}] - Optional explicit `.env` path or search start directory.
+ * @returns {object} The config object consumed by the CLI and Memory (key, model, workspaceRoot, commandPolicy, maxSteps, requestTimeoutMs, memory settings, sources…).
+ */
 export function loadConfig(overrides = {}, { envFile, startDir } = {}) {
   // Remember what the shell handed us before .env is applied, so we can report
   // when .env actually replaced a different value.

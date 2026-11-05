@@ -9,6 +9,12 @@ import { formatEntry } from './memory.js';
  * Schemas: exactly what the model sees. Descriptions are prompt text,
  * so they are worth tuning - the model picks tools from these words.
  * ------------------------------------------------------------------ */
+/**
+ * The tool catalogue exactly as the model sees it - names, descriptions and JSON
+ * parameter schemas. These descriptions are prompt text, so they are tuned.
+ *
+ * @type {Array<object>}
+ */
 export const TOOL_SCHEMAS = [
   {
     type: 'function',
@@ -143,6 +149,12 @@ export const TOOL_SCHEMAS = [
   },
 ];
 
+/**
+ * A lookup of each tool's parameter names to their declared types, built from
+ * TOOL_SCHEMAS and used by `validate()` before dispatch.
+ *
+ * @type {Record<string, Record<string, string>>}
+ */
 const PARAMS = Object.fromEntries(
   TOOL_SCHEMAS.map((t) => [
     t.function.name,
@@ -182,17 +194,43 @@ const ENV_ALLOW = [
   'SYSTEMROOT', 'COMSPEC', 'SHELL', 'LANG', 'LC_ALL', 'TERM',
 ];
 
+/**
+ * Build the environment for a child process from a short allow-list.
+ *
+ * The harness's own variables - above all `OPENROUTER_API_KEY` - are never
+ * passed down, so a command cannot read the key out of its environment.
+ *
+ * @param {Record<string,string|undefined>} [source=process.env] - Where to read values from.
+ * @returns {Record<string,string>} Only the allow-listed variables that are defined.
+ */
 export function safeEnv(source = process.env) {
   const env = {};
   for (const key of ENV_ALLOW) if (source[key] !== undefined) env[key] = source[key];
   return env;
 }
 
+/**
+ * Truncate a string to `limit` characters, noting how much was dropped.
+ *
+ * @param {*} text - Value to clip (coerced to string).
+ * @param {number} [limit=MAX_OUTPUT] - Maximum characters to keep.
+ * @returns {string} The clipped text, or the original when short enough.
+ */
 function clip(text, limit = MAX_OUTPUT) {
   const s = String(text ?? '');
   return s.length <= limit ? s : `${s.slice(0, limit)}\n... [${s.length - limit} chars truncated]`;
 }
 
+/**
+ * Run a shell command with the sandboxed environment, timeout and output buffer.
+ *
+ * Never rejects: failures are reported through the resolved object so the tool
+ * layer can hand them back to the model as text.
+ *
+ * @param {string} command - Command line to execute.
+ * @param {string} cwd - Working directory (the workspace root).
+ * @returns {Promise<{code: number, stdout: string, stderr: string}>} Exit code and captured output.
+ */
 function runShell(command, cwd) {
   return new Promise((resolve) => {
     exec(
@@ -220,7 +258,20 @@ function runShell(command, cwd) {
  * Handlers. Every one returns a STRING: that string is what the model
  * reads back. Errors are returned, never thrown out of the loop.
  * ------------------------------------------------------------------ */
+/**
+ * The tool implementations. Every handler returns a string (the observation the
+ * model reads back) and never throws out of `runTool`.
+ *
+ * @type {Record<string, (ws: object, args: object, ctx: object) => string|Promise<string>>}
+ */
 const HANDLERS = {
+  /**
+   * List files and folders under a path, recursively, skipping noisy folders.
+   *
+   * @param {object} ws - The Workspace used to resolve the path.
+   * @param {{path?: string, depth?: number}} args - Where to start and how deep to walk.
+   * @returns {string} The listing plus a folder/file count.
+   */
   list_files(ws, args) {
     const start = ws.resolveRead(args.path ?? '.');
     if (!fs.existsSync(start.abs)) return `ERROR: no such folder: ${start.rel}`;
@@ -254,6 +305,13 @@ const HANDLERS = {
     return `${lines.length ? lines.join('\n') : '(empty)'}\n\n${dirs} folder(s), ${files} file(s) under ${start.rel}`;
   },
 
+  /**
+   * Read a text file with line numbers and optional offset/limit paging.
+   *
+   * @param {object} ws - The Workspace used to resolve the path (reads are open).
+   * @param {{path: string, offset?: number, limit?: number}} args - File and page window.
+   * @returns {string} Numbered lines plus a note when more remain.
+   */
   read_file(ws, args) {
     const target = ws.resolveRead(args.path);
     if (!fs.existsSync(target.abs)) return `ERROR: no such file: ${target.rel}`;
@@ -276,6 +334,14 @@ const HANDLERS = {
    * `sandbox.check()` instead, which is the only code path that can print
    * FORBIDDEN - so "was this allowed?" has one answer, and one place to look. */
 
+  /**
+   * Create a new file, refusing when it already exists. Goes through the sandbox.
+   *
+   * @param {object} ws - The Workspace used by the sandbox.
+   * @param {{path: string, content: string}} args - File to create and its contents.
+   * @param {object} ctx - Tool context carrying the sandbox.
+   * @returns {string} A confirmation, or an ERROR string when the file exists.
+   */
   create_file(ws, args, ctx) {
     const sandbox = sandboxFor(ctx);
     const target = sandbox.check(ACTIONS.SAVE, args.path);
@@ -286,6 +352,14 @@ const HANDLERS = {
     return `created ${target.rel} (${bytes} bytes)`;
   },
 
+  /**
+   * Create or completely overwrite a file through the sandbox.
+   *
+   * @param {object} ws - The Workspace used by the sandbox.
+   * @param {{path: string, content: string}} args - File to write and its contents.
+   * @param {object} ctx - Tool context carrying the sandbox.
+   * @returns {string} A confirmation saying whether it created or overwrote.
+   */
   write_file(ws, args, ctx) {
     const sandbox = sandboxFor(ctx);
     const target = sandbox.check(ACTIONS.SAVE, args.path);
@@ -293,6 +367,14 @@ const HANDLERS = {
     return `${existed ? 'overwrote' : 'created'} ${target.rel} (${bytes} bytes)`;
   },
 
+  /**
+   * Replace an exact snippet in an existing file, through the sandbox.
+   *
+   * @param {object} ws - The Workspace used by the sandbox.
+   * @param {{path: string, old_string: string, new_string: string, replace_all?: boolean}} args - Edit request.
+   * @param {object} ctx - Tool context carrying the sandbox.
+   * @returns {string} A confirmation, or an ERROR explaining why nothing changed.
+   */
   edit_file(ws, args, ctx) {
     const sandbox = sandboxFor(ctx);
     const target = sandbox.check(ACTIONS.EDIT, args.path);
@@ -322,6 +404,15 @@ const HANDLERS = {
     return `edited ${target.rel}: ${replaced} replacement(s), first at line ${lineNo}`;
   },
 
+  /**
+   * Run a shell command under the command policy, hard-deny list and sandbox
+   * write-target checks.
+   *
+   * @param {object} ws - The Workspace whose root is the working directory.
+   * @param {{command: string}} args - Command line to run.
+   * @param {object} ctx - Tool context carrying the policy, sandbox and confirm callback.
+   * @returns {Promise<string>} The exit code and any stdout/stderr.
+   */
   async run_command(ws, args, ctx) {
     const command = String(args.command ?? '').trim();
     if (!command) return 'ERROR: command is required';
@@ -357,6 +448,14 @@ const HANDLERS = {
    * and `recall` is the lazy half of the same store: the digest in the
    * system prompt is bounded, so older notes have to be asked for.        */
 
+  /**
+   * Save a durable note to long-term memory.
+   *
+   * @param {object} ws - Unused; kept for the uniform handler signature.
+   * @param {{text: string, tag?: string}} args - The note and its tag.
+   * @param {object} ctx - Tool context carrying the memory store.
+   * @returns {string} A confirmation, duplicate notice, or ERROR.
+   */
   remember(ws, args, ctx) {
     if (!ctx.memory) return 'ERROR: no memory store in this run (started with --no-memory)';
     const saved = ctx.memory.remember(args.text, { tag: args.tag });
@@ -368,6 +467,14 @@ const HANDLERS = {
     return `remembered in ${ctx.memory.label} (${saved.total} total${dropped}): ${formatEntry(saved.entry)}`;
   },
 
+  /**
+   * Search long-term memory for notes matching a query.
+   *
+   * @param {object} ws - Unused; kept for the uniform handler signature.
+   * @param {{query?: string, limit?: number}} args - Words that must all appear.
+   * @param {object} ctx - Tool context carrying the memory store.
+   * @returns {string} Matching memories, or a message saying none matched.
+   */
   recall(ws, args, ctx) {
     if (!ctx.memory) return 'ERROR: no memory store in this run (started with --no-memory)';
     const query = String(args.query ?? '');
@@ -403,6 +510,15 @@ function validate(name, raw) {
   return { args };
 }
 
+/**
+ * Validate and dispatch one tool call, converting every failure into a string
+ * observation instead of throwing into the loop.
+ *
+ * @param {string} name - Tool name from the model's tool_call.
+ * @param {string|object} rawArgs - Raw JSON arguments (string or object).
+ * @param {object} ctx - Tool context (workspace, sandbox, policy, memory, confirm).
+ * @returns {Promise<string>} The observation the model reads back.
+ */
 export async function runTool(name, rawArgs, ctx) {
   if (!HANDLERS[name]) {
     return `ERROR: unknown tool "${name}". Available: ${Object.keys(HANDLERS).join(', ')}`;
@@ -421,9 +537,14 @@ export async function runTool(name, rawArgs, ctx) {
   }
 }
 
+/** The names of every tool the dispatcher knows, in definition order. @type {string[]} */
 export const TOOL_NAMES = Object.keys(HANDLERS);
 
 /** The bounds that are configured rather than exercised by a demo step. */
+/**
+ * The configured bounds that are not exercised by a demo step, reported in the
+ * demo scorecard footer.
+ */
 export const SANDBOX_LIMITS = {
   maxOutput: MAX_OUTPUT,
   timeoutMs: TIMEOUT_MS,

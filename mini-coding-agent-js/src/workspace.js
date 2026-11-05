@@ -16,6 +16,7 @@ import path from 'node:path';
  * tools.js - because a shell can leave the directory it was started in.
  */
 
+/** Error thrown when a path is refused by the workspace path policy. */
 export class PathError extends Error {}
 
 // Shapes that Windows quietly resolves *inside* the workspace if you only
@@ -26,6 +27,13 @@ const HOME_AND_SYSTEM = new Set([
   'system32',
 ]);
 
+/**
+ * Expand `~`, `%VAR%` and `$VAR` / `${VAR}` in a path string using the current
+ * environment. Unresolved variables are left as written.
+ *
+ * @param {string} p - Raw path as supplied by the model or user.
+ * @returns {string} The expanded path.
+ */
 function expandVars(p) {
   let out = p;
   if (out.startsWith('~')) out = path.join(os.homedir(), out.slice(1));
@@ -36,6 +44,14 @@ function expandVars(p) {
 
 // realpath of the deepest existing ancestor + the not-yet-created remainder,
 // so a symlinked/junctioned folder cannot smuggle a write outside the root.
+/**
+ * Resolve symlinks/junctions on the deepest existing ancestor, then re-append the
+ * not-yet-created remainder. This stops a linked folder smuggling a write
+ * outside the root.
+ *
+ * @param {string} abs - Absolute path, which may not exist yet.
+ * @returns {string} The real absolute path.
+ */
 function realResolve(abs) {
   let cur = abs;
   const rest = [];
@@ -48,12 +64,28 @@ function realResolve(abs) {
   return path.join(fs.realpathSync(cur), ...rest);
 }
 
+/**
+ * Whether `target` is the same as, or nested under, `root`.
+ *
+ * @param {string} root - The containing directory.
+ * @param {string} target - The path to test.
+ * @returns {boolean} True when target is inside root.
+ */
 function isInside(root, target) {
   const rel = path.relative(root, target);
   return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
 }
 
+/**
+ * The workspace path policy: resolves every file path before the filesystem is
+ * touched, fencing writes to `root` while letting reads go anywhere.
+ */
 export class Workspace {
+  /**
+   * Create the workspace directory if needed and remember its real path.
+   *
+   * @param {string} root - Directory that becomes the workspace root.
+   */
   constructor(root) {
     const abs = path.resolve(root);
     fs.mkdirSync(abs, { recursive: true });

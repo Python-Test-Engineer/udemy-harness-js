@@ -106,6 +106,13 @@ export function parseMemory(source) {
   return entries;
 }
 
+/**
+ * Long-term memory backed directly by a human-readable markdown file.
+ *
+ * Every read goes to disk, so hand edits are picked up immediately. The two
+ * access paths are `digest()` (bounded, eager, part of the system prompt) and
+ * `search()` (lazy, behind the `recall` tool).
+ */
 export class Memory {
   /**
    * @param {{root?: string, file?: string, maxEntries?: number, maxEntryChars?: number,
@@ -127,6 +134,7 @@ export class Memory {
     return rel && !rel.startsWith('..') && !path.isAbsolute(rel) ? rel.split(path.sep).join('/') : this.file;
   }
 
+  /** Whether the memory file exists on disk right now. @returns {boolean} */
   get exists() {
     return fs.existsSync(this.file);
   }
@@ -137,10 +145,17 @@ export class Memory {
     return parseMemory(fs.readFileSync(this.file, 'utf8'));
   }
 
+  /** Number of memories currently stored (reads the file). @returns {number} */
   get size() {
     return this.entries().length;
   }
 
+  /**
+   * Rewrite the whole memory file: header plus one bullet per entry.
+   *
+   * @param {{tag: string, text: string, date: string}[]} entries - Entries to persist, in order.
+   * @returns {string} Absolute path of the file written.
+   */
   save(entries) {
     fs.mkdirSync(path.dirname(this.file), { recursive: true });
     const body = entries.length ? entries.map(formatEntry).join('\n') : '';

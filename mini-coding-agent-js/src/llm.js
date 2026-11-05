@@ -53,8 +53,12 @@ export async function chat({ apiKey, model, messages, tools, signal, timeoutMs =
 
 /**
  * Rebuild the outgoing assistant message with only the fields an agent needs.
+ *
  * Providers may also return `reasoning` / `reasoning_content`; echoing those
- * back re-sends the whole trace on every later step.
+ * back re-sends the whole trace on every later step, so they are dropped.
+ *
+ * @param {object} message - Assistant message from the provider.
+ * @returns {{role: 'assistant', content?: string, tool_calls?: object[]}} A clean message safe to store and re-send.
  */
 export function sanitizeAssistant(message) {
   const out = { role: 'assistant', content: message.content ?? '' };

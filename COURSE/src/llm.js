@@ -1,4 +1,22 @@
+/** @type {string} OpenRouter chat-completions endpoint used for every request. */
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+
+/**
+ * Send a chat-completions request to OpenRouter and return the parsed JSON reply.
+ *
+ * Handles missing keys, timeouts (combined with an optional caller signal),
+ * non-2xx responses and error payloads by throwing descriptive `Error`s.
+ *
+ * @param {object} params
+ * @param {string} params.apiKey - OpenRouter API key (bearer token).
+ * @param {string} params.model - Model id, e.g. `anthropic/claude-sonnet-4.5`.
+ * @param {Array<object>} params.messages - OpenAI-style chat messages.
+ * @param {Array<object>} [params.tools] - Optional tool/function definitions.
+ * @param {AbortSignal} [params.signal] - Optional caller abort signal.
+ * @param {number} [params.timeoutMs=90000] - Request timeout in milliseconds.
+ * @returns {Promise<object>} The raw OpenRouter response body.
+ * @throws {Error} If the key is missing, the request times out, the HTTP status is not 2xx, or the body reports an error.
+ */
 
 export async function chat({ apiKey, model, messages, tools, signal, timeoutMs = 90000 }) {
   if (!apiKey || apiKey === '') {
@@ -64,6 +82,15 @@ export async function chat({ apiKey, model, messages, tools, signal, timeoutMs =
   return data;
 }
 
+/**
+ * Normalise an assistant message so it can be safely stored and re-sent.
+ *
+ * Keeps only `content` and well-formed `tool_calls`, drops reasoning fields,
+ * and guarantees a `content` string when no tool calls are present.
+ *
+ * @param {object|null|undefined} message - Assistant message from the API.
+ * @returns {{role: 'assistant', content?: string, tool_calls?: Array<object>}} A clean assistant message.
+ */
 export function sanitizeAssistant(message) {
   if (!message || typeof message !== 'object') {
     return { role: 'assistant', content: '' };

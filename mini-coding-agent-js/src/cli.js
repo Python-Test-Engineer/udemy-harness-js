@@ -33,6 +33,15 @@ import { DEMO_SCRIPT, DEMO_TASK, demoChat, sandboxScorecard } from './demo.js';
 /* ------------------------------------------------------------------ *
  * The human in the loop: the y/N prompt CMD_POLICY=ask uses.
  * ------------------------------------------------------------------ */
+/**
+ * Build the human-in-the-loop approval callback used when CMD_POLICY=ask.
+ *
+ * The returned function prints a y/N prompt for a command and resolves to
+ * `'allow'` or `'deny'`. When stdin is not a TTY nobody can answer, so it
+ * degrades to `'deny'` rather than silently approving.
+ *
+ * @returns {(command: string) => Promise<'allow'|'deny'>} The confirmation callback.
+ */
 function makeConfirm() {
   return async (command) => {
     // No TTY means nobody can answer, and an unanswerable prompt must never
@@ -49,6 +58,14 @@ function makeConfirm() {
 /* ------------------------------------------------------------------ *
  * The input field: with no task on the command line, ask for one.
  * ------------------------------------------------------------------ */
+/**
+ * Prompt the user for one task line on an interactive terminal.
+ *
+ * Ctrl-C closes the field and resolves `null`; blank input re-prompts.
+ *
+ * @param {{input?: NodeJS.ReadableStream, output?: NodeJS.WritableStream}} [streams] - Streams to read from and write the prompt to.
+ * @returns {Promise<string|null>} The trimmed task, or `null` on Ctrl-C / end of input.
+ */
 export async function askTask({ input = process.stdin, output = process.stdout } = {}) {
   const rl = readline.createInterface({ input, output, terminal: Boolean(output.isTTY) });
   // Ctrl-C closes the field; the caller then stops with a red note.
@@ -74,6 +91,16 @@ export async function askTask({ input = process.stdin, output = process.stdout }
 /* ------------------------------------------------------------------ *
  * Arguments
  * ------------------------------------------------------------------ */
+/**
+ * Parse command-line flags into an options object.
+ *
+ * Recognised flags: --demo, --yes/-y, --model, --max-steps, --allow-commands,
+ * --hooks, --memory, --no-memory, --trace-hooks, --no-hooks, --help/-h.
+ * Any other word is collected and joined to form the task text.
+ *
+ * @param {string[]} argv - Arguments to parse (usually process.argv.slice(2)).
+ * @returns {object} The parsed options, including `task`.
+ */
 function parseArgs(argv) {
   const opts = {
     task: '', demo: false, model: undefined, maxSteps: undefined, policy: undefined,
@@ -101,6 +128,11 @@ function parseArgs(argv) {
   return opts;
 }
 
+/**
+ * Print the full --help text, including flag list and exit-code meanings.
+ *
+ * @returns {void}
+ */
 function usage() {
   console.log(`
 ${ui.title('min-coding-js')} ${ui.dim('- a small coding agent in Node')}
@@ -147,6 +179,7 @@ function showHooks() {
 
 /**
  * `--memory`: print the store, and exactly what the model is told about it.
+ *
  * Two numbers matter on stage - how many memories exist, and how many characters
  * of them the system prompt actually receives.
  */
@@ -180,6 +213,12 @@ function showMemory(memory, config) {
 }
 
 /** The startup banner: one reproducible header, printed before step 1. */
+/**
+ * Print the startup banner: one reproducible header shown before step 1.
+ *
+ * @param {{config: object, workspace: object, sandbox: object, memory: object, commandPolicy: string, opts: object}} state - Everything the banner reports on.
+ * @returns {void}
+ */
 function banner({ config, workspace, sandbox, memory, commandPolicy, opts }) {
   const source = (label, overrode) => (overrode ? `${label}, overrode the shell value` : label);
   const kv = (label, value) => console.log(ui.kv(label, value));
@@ -247,6 +286,12 @@ export function trimHistory(messages, max = MAX_HISTORY) {
 }
 
 /** The exit code a single task would have produced, used for the session summary. */
+/**
+ * Map a runTask result to the process exit code used for a single task.
+ *
+ * @param {{ok: boolean, reason?: string}} result - A runTask return value.
+ * @returns {number} 0 for success, 1 for a failed request, 3 for the step limit.
+ */
 function taskExitCode(result) {
   if (!result.ok && result.reason === 'request_failed') return 1;
   if (!result.ok && result.reason === 'max_steps') return 3;
@@ -254,6 +299,13 @@ function taskExitCode(result) {
 }
 
 /** One line after each task: what happened, and what to type next. */
+/**
+ * Print the one-line summary shown after each task in a session.
+ *
+ * @param {{ok: boolean, reason?: string, steps?: number}} result - The runTask result.
+ * @param {number} carriedMessages - How many messages will follow into the next task.
+ * @returns {void}
+ */
 function announce(result, carriedMessages) {
   const code = taskExitCode(result);
   const label = result.ok
@@ -317,6 +369,12 @@ export async function runSession({ base, opts }) {
 /* ------------------------------------------------------------------ *
  * The run
  * ------------------------------------------------------------------ */
+/**
+ * The real entry point: parse flags, wire config/workspace/sandbox/memory/hooks,
+ * then run one task, a session, or one of the informational side doors.
+ *
+ * @returns {Promise<void>} Sets `process.exitCode` on failure.
+ */
 async function runCli() {
   const opts = parseArgs(process.argv.slice(2));
   if (opts.help) return usage();
@@ -413,6 +471,13 @@ async function runCli() {
 }
 
 /** Print which sandbox guards the demo exercised, and whether each one held. */
+/**
+ * Print the demo's sandbox scorecard, checking each guard against the tool
+ * results that actually came back.
+ *
+ * @param {object[]} messages - The finished run's message history.
+ * @returns {void}
+ */
 function reportSandbox(messages) {
   const { rows, passed, total } = sandboxScorecard(messages);
   console.log('');
@@ -447,6 +512,12 @@ const CLI_EXIT_NOTES = {
   3: 'the loop hit the step limit before the model answered - raise it with --max-steps N or MAX_STEPS, or give a smaller task',
 };
 
+/**
+ * Top-level wrapper: run the CLI, catch fatal errors, and print a plain-English
+ * note explaining a non-zero exit code.
+ *
+ * @returns {Promise<void>}
+ */
 export async function main() {
   try {
     await runCli();

@@ -5,6 +5,16 @@ import { ui } from './ui.js';
 import { chat } from './llm.js';
 import { loadConfig, fingerprint } from './config.js';
 
+/**
+ * Parse the raw command-line arguments into an options object plus a task string.
+ *
+ * Recognised flags: `--help`/`-h`, `--model <id>`, `--max-steps <n>`,
+ * `--yes`/`-y`, `--allow-commands`. Anything that is not a flag is collected
+ * and joined with spaces to form the task text.
+ *
+ * @param {string[]} argv - Arguments to parse (usually process.argv.slice(2)).
+ * @returns {{ opts: {help?: boolean, model?: string, maxSteps?: number, yes?: boolean, allowCommands?: boolean}, task: string|undefined }} Parsed options and the optional one-shot task.
+ */
 function parseArgs(argv) {
   const opts = {};
   const rest = [];
@@ -31,6 +41,12 @@ function parseArgs(argv) {
   return { opts, task: rest.join(' ') || undefined };
 }
 
+/**
+ * Print the CLI usage/help text.
+ *
+ * @param {(...args: any[]) => void} [log=console.log] - Sink used for each output line (injectable for tests).
+ * @returns {void}
+ */
 function printUsage(log = console.log) {
   log('Usage:');
   log('  node src/cli.js                          interactive session');
@@ -46,6 +62,15 @@ function printUsage(log = console.log) {
   log('  node src/cli.js --help');
 }
 
+/**
+ * Prompt the user interactively for a single task line.
+ *
+ * Returns `null` when stdin is not a TTY so callers can fall back to
+ * one-shot mode instead of hanging.
+ *
+ * @param {{input?: NodeJS.ReadableStream, output?: NodeJS.WritableStream}} [streams] - Streams to read from and write the prompt to.
+ * @returns {Promise<string|null>} The trimmed answer, or `null` if no TTY is available.
+ */
 export async function askTask({ input = process.stdin, output = process.stdout } = {}) {
   if (!input.isTTY) return null;
 
@@ -60,6 +85,11 @@ export async function askTask({ input = process.stdin, output = process.stdout }
   });
 }
 
+/**
+ * CLI entry point: load configuration, then run one-shot or interactive chat.
+ *
+ * @returns {Promise<number>} Process exit code (0 = success, 1 = runtime error, 2 = no TTY).
+ */
 async function main() {
   const { opts, task: argTask } = parseArgs(process.argv.slice(2));
 

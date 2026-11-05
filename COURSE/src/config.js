@@ -2,7 +2,15 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
+/** @type {string} Absolute path to the project root (the folder containing `src/`). */
 export const PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+/**
+ * Walk up from `startDir` looking for the nearest `.env` file.
+ *
+ * @param {string} [startDir=PROJECT_ROOT] - Directory to start the search from. Default: PROJECT_ROOT.
+ * @returns {string|null} Absolute path to the `.env` file, or `null` if none is found.
+ */
 
 export function findEnvFile(startDir = PROJECT_ROOT) {
   let dir = path.resolve(startDir);
@@ -16,6 +24,15 @@ export function findEnvFile(startDir = PROJECT_ROOT) {
   return null;
 }
 
+/**
+ * Parse a `.env` file into a plain key/value object.
+ *
+ * Supports comments (`#`), an optional leading `export `, quoted values and
+ * blank-value skipping. Never throws for a missing file.
+ *
+ * @param {string|null} file - Path to the `.env` file.
+ * @returns {Record<string,string>} Parsed variables (empty object if the file is missing).
+ */
 export function loadDotEnv(file) {
   const env = {};
   if (!file || !fs.existsSync(file)) return env;
@@ -43,6 +60,12 @@ export function loadDotEnv(file) {
   return env;
 }
 
+/**
+ * Build a safe, human-readable fingerprint of a secret for display/logging.
+ *
+ * @param {string|null|undefined} secret - The secret value (e.g. an API key).
+ * @returns {string} `not set`, a masked string, or a `first5...last4 (N chars)` preview.
+ */
 export function fingerprint(secret) {
   if (!secret || secret === '') return 'not set';
   const n = secret.length;
@@ -50,6 +73,10 @@ export function fingerprint(secret) {
   return secret.slice(0, 5) + '...' + secret.slice(-4) + ` (${n} chars)`;
 }
 
+/**
+ * Maps common model-name prefixes to their OpenRouter vendor namespace.
+ * @type {Array<{prefixes: string[], vendor: string}>}
+ */
 const MODEL_PREFIX_MAP = [
   { prefixes: ['deepseek'], vendor: 'deepseek' },
   { prefixes: ['claude'], vendor: 'anthropic' },
@@ -61,6 +88,15 @@ const MODEL_PREFIX_MAP = [
   { prefixes: ['mistral', 'mixtral'], vendor: 'mistralai' },
 ];
 
+/**
+ * Expand a bare model name into an OpenRouter `vendor/model` id when possible.
+ *
+ * Honours `OPENROUTER_PROVIDER_PREFIX`, passes through ids that already contain
+ * a `/`, and otherwise looks up a known vendor prefix.
+ *
+ * @param {string} value - Model name exactly as supplied by the user.
+ * @returns {{model: string, normalised: string}} The original name and the resolved id.
+ */
 export function normalizeModel(value) {
   if (!value || value === '') return { model: '', normalised: '' };
   if (value.includes('/')) return { model: value, normalised: value };
@@ -82,6 +118,16 @@ export function normalizeModel(value) {
   return { model: value, normalised: value };
 }
 
+/**
+ * Load and merge configuration from the shell environment and a `.env` file.
+ *
+ * Precedence for each key: explicit overrides, then `.env`, then inherited
+ * shell variables, then defaults. Also records where each value came from.
+ *
+ * @param {{apiKey?: string, model?: string}} [overrides={}] - Values that win over every source.
+ * @param {{envFile?: string, startDir?: string}} [options={}] - Optional explicit `.env` path or search start directory.
+ * @returns {object} Fully resolved configuration object (key, model, workspace, limits, memory settings, sources…).
+ */
 export function loadConfig(overrides = {}, { envFile, startDir } = {}) {
   const file = envFile ?? findEnvFile(startDir ?? PROJECT_ROOT);
   const shellEnv = { ...process.env };

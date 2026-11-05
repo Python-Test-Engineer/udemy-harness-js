@@ -275,6 +275,16 @@ export class Hooks {
  * ------------------------------------------------------------------ */
 
 /** Fold a line to `width` columns on word boundaries - the catalogue must fit a terminal. */
+/**
+ * Fold a line to `width` columns on word boundaries, then indent it.
+ *
+ * Used by the catalogue so long "why" paragraphs fit a normal terminal.
+ *
+ * @param {string} text - The text to wrap.
+ * @param {number} [width=78] - Maximum line width before the indent.
+ * @param {string} [indent='      '] - Prefix added to every wrapped line.
+ * @returns {string} The wrapped, indented block.
+ */
 function wrap(text, width = 78, indent = '      ') {
   const words = String(text).split(/\s+/);
   const lines = [];

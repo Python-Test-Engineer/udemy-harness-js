@@ -17,6 +17,7 @@ import chalk from 'chalk';
 /** A result is "bad" if the tool reported an error, a denial, a refusal or a non-zero exit. */
 const isFailure = (text) => /^(ERROR|DENIED|FORBIDDEN)\b/.test(text) || /\bexit code (?!0\b)\d+/.test(text);
 
+/** The first line of a value, clipped to `limit` chars - used by result previews. */
 const firstLine = (text, limit = 300) => String(text ?? '').split('\n')[0].slice(0, limit);
 
 /**
@@ -73,8 +74,11 @@ export const ui = {
   field: (label) => `${chalk.green(label)} ${chalk.white('›')}`,
   /** secondary banner line: label on the left, value after the colon */
   kv: (label, value) => `${chalk.blue(`${label.padEnd(10)}:`)} ${chalk.white(value)}`,
+  /** a step divider: "── step 2/12 ──────" */
   step: (step, max, width = 40) => chalk.blue(`── step ${step}/${max} ${'─'.repeat(width)}`),
+  /** the model's reasoning text, prefixed with "think:" */
   think: (text) => `${chalk.cyan('think:')} ${text}`,
+  /** a tool call line: the tool name and its raw arguments */
   tool: (name, args) => `${chalk.white('tool →')} ${chalk.yellow(name)} ${chalk.white(args)}`,
   result: (text) => {
     const line = firstLine(text);
@@ -152,13 +156,20 @@ export const ui = {
   memory: (text) => `${chalk.magenta('memory ←')} ${chalk.white(text)}`,
   /** the last line of a failed run: the process exit code and what it means */
   exitNote: (code, meaning) => `${chalk.red(`exit code ${code}`)}${meaning ? ` ${chalk.dim(`- ${meaning}`)}` : ''}`,
+  /** the divider printed before the final answer */
   answerRule: () => chalk.bold.green(`── final answer ${'─'.repeat(38)}`),
+  /** the final answer text itself */
   answer: (text) => chalk.white(text),
+  /** a warning line */
   warn: (text) => chalk.yellowBright(text),
   /** heartbeat while a model call is in flight */
   waiting: (text) => chalk.yellowBright(text),
+  /** an error line */
   error: (text) => chalk.red(text),
+  /** a neutral note line */
   note: (text) => chalk.white(text),
+  /** a prompt label, e.g. "run?" */
   prompt: (text) => chalk.green(text),
+  /** de-emphasised secondary text */
   dim: (text) => chalk.dim(text),
 };

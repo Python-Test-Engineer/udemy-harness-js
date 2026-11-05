@@ -175,6 +175,10 @@ html[data-theme="dark"] code{background:#2b2521; color:#f0b49a}
   background:var(--tint); color:#4b4741; font-size:0.925rem; line-height:1.62;
 }
 .callout strong{color:var(--ink)}
+.callout ul{margin:0.45em 0 0.45em 1.2em; padding:0}
+.callout li{margin:0.18em 0}
+.callout li:last-child{margin-bottom:0}
+.callout p{margin:0.65em 0 0}
 .callout.warn{border-left-color:var(--amber); background:#f7f0da; color:#4e4734}
 html[data-theme="dark"] .callout{color:var(--prose)}
 html[data-theme="dark"] .callout.warn{background:#2e2a1e; color:#d8cfb8}
@@ -805,14 +809,15 @@ html[data-theme="dark"] .tag{background:#3a2a24; color:#f0b49a}
 <p>Read one stage of the manual, then read the matching <strong>build companion</strong> entry in Part II before you start typing. When you finish the stage, answer the checkpoint questions at the end of the theory chapter, then do the matching <strong>student lab</strong> in Part IV. Teachers should read <strong>Part III</strong> before the first session; it contains the run sheet, the live-demo script, the factory analogy, common misconceptions, and the assessment rubric.</p>
 
 <div class="callout"><strong>What is where.</strong>
-- <strong>Parts 0–E</strong> — the staged theory: the mental model, the design vocabulary, the failure modes.
-- <strong>Part II</strong> — the <em>build companion</em>: PLAN.md's files, API contracts, defaults and acceptance criteria, plus a teaching note and a lab for every stage.
-- <strong>Part III</strong> — the <em>teacher's handbook</em>: pacing, run sheets, demos, the factory analogy, misconceptions, rubric.
-- <strong>Part IV</strong> — the <em>student workbook</em>: per-stage labs, break-it labs, capstones, extension roadmap.
-- <strong>Part V</strong> — <em>deep dives</em>: context engineering, tool design, evaluation, threat modelling, the production path.
-- <strong>Part VI</strong> — <em>reference</em>: configuration, CLI, payloads, file map and the final acceptance checklist.
-
-The code excerpts are illustrative. Where this manual and the finished implementation disagree, the implementation and its tests win. Where the manual and <code>PLAN.md</code> disagree, this manual is now the merged source of truth.</div>
+<ul>
+<li><strong>Parts 0–E</strong> — the staged theory: the mental model, the design vocabulary, the failure modes.</li>
+<li><strong>Part II</strong> — the <em>build companion</em>: PLAN.md's files, API contracts, defaults and acceptance criteria, plus a teaching note and a lab for every stage.</li>
+<li><strong>Part III</strong> — the <em>teacher's handbook</em>: pacing, run sheets, demos, the factory analogy, misconceptions, rubric.</li>
+<li><strong>Part IV</strong> — the <em>student workbook</em>: per-stage labs, break-it labs, capstones, extension roadmap.</li>
+<li><strong>Part V</strong> — <em>deep dives</em>: context engineering, tool design, evaluation, threat modelling, the production path.</li>
+<li><strong>Part VI</strong> — <em>reference</em>: configuration, CLI, payloads, file map and the final acceptance checklist.</li>
+</ul>
+<p>The code excerpts are illustrative. Where this manual and the finished implementation disagree, the implementation and its tests win. Where the manual and <code>PLAN.md</code> disagree, this manual is now the merged source of truth.</p></div>
 
 <div class="callout"><strong>Source material.</strong> The long-form explanation of the finished harness is in
 <a href="../mini-coding-agent-js/explainer-harness-js.md"><code>../mini-coding-agent-js/explainer-harness-js.md</code></a>.
