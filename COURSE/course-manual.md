@@ -1,26 +1,24 @@
 # The mini coding agent: course manual
 
-**The main manual. `PLAN.md` is folded in, not left beside it.**
+**The theory companion to the build workbook. Start with `book.md`.**
 
-This manual explains *why* the code in each stage looks the way it does. It is the one document a student or a teacher should read from top to bottom. `PLAN.md` supplied the concrete build contract: exact files, APIs, defaults, and acceptance criteria. That contract now lives in **Part II**, so the theory in Parts 0–E and the build instructions sit in one book.
+This manual explains *why* the code in each stage looks the way it does. It is the reference you read alongside [`book.md`](book.md): the workbook gives you the plan, the build steps and the commands for each stage; this manual explains the reasoning, trade-offs and failure modes behind them.
 
-Read one stage of the manual, then read the matching **build companion** entry in Part II before you start typing. When you finish the stage, answer the checkpoint questions at the end of the theory chapter, then do the matching **student lab** in Part IV. Teachers should read **Part III** before the first session; it contains the run sheet, the live-demo script, the factory analogy, common misconceptions, and the assessment rubric.
+Read the matching chapter here after you have built and run a stage, or when you need to understand a design decision in depth. The manual does not repeat the build instructions; those live in the workbook. Teachers should read **Part II** before the first session; it contains the run sheet, the live-demo script, the factory analogy, common misconceptions, and the assessment rubric.
 
 > **What is where.**
 > - **Parts 0–E** — the staged theory: the mental model, the design vocabulary, the failure modes.
-> - **Part II** — the *build companion*: PLAN.md's files, API contracts, defaults and acceptance criteria, plus a teaching note and a lab for every stage.
-> - **Part III** — the *teacher's handbook*: pacing, run sheets, demos, the factory analogy, misconceptions, rubric.
-> - **Part IV** — the *student workbook*: per-stage labs, break-it labs, capstones, extension roadmap.
-> - **Part V** — *deep dives*: context engineering, tool design, evaluation, threat modelling, the production path.
-> - **Part VI** — *reference*: configuration, CLI, payloads, file map and the final acceptance checklist.
+> - **Part II** — the *teacher's handbook*: pacing, run sheets, demos, the factory analogy, misconceptions, rubric.
+> - **Part III** — the *student workbook*: per-stage labs, break-it labs, capstones, extension roadmap.
+> - **Part IV** — *deep dives*: context engineering, tool design, evaluation, threat modelling, the production path.
+> - **Part V** — *reference*: configuration, CLI, payloads, file map and the final acceptance checklist.
 >
-> The code excerpts are illustrative. Where this manual and the finished implementation disagree, the implementation and its tests win. Where the manual and `PLAN.md` disagree, this manual is now the merged source of truth.
+> The code excerpts are illustrative. Where this manual and the finished implementation disagree, the implementation and its tests win. Where this manual and `book.md` disagree, the workbook's build steps win for *what to type*; this manual wins for *why*.
 
 > **Source material.** The long-form explanation of the finished harness is in
 > [`../mini-coding-agent-js/explainer-harness-js.md`](../mini-coding-agent-js/explainer-harness-js.md).
-> The build contract came from `PLAN.md` and is reproduced, expanded and cross-referenced
-> in Part II. The finished implementation lives in `../mini-coding-agent-js/src/`; read it
-> alongside the manual. The non-coding **factory analogy** in Part III is adapted from
+> The finished implementation lives in `../mini-coding-agent-js/src/`; read it
+> alongside the manual. The non-coding **factory analogy** in Part II is adapted from
 > `../mini-coding-agent-js/explainers/factory_example.md`.
 
 ---
@@ -62,27 +60,7 @@ Read one stage of the manual, then read the matching **build companion** entry i
   - [D. Debugging by symptom](#d-debugging-by-symptom)
   - [E. Glossary](#e-glossary)
   - [F. Reading the finished code](#f-reading-the-finished-code)
-- [Part II: The build companion — PLAN.md, stage by stage](#part-ii-the-build-companion--planmd-stage-by-stage)
-  - [How to use the companion](#how-to-use-the-companion)
-  - [Stage 0 build: Scaffold](#stage-0-build-scaffold)
-  - [Stage 1 build: Terminal language](#stage-1-build-terminal-language)
-  - [Stage 2 build: Config and model client](#stage-2-build-config-and-model-client)
-  - [Stage 3 build: Simplest chat loop](#stage-3-build-simplest-chat-loop)
-  - [Stage 4 build: Conversation history](#stage-4-build-conversation-history)
-  - [Stage 5 build: System prompt](#stage-5-build-system-prompt)
-  - [Stage 6 build: Path policy](#stage-6-build-path-policy)
-  - [Stage 7 build: Read-only tools](#stage-7-build-read-only-tools)
-  - [Stage 8 build: Sandbox and write tools](#stage-8-build-sandbox-and-write-tools)
-  - [Stage 9 build: Command execution](#stage-9-build-command-execution)
-  - [Stage 10 build: Long-term memory](#stage-10-build-long-term-memory)
-  - [Stage 11 build: Lifecycle hooks](#stage-11-build-lifecycle-hooks)
-  - [Stage 12 build: The ReAct loop](#stage-12-build-the-react-loop)
-  - [Stage 13 build: Offline demo](#stage-13-build-offline-demo)
-  - [Stage 14 build: Sessions and CLI polish](#stage-14-build-sessions-and-cli-polish)
-  - [Stage 15 build: Full test suite](#stage-15-build-full-test-suite)
-  - [Stage 16 build: Documentation and acceptance](#stage-16-build-documentation-and-acceptance)
-  - [The course checklist](#the-course-checklist)
-- [Part III: The teacher's handbook](#part-iii-the-teachers-handbook)
+- [Part II: The teacher's handbook](#part-ii-the-teachers-handbook)
   - [1. What this course is and is not](#1-what-this-course-is-and-is-not)
   - [2. Learning outcomes by phase](#2-learning-outcomes-by-phase)
   - [3. Three ways to pace the course](#3-three-ways-to-pace-the-course)
@@ -94,7 +72,7 @@ Read one stage of the manual, then read the matching **build companion** entry i
   - [9. Assessment rubric](#9-assessment-rubric)
   - [10. Teaching the hardest ideas](#10-teaching-the-hardest-ideas)
   - [11. Classroom, recording and CI setup](#11-classroom-recording-and-ci-setup)
-- [Part IV: The student workbook](#part-iv-the-student-workbook)
+- [Part III: The student workbook](#part-iii-the-student-workbook)
   - [1. How to use the labs](#1-how-to-use-the-labs)
   - [2. Per-stage labs](#2-per-stage-labs)
   - [3. Break-it-on-purpose labs](#3-break-it-on-purpose-labs)
@@ -102,7 +80,7 @@ Read one stage of the manual, then read the matching **build companion** entry i
   - [5. Capstone projects](#5-capstone-projects)
   - [6. Extension roadmap](#6-extension-roadmap)
   - [7. Self-assessment](#7-self-assessment)
-- [Part V: Deep dives on harness engineering](#part-v-deep-dives-on-harness-engineering)
+- [Part IV: Deep dives on harness engineering](#part-iv-deep-dives-on-harness-engineering)
   - [1. What exactly is a harness?](#1-what-exactly-is-a-harness)
   - [2. The harness stack](#2-the-harness-stack)
   - [3. Context engineering](#3-context-engineering)
@@ -114,7 +92,7 @@ Read one stage of the manual, then read the matching **build companion** entry i
   - [9. Architecture decision records](#9-architecture-decision-records)
   - [10. How real harnesses compare](#10-how-real-harnesses-compare)
   - [11. Reading list](#11-reading-list)
-- [Part VI: Reference](#part-vi-reference)
+- [Part V: Reference](#part-v-reference)
   - [A. Configuration reference](#a-configuration-reference)
   - [B. CLI and exit-code reference](#b-cli-and-exit-code-reference)
   - [C. Tool response reference](#c-tool-response-reference)
@@ -200,7 +178,7 @@ That is the ReAct pattern: **Re**ason, **Act**, observe. You do not need a frame
 
 ## 0.3 Why we build conversation first
 
-The build order in `PLAN.md` is deliberate and slightly unusual. A traditional engineering plan would build the sandbox, then the tools, then the model client, and only then let the program talk. That plan is easier to diagram and much harder to learn from, because nothing visible happens until late.
+The build order in `book.md` is deliberate and slightly unusual. A traditional engineering plan would build the sandbox, then the tools, then the model client, and only then let the program talk. That plan is easier to diagram and much harder to learn from, because nothing visible happens until late.
 
 This course builds in the opposite direction:
 
@@ -977,7 +955,7 @@ A string literal in `cli.js` is fine for one rule. It becomes a problem when:
 
 ### The rules a coding agent needs
 
-At Stage 5 the tools do not exist yet, so the prompt is only the behavioural contract. The plan's rules cover:
+At Stage 5 the tools do not exist yet, so the prompt is only the behavioural contract. The rules cover:
 
 1. **Look before you write.** Read the file before editing it.
 2. **Prefer `create_file` for new files**, `edit_file` for small changes, `write_file` for whole-file replacement.
@@ -1381,7 +1359,7 @@ while (reply.choices[0].message.tool_calls?.length) {
 
 This is the ReAct pattern in about twenty lines. It teaches the shape before Stage 12 formalises it. The important details:
 
-- **`tool_calls` is an array.** The plan asks for one call per step in the prompt, but the protocol allows several; dispatch them in order.
+- **`tool_calls` is an array.** The prompt asks for one call per step, but the protocol allows several; dispatch them in order.
 - **Every `tool_call_id` must get a matching `tool` message.** A provider rejects a conversation with an unanswered call.
 - **The result is a string, even when it is an error.** Append it anyway.
 - **Append the assistant message before the tool results.** The order is: assistant intention, then observations.
@@ -3085,7 +3063,7 @@ Why a prompt file? Because a demo is a performance, and a performance needs a sc
 
 ### Final acceptance
 
-The twenty checks in `PLAN.md` are the contract. Group them mentally:
+The twenty checks in the final acceptance checklist (Part V, section F) are the contract. Group them mentally:
 
 - **Install and run:** `npm install`, `npm test`, `--help`, `--hooks`, `--memory`.
 - **Demo:** `--demo` completes 14 steps, 7/7 checks, exit 0.
@@ -3341,871 +3319,9 @@ Every one of those sentences is small enough to hold in your head, and together 
 
 ---
 
-# Part II: The build companion — PLAN.md, stage by stage
+# Part II: The teacher's handbook
 
-This part is the marriage of the two documents. For every stage you get four things:
-
-1. **Build** — the files to create or modify and the concrete contract, distilled from `PLAN.md`.
-2. **Prove it** — the acceptance criteria, written as checkboxes you can actually run.
-3. **Teach it** — what to emphasise, the live-demo cue, the usual mistakes, and roughly how long the stage should take.
-4. **Try it** — one student exercise that is more than "run the command".
-
-The theory chapters (Parts 0–E) answer *why*. This companion answers *what exactly* and *how do I know it works*. Read them as a pair: theory first, then the build entry, then type.
-
-## Prerequisites
-
-- **Node.js 20 or newer** — ES modules, `AbortSignal.any`, and `node:test`.
-- **One runtime dependency: `chalk` v5+ (ESM).** No framework, SDK, database or ORM.
-- **An OpenRouter API key** for live mode only. The demo, the tests, `--help`, `--hooks` and `--memory` need no key and no network.
-- **A terminal at least 100×30** for the banner and scorecard. Windows `cmd.exe`, PowerShell, Git Bash and a Unix shell are all usable; `run_command` inherits whichever shell launches the CLI.
-
-## How to use the companion
-
-- **Students:** before a stage, read the theory chapter. During the stage, keep the build entry open. Before moving on, tick every box in *Prove it* and do *Try it*.
-- **Teachers:** the *Teach it* block is your lesson plan in miniature. It names the one idea the stage exists to teach, the demo that lands it, the misconceptions to pre-empt, and a time budget.
-- **Everyone:** the checkboxes are not decoration. If a box is unticked, the next stage will not make sense, because every stage depends on the previous contract.
-
-A stage is done when the program does something new **and** every acceptance box is ticked. "It compiled" is not a stage.
-
----
-
-## Stage 0 build: Scaffold
-
-**Files to create**
-- `package.json`
-- `.gitignore`
-- `workspace/.gitkeep`
-- `src/.gitkeep`
-
-**Build**
-- `package.json`: `"type": "module"`, `"engines": { "node": ">=20" }`, exactly one runtime dependency (`chalk`), and scripts for `start`, `demo`, `test` (add `hooks` and `memory` once those flags exist).
-- `.gitignore`: `node_modules`, `.env`, and everything in `workspace/` except `.gitkeep`.
-- Project layout: `src/`, `test/`, `workspace/`, flat and boring.
-
-**Prove it**
-- [ ] `cd mini-coding-agent-js && npm install` installs exactly `chalk`.
-- [ ] `npm ls --depth=0` shows `chalk` and nothing else in `dependencies`.
-- [ ] `node --test` reports `0 tests` without failing.
-- [ ] `workspace/` exists and is git-ignored except `.gitkeep`.
-- [ ] `type: "module"` is set.
-- [ ] `node --version` is 20 or newer.
-
-**Teach it**
-
-*The one idea:* constraints chosen on day zero shape every later stage. Two constraints are doing the work — one dependency, one writable folder.
-
-*Demo cue:* run `npm ls --depth=0` live, then ask "what would this look like if we had installed an agent SDK?" Nothing to show, and that is the point: the model call would be behind a wall.
-
-*Usual mistakes:* adding a second dependency "just for flags"; nesting `src/core/`; forgetting `"type": "module"` and then fighting `import`; committing `.env`.
-
-*Time:* 20 minutes.
-
-**Try it:** write a one-paragraph defence of the single-dependency rule that a colleague who wants `commander` would accept. Then write the one sentence that would change your mind.
-
----
-
-## Stage 1 build: Terminal language
-
-**Files to create**
-- `src/ui.js`
-- `test/ui.test.js`
-
-**Build**
-- Every helper returns a string. Nothing in `ui.js` prints.
-- `ui.result(text)` derives colour from the text: red when the first line starts with `ERROR`, `DENIED` or `FORBIDDEN`, or contains a non-zero `exit code N`; green otherwise.
-- `explainExit(code)` maps `0`, `1`, `2`, `3`, `126`, `127`, `128–164` and Windows `9009` to plain English.
-- `ui.forbidden(action, requested, reason)` prints one loud, greppable line: `⛔ FORBIDDEN SAVE ../escape.txt - path escapes the workspace: ../escape.txt`.
-- Required helpers (exact surface from PLAN): `title`, `field`, `kv`, `step`, `think`, `tool`, `result`, `forbidden`, `pass`, `fail`, `rule`, `hookTitle`, `hookLine`, `hookField`, `hookLive`, `hookNote`, `hookTrace`, `hookFlow`, `memory`, `exitNote`, `answerRule`, `answer`, `warn`, `waiting`, `error`, `note`, `prompt`, `dim`.
-
-**Prove it**
-- [ ] Every helper returns a string.
-- [ ] Styles become ANSI on a TTY and read back as the original text when colour is off.
-- [ ] A failed result is red; a clean result is green.
-- [ ] Exit code 1 gets a description via `explainExit`.
-- [ ] A successful command shows its first stdout line in a dim annotation.
-- [ ] `forbidden` produces bold red capitals.
-- [ ] Model text containing `<red>`, backslashes or JSON prints verbatim.
-
-**Teach it**
-
-*The one idea:* presentation is a separate decision from logic, and the contract is "return a string, let the caller print".
-
-*Demo cue:* pipe a search for `console.log` through `src/ui.js` and show there are none. Then change the palette in one place and show the whole app change.
-
-*Usual mistakes:* helpers that call `console.log`; a home-made tag parser that eats `<red>` in model output; deriving failure from a boolean passed in rather than from the observation itself.
-
-*Time:* 60–90 minutes.
-
-**Try it:** add `ui.kv` to the palette and write a test that asserts the label is padded and the value is not interpreted. Then explain why `result` should not take an `ok` argument.
-
----
-
-## Stage 2 build: Config and model client
-
-**Files to create**
-- `src/config.js`
-- `src/llm.js`
-- `test/config.test.js`
-- `test/llm.test.js`
-
-**Build (config)**
-- `PROJECT_ROOT = path.resolve(import.meta.dirname, '..')`.
-- `findEnvFile(startDir)`: nearest `.env` wins, walking to the filesystem root.
-- `loadDotEnv(file)`: `KEY=VALUE`, optional `export `, `#` comments, quoted values, blank values ignored.
-- **Precedence:** explicit overrides (`--model`) > nearest `.env` > shell environment > defaults. `.env` beats the shell on purpose.
-- `fingerprint(secret)`: `not set`; all `*` when ≤ 12 chars; otherwise `first5...last4 (N chars)`.
-- `normalizeModel`: bare names map to a vendor; a name containing `/` is left alone; a change is reported.
-- `loadConfig(overrides, { envFile, startDir })` returns values **and provenance**: `apiKeySource`, `modelSource`, `envFile`, `apiKeyOverrodeShell`, `modelNormalised`, and the bounds below.
-- Defaults: model `deepseek/deepseek-v4.1-flash-1017`, `CMD_POLICY=ask`, `MAX_STEPS=12`, `REQUEST_TIMEOUT_MS=90000`, `WORKSPACE_DIR=workspace`, `MEMORY_FILE=src/memory.md`, `MEMORY_MAX_ENTRIES=60`, `MEMORY_PROMPT_CHARS=1200`.
-
-**Build (llm)**
-- `chat({ apiKey, model, messages, tools, signal, timeoutMs = 90000 })`.
-- Missing key throws `OPENROUTER_API_KEY is not set...`.
-- Compose caller signal and timeout with `AbortSignal.any([signal, AbortSignal.timeout(timeoutMs)])`.
-- POST `https://openrouter.ai/api/v1/chat/completions` with `Authorization`, `Content-Type`, `X-Title: min-coding-js`.
-- Body `{ model, messages, tools, max_tokens: 2048 }`.
-- Read the body as text first; parse after the status check.
-- `401` hints bad/revoked key; `402` hints out of credits; timeout says `request timed out after <n>s`; a `.error` field on a 200 is still an error.
-- `sanitizeAssistant(message)` rebuilds with only `role`, `content`, `tool_calls`; drops `reasoning`/`reasoning_content`; deletes `content` only when it is null and tool calls exist.
-
-**Prove it**
-- [ ] `loadConfig` resolves `.env`, shell, overrides in the right order.
-- [ ] `.env` beats a stale shell key; shell still supplies names `.env` does not define.
-- [ ] A missing `.env` is not an error.
-- [ ] The fingerprint never exposes the whole key.
-- [ ] Bare model names normalise to `vendor/model`, and the change is reported.
-- [ ] Override is reported only when the value genuinely differed.
-- [ ] `sanitizeAssistant` drops reasoning and keeps only the three fields.
-- [ ] `llm` tests mock `fetch`; timeout, `401`, `402`, non-JSON and `.error` are all covered offline.
-
-**Teach it**
-
-*The one idea:* configuration is a set of facts with **provenance**, and transport failures throw while tool failures return strings.
-
-*Demo cue:* put a deliberately stale key in the shell and a good one in `.env`; show the banner naming `.env` as the source. Then show `key: sk-or...abcd (73 chars)`, never the key.
-
-*Usual mistakes:* printing the key; using `res.json()` before checking status; forgetting to restore a mocked `fetch`; treating `reasoning_content` as harmless.
-
-*Time:* 20 minutes (config) + 2–3 hours (client and tests).
-
-**Try it:** add one config value (say `TEMPERATURE`) end to end: parse, default, provenance, banner line, test. Then write down which layer should own the decision if two sources disagree.
-
----
-
-## Stage 3 build: Simplest chat loop
-
-**Files to create**
-- `src/cli.js` (minimal)
-- `test/input.test.js`
-
-**Build**
-- `askTask({ input, output })`: readline prompt `  task ›`; trim; blank re-asks; Ctrl-C returns `null`; `for await (const raw of rl)`.
-- Hand-rolled flag parsing for `--help`, `--model`, `--max-steps`; every non-flag becomes the task.
-- Load config, build `[system, user]`, call `chat`, print `ui.answer`.
-- No task and stdin is not a TTY → hint and exit `2`.
-- Request failure → exit `1`.
-- `--help` works with no key.
-
-**Prove it**
-- [ ] `node src/cli.js --help` prints usage with no key.
-- [ ] `node src/cli.js "Say hello"` reaches OpenRouter and prints the reply.
-- [ ] No task + non-TTY exits `2` with a helpful message.
-- [ ] Missing/invalid key exits `1` with a clear message.
-- [ ] `--model` overrides `.env`.
-
-**Teach it**
-
-*The one idea:* this is the first runnable payoff — config + transport + presentation in one short program.
-
-*Demo cue:* live chat once, then ask "what did I just say?" and show it cannot know. That sets up Stage 4.
-
-*Usual mistakes:* requiring a key for `--help`; hanging when stdin is not a terminal; letting Ctrl-C throw.
-
-*Time:* 60–90 minutes.
-
-**Try it:** add a `--dry-run` flag that prints the exact request body that *would* be sent, without a key. What does that teach you about testing?
-
----
-
-## Stage 4 build: Conversation history
-
-**Files to modify**
-- `src/cli.js`
-
-**Build**
-- Keep one `messages` array for the process.
-- Interactive loop with `interactive session - type a task below (/quit exits)`.
-- Commands `/quit`, `/exit`, `/new`.
-- Every turn appends `user` → model call → `assistant`.
-- `/new` clears the array and re-adds the system prompt, nothing else.
-- One-shot mode still works.
-- Exit prints `session over - N turn(s)`.
-
-**Prove it**
-- [ ] A follow-up references the previous turn.
-- [ ] `/new` clears the conversation.
-- [ ] `/quit` and `/exit` end the session.
-- [ ] The session summary prints the turn count.
-- [ ] One-shot still works.
-
-**Teach it**
-
-*The one idea:* messages are the memory; the model has none.
-
-*Demo cue:* ask for a name, then ask "what is my name?" — works. Then `/new` and ask again — fails. That contrast is the whole stage.
-
-*Usual mistakes:* rebuilding `messages` each turn; making `/new` delete files; carrying the system message twice after `/new`.
-
-*Time:* 45–60 minutes.
-
-**Try it:** implement `/history` that prints the roles in order without contents. Use it to explain why the next request costs more than the first.
-
----
-
-## Stage 5 build: System prompt
-
-**Files to create**
-- `src/prompt.js`
-- `test/prompt.test.js`
-
-**Files to modify**
-- `src/cli.js`
-
-**Build**
-- `systemRules(tools = [])` returns the prose contract: look before writing; prefer `create_file` for new files, `edit_file` for small changes, `write_file` for whole-file replacement; copy `old_string` exactly; run what you wrote; never invent tool results; be concise; one tool call per step; remember durable facts only.
-  - PLAN's signature shows `systemRules(tools = TOOL_NAMES)`. At Stage 5 `tools.js` does not exist yet, so either default to `[]` or keep a local constant and let Stage 7 wire `TOOL_NAMES` in. `cli.js` passes `[]` explicitly for now.
-- `buildSystemPrompt({ memory, log })` returns rules plus an optional memory digest.
-- At this stage memory is absent and `cli.js` passes `tools = []`.
-- The system message is first on every turn; `/new` keeps it.
-
-**Prove it**
-- [ ] Rules are the first `system` message on every turn.
-- [ ] `/new` keeps the system prompt.
-- [ ] No tool names are listed while no tools exist.
-- [ ] `buildSystemPrompt` accepts `memory` and `log` without using them yet.
-- [ ] `prompt.test.js` asserts the rule text and the injection point.
-
-**Teach it**
-
-*The one idea:* the prompt is program text — composed, tested, and rebuilt — not a magic string.
-
-*Demo cue:* ask the model to edit a file it has not read, with and without rule 1. Show the difference in behaviour.
-
-*Usual mistakes:* naming tools that do not exist; putting the prompt in `cli.js`; carrying a stale system message across tasks.
-
-*Time:* 45–60 minutes.
-
-**Try it:** delete one rule and predict the specific failure it causes. Then reproduce it. Restore the rule.
-
----
-
-## Stage 6 build: Path policy
-
-**Files to create**
-- `src/workspace.js`
-- `test/workspace.test.js`
-
-**Build**
-- Export `PathError`.
-- `new Workspace(root)`: resolve, `mkdir -p`, store `fs.realpathSync(root)`.
-- `workspace.resolve(requested)` — the strict write policy. Reject: empty/non-string; absolute paths; drive-relative (`C:foo`); UNC (`\\server\share`, `//server/share`); `~`, `$`, `%` prefixes; and a forbidden first segment (`users`, `windows`, `program files`, `desktop`, `documents`, `downloads`, `appdata`, `onedrive`, `library`, `system32`, and similar).
-- Expand `~`, `%VAR%`, `${VAR}`, `$VAR` **before** containment checks.
-- Symlink hardening: resolve the deepest existing ancestor with `fs.realpathSync`, re-append the not-yet-created tail, re-check containment.
-- `workspace.resolveRead(requested)` — permissive: absolute paths, outside paths, `~` all allowed.
-- `rel` is always `/`-separated; root is `.`.
-
-**Prove it**
-- [ ] Legitimate relative paths resolve and `rel` is correct.
-- [ ] Every escape shape in the rejection list is refused.
-- [ ] Reads outside the workspace are allowed.
-- [ ] A symlinked folder inside the workspace cannot smuggle a write outside.
-- [ ] A missing path is still checked against its deepest existing ancestor.
-- [ ] `PathError` is distinguishable from an I/O error.
-
-**Teach it**
-
-*The one idea:* reads are open, writes are fenced — and containment is a policy, not `startsWith`.
-
-*Demo cue:* put a junction inside the workspace pointing at the Desktop, then ask for a write through it. Show the refusal.
-
-*Usual mistakes:* checking `startsWith(root)` alone; expanding variables after the check; treating `/home` on Unix as a Windows switch; forgetting that the file does not exist yet so `realpath` must stop at the deepest existing ancestor.
-
-*Time:* 2–3 hours.
-
-**Try it:** write a table of ten escape attempts, predict each refusal reason, then run the tests. Which one surprised you?
-
----
-
-## Stage 7 build: Read-only tools
-
-**Files to create**
-- `src/tools.js` (partial: `list_files`, `read_file`)
-- `test/tools.test.js` (read-only tests)
-
-**Files to modify**
-- `src/prompt.js` (mention the two tools)
-
-**Build**
-- OpenAI function-calling schema shape: `{ type: 'function', function: { name, description, parameters: { type: 'object', properties, additionalProperties: false } } }`.
-- `validate(name, rawArgs)`: raw may be a JSON string or an object; parse, type-check, integer-check, required fields, unknown keys.
-- `runTool(name, rawArgs, ctx)`: dispatch; unknown tool → helpful error string; handler exceptions become text observations.
-- `list_files`: `path` default `'.'`; `depth` default 3, max 6; `resolveRead`; missing → `ERROR: no such folder: <rel>`; walk recursively, sorted; skip `.git`, `node_modules`, `.venv`, `__pycache__`; directories print `<rel>/`, files print `<rel>  (<size>b)`; stop at depth and 200 lines; end with `<dirs> folder(s), <files> file(s) under <start.rel>`.
-- `read_file`: `path` required; `offset` default 1; `limit` default 200, max 2000; `resolveRead`; missing → `ERROR: no such file: <rel>`; directory → `ERROR: <rel> is a folder - use list_files`; header `"<rel> (<total lines>)"`; numbered lines right-aligned width 4 then `| `; truncation marker `... [<n> more lines]`; clamp offset ≥ 1 and limit 1..2000.
-- CLI: build `TOOL_SCHEMAS`, pass to `chat`; after a reply with `tool_calls`, dispatch, append `role: 'tool'` results, call the model again. Print `ui.tool` and `ui.result`.
-
-**Prove it**
-- [ ] The model can call `list_files` and see a listing.
-- [ ] The model can call `read_file` and see numbered contents.
-- [ ] Bad arguments return text errors, not crashes.
-- [ ] Reading outside the workspace succeeds (`../package.json`).
-- [ ] Missing file → `ERROR: no such file`.
-- [ ] Directory read → `ERROR: ... is a folder`.
-- [ ] Unknown tool name gets a helpful list.
-- [ ] Every `tool_call_id` receives exactly one `tool` message.
-
-**Teach it**
-
-*The one idea:* tool calling is the model's only ability to act, and the schema *is* the prompt.
-
-*Demo cue:* change a tool description live and show the model choose differently. That is more convincing than any slide about prompts.
-
-*Usual mistakes:* forgetting `arguments` is a JSON string; throwing from a handler; allowing a listing to walk `node_modules`; showing a truncated file without the marker.
-
-*Time:* 2–3 hours.
-
-**Try it:** add a deliberately bad argument to a test (`"limit": "20"`) and improve the error until a reader knows exactly what to change.
-
----
-
-## Stage 8 build: Sandbox and write tools
-
-**Files to create**
-- `src/sandbox.js`
-- `test/sandbox.test.js`
-
-**Files to modify**
-- `src/tools.js` (add `create_file`, `write_file`, `edit_file`; PLAN also lists a `delete_file` tool — see the note below)
-- `src/cli.js` (wire the sandbox)
-
-> **Note on `delete_file`.** PLAN lists `delete_file` at this stage and the sandbox must support `remove`. The finished eight-tool harness keeps `sandbox.remove` and its root guard but does not expose a model-facing `delete_file` tool. Implement it if you want the ninth tool, but keep the root guard and the same `FORBIDDEN` contract; do not let the tool count drift in the README without saying so.
-
-**Build**
-- `SANDBOX_DIR = path.resolve(import.meta.dirname, '..', 'workspace')`.
-- `ACTIONS = { SAVE: 'save', EDIT: 'edit', DELETE: 'delete' }`.
-- `ForbiddenError` carries `action`, `requested`, `reason`; `name = 'ForbiddenError'`, `code = 'FORBIDDEN'`.
-- `new Sandbox({ workspace, root, log })`.
-- `sandbox.check(action, requested)`: unknown action → `TypeError`; delegate to `workspace.resolve`; convert `PathError` to `ForbiddenError`; increment `refusals`; print one `ui.forbidden`; throw.
-- `sandbox.save(requested, content)`: check, create parents, write, return `{ existed, bytes }`.
-- `sandbox.remove(requested)`: check, `rmdirSync` for empty dirs, `unlinkSync` for files; missing → `{ missing: true }`; refuse deleting the root.
-- `sandbox.summary()`: `"save, edit, delete - only inside <root>"`.
-- `create_file`: check; exists → `ERROR: already exists - use edit_file or write_file`; else write and return `created <rel> (<bytes> bytes)`.
-- `write_file`: check; create parents; overwrite; return `created` or `overwrote`.
-- `edit_file`: `path`, `old_string`, `new_string`, `replace_all` (default false); check; missing file → `ERROR`; empty `old_string` → `ERROR`; count exact occurrences; 0 → `ERROR: old_string not found... Read the file and copy exactly, including whitespace.`; >1 without `replace_all` → `ERROR: old_string appears N times...`; replace literally (callback form or `split/join`); return `edited <rel>: <n> replacement(s), first at line <line>`.
-
-**Prove it**
-- [ ] `create_file` writes inside the workspace.
-- [ ] `create_file` refuses to clobber.
-- [ ] `write_file` overwrites.
-- [ ] `edit_file` works with exact matching.
-- [ ] `edit_file` treats `$1` literally.
-- [ ] `edit_file` fails on missing file, empty `old_string`, and ambiguity.
-- [ ] Every escape shape is refused for save/edit/delete.
-- [ ] Deleting the sandbox root is refused.
-- [ ] Unknown action to `check()` throws `TypeError`.
-- [ ] A refused write prints exactly one `FORBIDDEN` line.
-
-**Teach it**
-
-*The one idea:* defense in depth — the workspace answers "is it contained?", the sandbox answers "may this action happen at all?"
-
-*Demo cue:* run a write to `../escape.txt` and show the single loud line, then show the model receiving `FORBIDDEN:` and choosing another path.
-
-*Usual mistakes:* formatting refusals in three places; using `String.replace` with a replacement string (the `$&` trap); treating an unknown action as a refusal; letting `create_file` overwrite.
-
-*Time:* 3–4 hours.
-
-**Try it:** write a test that proves `edit_file` does not interpret `$&`. Then explain why a silent first-match replacement would be worse than an error.
-
----
-
-## Stage 9 build: Command execution
-
-**Files to create**
-- `test/shell-sandbox.test.js`
-
-**Files to modify**
-- `src/sandbox.js` (`checkCommand`, `tokenizeCommand`, `shellWriteTargets`)
-- `src/tools.js` (`run_command`)
-
-**Build**
-- `tokenizeCommand(text)`: split on whitespace honouring single/double quotes; emit operators as tokens (`>`, `>>`, `<`, `|`, `||`, `&`, `&&`, `;`); strip quotes.
-- `shellWriteTargets(command)`:
-  - redirections `>`/`>>` → following token (handle `2> file`);
-  - `DEST_LAST` commands (`copy`, `cp`, `move`, `mv`, `xcopy`, `ren`, `rename`, `ln`, `install`, `scp`, `rsync`) → last positional, at least two;
-  - `robocopy` → positional argument 2;
-  - `ALL_POSITIONAL` commands (`del`, `erase`, `rd`, `rmdir`, `rm`, `md`, `mkdir`, `touch`, `tee`, `unlink`, `truncate`, `shred`) → every positional;
-  - downloaders: `curl` `-o`/`--output`/`-O`/`--remote-name`, `wget` `-O`/`--output-document`;
-  - PowerShell: `out-file`, `set-content`, `add-content`, `new-item`, `ni`, `remove-item`, `copy-item`, `move-item`, `rename-item`, with `-destination`, `-dest`, `-path`, `-filepath`, `-literalpath`;
-  - strip `.exe`, `.cmd`, `.bat`, `.com`, `.ps1`; compare case-insensitively;
-  - a switch is `--flag`, `-f`, or Windows `/x`; a POSIX path like `/home` is not a switch.
-- `run_command` order: trim → empty error → hard deny-list → `sandbox.checkCommand` → policy (`deny`/`allow`/`ask`) → human confirm → execute.
-- CLI: add `--yes`/`-y` and the `--allow-commands` alias; implement `makeConfirm()` in `cli.js` so the approval prompt is one injectable function.
-- Hard deny-list before policy: recursive delete of a root path; `del` with `/s` or `/q`; `format`; `diskpart`; `shutdown`; `reboot`; `git push --force`/`-f`; `curl`/`wget` piped into `sh`/`bash`; fork bomb; `> /dev/sd...`.
-- Execute with `node:child_process.exec` in `workspace.root`, `timeout: 30000`, `maxBuffer: 1 MB`, `windowsHide: true`, `encoding: 'utf8'`.
-- `safeEnv(source)` keeps only `PATH`, `PATHEXT`, `HOME`, `USERPROFILE`, `TMPDIR`, `TEMP`, `TMP`, `SYSTEMROOT`, `COMSPEC`, `SHELL`, `LANG`, `LC_ALL`, `TERM`.
-- Result format: `exit code <n>`; optional `stdout:`; optional `stderr:`; `(no output)` if both empty; clip each stream to 6,000 chars with `... [<n> chars truncated]`; on timeout append `[tool] command timed out after 30s` and return non-zero.
-
-**Prove it**
-- [ ] `run_command` returns exit code, stdout, stderr.
-- [ ] Hard-denied commands are refused even with `--yes`.
-- [ ] `CMD_POLICY=deny` refuses all commands.
-- [ ] A shell copy to the Desktop is refused before running.
-- [ ] A redirect outside is refused before running.
-- [ ] Quoted arguments with spaces stay one token.
-- [ ] The child env does not contain `OPENROUTER_API_KEY`.
-- [ ] A timeout is handled gracefully.
-- [ ] `safeEnv` keeps only allow-listed names.
-
-**Teach it**
-
-*The one idea:* layered policy. No layer is sufficient; together they make the common case safe and the residual risk explicit.
-
-*Demo cue:* run the same `copy` command under `ask`, then show it is refused by the scan *before* the prompt. The absence of a prompt is the lesson.
-
-*Usual mistakes:* checking policy before the hard deny-list; letting `ask` become allow when there is no TTY; inheriting the parent environment; trying to parse a full shell with a tokenizer and pretending it is complete.
-
-*Time:* 4–5 hours.
-
-**Try it:** write five commands your scanner should catch and five it deliberately will not (obfuscated writes). Explain why "not caught" is not the same as "safe".
-
----
-
-## Stage 10 build: Long-term memory
-
-**Files to create**
-- `src/memory.js`
-- `src/memory.md` (initial store)
-- `test/memory.test.js`
-
-**Files to modify**
-- `src/prompt.js` (inject the digest)
-- `src/tools.js` (add `remember`, `recall`)
-- `src/cli.js` (wire memory)
-
-**Build**
-- Format: `- [tag] text _(YYYY-MM-DD)_`; tag ∈ `fact`, `pref`, `fix`, `gotcha`.
-- `parseMemory`: accept `-` or `*`, optional date, normalise whitespace, ignore prose/headings.
-- `Memory({ root, file, maxEntries = 60, maxEntryChars = 300, rememberChars = 2000, promptChars = 1200, promptEntries = 12, now })`.
-- `remember(text, { tag })`: normalise; truncate; empty → error; duplicate refreshes date; new appends; drop oldest over `maxEntries`.
-- `forget(match)`: delete entries whose text contains the match, case-insensitive.
-- `search(query, { limit = 20 })`: AND over words; empty query = all; newest first.
-- `digest({ entries, chars })`: newest first; add while it fits; state hidden count.
-- `summary()`: `<label> (<n> memory/memories[, newest YYYY-MM-DD])`.
-- `remember` tool: params `text` (required), `tag` (optional); no store → `ERROR: no memory store in this run (started with --no-memory)`; empty → `ERROR: nothing to remember - the note was empty`; duplicate → `already remembered... date refreshed`; new → `remembered...`.
-- `recall` tool: params `query` (optional), `limit` (default 20); no hits → `no memories in <label> match "<query>" (<size> stored)`.
-- CLI: `--memory` side-door prints store, digest and raw file, exits 0; `--no-memory`; `MEMORY_FILE`.
-
-**Initial `src/memory.md`** — the store is a normal file a student can open:
-
-```markdown
-# memory
-
-Long-term notes this agent keeps between runs. One bullet per memory:
-`- [tag] text _(YYYY-MM-DD)_` where tag is fact | pref | fix | gotcha.
-
-This file IS the store - edit it by hand, delete a wrong line, or commit it.
-The agent reads a bounded slice at the start of a run and can search the rest
-with the `recall` tool.
-
-- [pref] The user's name is Craig. _(2026-10-28)_
-- [pref] The user lives in Brighton, UK. _(2026-10-28)_
-- [gotcha] The run_command shell in this sandbox is Windows cmd.exe, so Unix tools like `cat`, `ls` may fail; use `type`, `dir` etc. instead. _(2026-10-28)_
-- [pref] The user is a Python developer. _(2026-10-28)_
-- [pref] The user has two dogs. _(2026-10-28)_
-```
-
-**Prove it**
-- [ ] Write and read back survive a new `Memory` instance.
-- [ ] Duplicate refreshes the date; no duplicate bullet.
-- [ ] `maxEntries` drops the oldest.
-- [ ] Long memory is truncated to the per-entry cap.
-- [ ] Empty/whitespace note is refused.
-- [ ] The digest is bounded, newest first, and states the hidden count.
-- [ ] Empty/disabled store adds and logs nothing.
-- [ ] `forget` removes matches.
-- [ ] Hand edits are picked up immediately.
-- [ ] `remember`/`recall` work through tools.
-- [ ] No memory store returns an error string, not a throw.
-- [ ] `--memory` prints the digest and exits 0.
-- [ ] `--no-memory` disables memory for that run.
-
-**Teach it**
-
-*The one idea:* memory is a file, not a mystery; eager digest and lazy recall are two cost profiles for the same store.
-
-*Demo cue:* `cat src/memory.md` on screen, edit it by hand, run again, and show the change is already known. Then `node src/cli.js --memory` and read the exact injected block.
-
-*Usual mistakes:* caching entries and letting the cache disagree with the file; writing task progress instead of durable facts; making the digest unbounded; forgetting to state what was hidden.
-
-*Time:* 3–4 hours.
-
-**Try it:** set `MEMORY_PROMPT_CHARS=0`, run a task that must recall, and explain the trade-off. Which tasks get worse? Which get cheaper?
-
----
-
-## Stage 11 build: Lifecycle hooks
-
-**Files to create**
-- `src/hooks.js`
-- `test/hooks.test.js`
-
-**Files to modify**
-- `src/cli.js` (wire hooks into the manual tool loop)
-
-**Build**
-- Nine events with exact names, icons, colours, when and powers:
-
-| # | Name | Icon | Colour | When | Can |
-|---|---|---|---|---|---|
-| 1 | `SessionStart` | 🚀 | cyan | once, before the first model call | refuse, note |
-| 2 | `UserPromptSubmit` | ✍️ | blue | once, as the task enters the loop | rewrite task, block |
-| 3 | `PreModel` | 🧠 | magenta | before every model call | observe |
-| 4 | `PostModel` | 💬 | cyan | after every reply | observe |
-| 5 | `PreToolUse` | 🛠️ | yellowBright | before every tool call | block |
-| 6 | `PostToolUse` | 📦 | green | after every tool call | replace observation |
-| 7 | `Stop` | 🏁 | greenBright | the model answered, loop ending | observe |
-| 8 | `StepLimit` | ⏳ | yellow | maxSteps reached | observe |
-| 9 | `SessionEnd` | 🔒 | red | always, finished or not | observe |
-
-- Four deciding hooks: `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`.
-- Return shapes: `{ note }`, `{ task }` (submit only), `{ replace }` (post-tool only), `{ block: true, reason }`; first block wins.
-- Thrown hooks are reported and ignored; never fatal.
-- `Hooks`: `on(name, fn, { id, once })`, `off(name, id)`, `count(name)`, `has(name)`, `attached()`, `run(name, payload)`.
-- `traceHooks({ log, detail, explain })`: one tracer per event; prints `  <icon>  [HOOK:<Name>] <when> - <detail>`.
-- `printHookCatalogue({ log, hooks })`; `HOOK_SUMMARY = { total: 9, deciding: 4, names }`.
-- CLI: `--hooks` prints the catalogue and exits 0; `--trace-hooks` (default on); `--no-hooks`; fire all nine at the right moments.
-
-**Prove it**
-- [ ] Every hook has icon, colour, when, gets, may, why.
-- [ ] The catalogue prints all 9 and marks attached hooks.
-- [ ] An unknown hook name throws.
-- [ ] Handlers run in order; the first block wins.
-- [ ] A throwing hook is reported, not fatal.
-- [ ] Notes print; `once` handlers detach.
-- [ ] `off` by id works.
-- [ ] Trace prints `[HOOK:Name]` by default.
-- [ ] `--no-hooks` silences trace.
-- [ ] `--hooks` prints the catalogue with no key.
-
-**Teach it**
-
-*The one idea:* a tool is how the model acts on the world; a hook is how *you* act on the loop.
-
-*Demo cue:* attach a twelve-line `PreToolUse` hook that blocks `git push`; show the model receive `DENIED:` and try another route.
-
-*Usual mistakes:* building hooks as notifications only (no decisions); letting a thrown hook kill the loop; letting a later hook unblock; hard-coding the catalogue separately from the event list.
-
-*Time:* 3–4 hours.
-
-**Try it:** write a `PostToolUse` redactor for `sk-or-...` and a `SessionEnd` note that prints the duration. Then prove a key cannot reach the model by running the demo.
-
----
-
-## Stage 12 build: The ReAct loop
-
-**Files to create**
-- `src/agent.js`
-- `src/heartbeat.js`
-- `test/agent.test.js`
-
-**Files to modify**
-- `src/cli.js` (replace the manual loop with `runTask`)
-
-**Build**
-- `runTask({ task, workspace, sandbox = null, commandPolicy, maxSteps, chatFn, confirm, hooks = null, memory = null, history = [], log = console.log, heartbeatMs = 5000 })`.
-- Return `{ ok, answer, messages, steps }` or `{ ok: false, reason, messages }`.
-- Rebuild the system prompt every task; filter old system messages out of `history`.
-- `ctx = { workspace, sandbox, commandPolicy, memory, confirm }`; `confirm` defaults to deny.
-- `hooks ?? new Hooks()` so every call site can call `hook.run` unconditionally.
-- Direct execution prints the "agent.js is the loop, not the program" hint; never import `cli.js`.
-- Seven beats per step:
-  1. blank line + `ui.step`.
-  2. fire `PreModel`.
-  3. start heartbeat; call `chatFn`; on throw stop heartbeat, print error, fire `SessionEnd`, return `request_failed`; otherwise stop heartbeat.
-  4. extract choice/message; fire `PostModel`.
-  5. truncation guard: `finish_reason === 'length'` with no tool calls → append assistant, append user "You were cut off by the length limit. Continue with smaller tool calls.", warn, `continue`. Never dispatch truncated calls.
-  6. append `sanitizeAssistant`; print `ui.think` if content.
-  7. no calls → print answer, fire `Stop`, `SessionEnd`, return `ok`; calls → for each: print tool, fire `PreToolUse`, block or run, print result, fire `PostToolUse`, append exactly one tool message.
-- After `maxSteps`: print error, fire `StepLimit` then `SessionEnd`, return `max_steps`.
-- Entry guards: `SessionStart`/`UserPromptSubmit` blocked → return `blocked_by_hook`; a rewrite replaces `messages[taskIndex]`.
-- `heartbeat(log, everyMs)` → `{ stop }`; prints `… still waiting for the model (<s>s)`; `timer.unref?.()`.
-
-**Prove it**
-- [ ] Tools run, then the loop stops on a plain answer.
-- [ ] A failing tool result is fed back so the model can correct.
-- [ ] The loop is capped at `maxSteps`.
-- [ ] A truncated reply is not dispatched; the model is asked to continue smaller.
-- [ ] The heartbeat prints waiting lines during slow calls.
-- [ ] Blocked hooks produce the right exit path.
-- [ ] The step limit fires `StepLimit` then `SessionEnd`.
-- [ ] A follow-up task sees previous conversation but a fresh system prompt.
-- [ ] Direct execution prints the hint and does not import the CLI.
-
-**Teach it**
-
-*The one idea:* the loop is the agent; extracting it late makes it understandable, and making it a library makes it testable.
-
-*Demo cue:* run a task with a fake `chatFn` in a test file, live, and show the whole agent run with no network.
-
-*Usual mistakes:* carrying the system message in history; dispatching truncated calls; leaking a heartbeat timer; throwing task outcomes instead of returning them; letting `agent.js` import `cli.js`.
-
-*Time:* 4–6 hours.
-
-**Try it:** write a fake model that always returns a tool call and assert the step limit. Then write one that returns a bad tool name and assert the loop recovers.
-
----
-
-## Stage 13 build: Offline demo
-
-**Files to create**
-- `src/demo.js`
-
-**Files to modify**
-- `src/cli.js` (`--demo`)
-- `test/agent.test.js` (demo assertions)
-
-**Build**
-- `demoChat()` returns an async `chatFn` walking `DEMO_SCRIPT`.
-- Tool call shape: `{ id, type: 'function', function: { name, arguments: JSON.stringify(args) } }`.
-- 14 tool steps + final answer:
-  1. `list_files` `{ path: '.' }`
-  2. `create_file` `{ path: 'demo/hello.js', content: ... }`
-  3. `run_command` `{ command: 'node demo/hello.js' }`
-  4. `edit_file` on the greeting
-  5. `run_command` again
-  6. `write_file` `../escape.txt` → expect `FORBIDDEN`
-  7. `read_file` `../package.json` → allowed
-  8. `write_file` `~/Desktop/pwned.txt` → expect `FORBIDDEN`
-  9. `run_command` shell copy to Desktop → expect `FORBIDDEN`
-  10. `run_command` `git push --force` → expect `DENIED`
-  11. `run_command` that echoes `OPENROUTER_API_KEY` → expect `absent`
-  12. `run_command` that exits 1 → expect `exit code 1`
-  13. `remember`
-  14. `recall`
-- Each assistant step has a short natural-language `content` before its tool call.
-- `maxSteps = DEMO_SCRIPT.length + 1 = 15`.
-- `sandboxScorecard(messages)`: map `tool_call_id` to result; regex checks; rows `{ ok, label, seen }`.
-- Checks: `s6 /^FORBIDDEN: SAVE \.\.\/escape\.txt/`; `s7 /^\.\.\/package\.json \(\d+ lines\)/`; `s8 /^FORBIDDEN: SAVE ~\/Desktop\/pwned\.txt/`; `s9 /^FORBIDDEN: COMMAND COPY /`; `s10 /^DENIED: blocked by policy/`; `s11 /OPENROUTER_API_KEY=absent/`; `s12 /^exit code 1\b/`.
-- CLI: `--demo` uses the scripted chat, `maxSteps = 15`, auto-approves commands, prints the scorecard; exits 0 on 7/7, else `process.exitCode = 1`.
-
-**Prove it**
-- [ ] `node src/cli.js --demo` completes 14 steps + final answer.
-- [ ] It creates/edits/runs `workspace/demo/hello.js`.
-- [ ] It refuses `../escape.txt`, `~/Desktop/pwned.txt`, and the shell copy.
-- [ ] It allows the read of `../package.json`.
-- [ ] It denies `git push --force`.
-- [ ] The child prints `OPENROUTER_API_KEY=absent`.
-- [ ] It reports exit code 1 with the explanation.
-- [ ] It remembers and recalls.
-- [ ] The scorecard prints **7/7 checks held**.
-- [ ] The process exits 0.
-
-**Teach it**
-
-*The one idea:* a demo can be a test; the fake model makes the safety guards reproducible.
-
-*Demo cue:* run `--demo` twice. The second run hits `create_file` refusing to clobber and still finishes cleanly. That is recoverability, live.
-
-*Usual mistakes:* setting `maxSteps` to 14; letting the demo skip the real sandbox; treating a red row as a presentation bug rather than a regression.
-
-*Time:* 2–3 hours.
-
-**Try it:** add an eighth scorecard check for a guard the course does not yet cover (for example, a `delete_file` of the root). Make it pass, then make it fail on purpose.
-
----
-
-## Stage 14 build: Sessions and CLI polish
-
-**Files to modify**
-- `src/cli.js` (major polish)
-- `test/session.test.js`
-
-**Build**
-- `MAX_HISTORY = 24`.
-- `trimHistory(messages, max)`: drop system; keep at most `max`; move `start` forward until it lands on a `user` message; if no safe boundary, return `[]`.
-- `runSession`: `askTask` → command or task → `runTask({ ...base, task, history })` → `history = trimHistory(result.messages)`.
-- Every task gets a fresh step budget.
-- After each task: divider, pass/fail, message-count hint, retry hint.
-- On exit: `session over - N task(s) run.`
-- Banner before step 1: workspace, sandbox, model + source, key fingerprint + source, env file, command policy, timeout, tools, memory summary, hooks state.
-- Warnings: live mode + model lacks `/`; normalised bare name note.
-- Exit codes: `0` normal; `1` request/fatal; `2` no task/no TTY; `3` step limit.
-- `taskExitCode(result)` mapping as above.
-- `main()` catches fatal errors, prints `fatal: <stack>`, sets `process.exitCode`.
-- Only call `main()` when `import.meta.url === pathToFileURL(process.argv[1]).href`.
-
-**Prove it**
-- [ ] `/new` clears conversation history but leaves workspace and memory untouched.
-- [ ] `/quit` and `/exit` end the session.
-- [ ] A follow-up sees previous conversation but a fresh system prompt with the latest memory.
-- [ ] Every task starts its own step budget.
-- [ ] A task-rewriting hook rewrites the new task, not history.
-- [ ] No task + non-TTY exits 2.
-- [ ] Step limit exits 3.
-- [ ] Live mode without a key exits 1.
-- [ ] The banner prints on every run.
-- [ ] The exit note explains non-zero codes.
-
-**Teach it**
-
-*The one idea:* task versus session, and honesty at the boundaries — trimmed history, reproducible banner, meaningful exit codes.
-
-*Demo cue:* run two tasks in one session, show the message count grow, then `/new` and show it reset while the workspace file survives.
-
-*Usual mistakes:* cutting history at an arbitrary index; carrying the system prompt; forgetting that providers reject an unanswered `tool_calls` tail; letting tests import `cli.js` and run `main()`.
-
-*Time:* 3–4 hours.
-
-**Try it:** force a history that would start with a `tool` message and prove `trimHistory` returns a valid boundary (or `[]`).
-
----
-
-## Stage 15 build: Full test suite
-
-**Files to create**
-- Any remaining test files; make every prior suite comprehensive.
-
-**Files to modify**
-- Bring each `test/*.test.js` up to the original specification.
-
-**Build / required suites**
-- `workspace.test.js` — path policy, containment, symlink safety.
-- `sandbox.test.js` — refusals, root deletion, tool-layer conversion.
-- `tools.test.js` — all eight tools, validation, `safeEnv`, policy.
-- `shell-sandbox.test.js` — tokenisation, write-target scanning.
-- `agent.test.js` — loop behaviour, truncation, heartbeat, demo guards.
-- `hooks.test.js` — registry, blocking, replacing, tracing, catalogue.
-- `memory.test.js` — round-trip, duplicates, bounds, digest, forget, search.
-- `prompt.test.js` — rules, injection, logging.
-- `llm.test.js` — timeout, errors, sanitisation.
-- `config.test.js` — `.env` precedence, fingerprint, model normalisation.
-- `session.test.js` — commands, trimming, follow-up tasks.
-- `ui.test.js` — styling, verbatim output, result classification.
-- `input.test.js` — `askTask`, blank lines, Ctrl-C.
-
-**Prove it**
-- [ ] `npm test` runs fully offline.
-- [ ] All suites pass.
-- [ ] No real network calls.
-- [ ] No API key required.
-
-**Teach it**
-
-*The one idea:* the test suite is the architecture made executable; if a module cannot be tested alone, the boundary is wrong.
-
-*Demo cue:* unplug the network (or set an invalid key) and run `npm test`. It should not care.
-
-*Usual mistakes:* leaking a mocked `fetch`; writing memory into the real `src/memory.md`; asserting ANSI codes without accounting for TTY; testing the model instead of the loop.
-
-*Time:* 6–10 hours.
-
-**Try it:** pick the weakest suite and add one test that would have caught a real bug you hit earlier in the course.
-
----
-
-## Stage 16 build: Documentation and acceptance
-
-**Files to create**
-- `README.md`
-- `demo_prompt.md`
-- `.env.example` (if absent)
-
-**Build — README**
-- One-paragraph summary.
-- Quick start: `npm install`, copy `.env.example` to `.env`, set the key, `npm start`, `npm run demo`.
-- The loop diagram and the seven beats.
-- File-by-file tour, `agent.js` first.
-- The eight tools and what each is for.
-- The read/write asymmetry and the shell limitation.
-- The nine lifecycle hooks, with a table.
-- Long-term memory: file format, eager digest vs lazy recall, `--memory`.
-- Sessions and history trimming.
-- Configuration table with defaults and precedence.
-- Exit codes.
-- Safety model: workspace fence, hard denies, environment allow-list, command policy, and an explicit "this is not a container" statement.
-- Examples: a Desktop write that ends in `FORBIDDEN`; a prompt that ends with `remember`.
-
-**Build — `demo_prompt.md`**
-- `create hello.js that prints today's date and time, run it, and save its output to hello-output.txt`
-- `save a file test.txt that contains 'HELLO WORLD' and save to the desktop` (must end in `FORBIDDEN`)
-- `npm run demo`, `node src/cli.js --memory`, `node src/cli.js --demo`
-- `work out how this package is tested, run the tests, and remember the command...`
-
-**Prove it — the twenty final checks**
-- [ ] 1. `npm install` succeeds with only `chalk` as a runtime dependency.
-- [ ] 2. `npm test` runs fully offline and all suites pass.
-- [ ] 3. `node src/cli.js --help` prints usage without a key.
-- [ ] 4. `node src/cli.js --hooks` prints the full nine-hook catalogue without a key.
-- [ ] 5. `node src/cli.js --memory` prints the store and the exact digest.
-- [ ] 6. `node src/cli.js --demo` completes the script with **7/7 checks held**.
-- [ ] 7. Live mode with a valid key runs a task through OpenRouter.
-- [ ] 8. Live mode without a key prints the missing-key error and exits 1.
-- [ ] 9. No task + no TTY exits 2.
-- [ ] 10. A task that never yields an answer stops at the step limit and exits 3.
-- [ ] 11. A write outside `workspace/` prints one `⛔ FORBIDDEN` line and returns a `FORBIDDEN:` observation without touching disk.
-- [ ] 12. A read outside `workspace/` succeeds.
-- [ ] 13. `CMD_POLICY=deny` refuses all commands; hard-denied commands are refused even with `--yes`.
-- [ ] 14. The child shell cannot read `OPENROUTER_API_KEY`.
-- [ ] 15. Memory survives process restarts; duplicates refresh; the file is bounded; hand edits are picked up.
-- [ ] 16. Every normal run prints `[HOOK:Name]` traces; `--no-hooks` silences them.
-- [ ] 17. `/new` clears conversation history but leaves workspace and memory untouched; `/quit` and `/exit` end the session.
-- [ ] 18. A follow-up sees previous conversation but a freshly rebuilt system prompt with the latest memory.
-- [ ] 19. `agent.js` executed directly prints the hint and does not run the CLI.
-- [ ] 20. No framework, no agent SDK, no database, no hidden global state.
-
-**Teach it**
-
-*The one idea:* documentation is part of the architecture; overclaiming safety is worse than naming limits.
-
-*Demo cue:* hand the README to someone who has never seen the project and ask them to explain the loop back to you. That is the acceptance test for the docs.
-
-*Usual mistakes:* a README that is only commands; hiding the "not a container" caveat; letting `demo_prompt.md` drift from the actual behaviour.
-
-*Time:* 3–4 hours.
-
-**Try it:** add a "Known limits and where to extend" section to the README, then pick one limit and write the design sketch for the layer that would remove it.
-
----
-
-## The course checklist
-
-Copy this into your notes and tick as you go.
-
-| Stage | Module | What you can do after this stage | Accepted |
-|---|---|---|---|
-| 0 | Scaffold | `npm install` works | ☐ |
-| 1 | `ui.js` | Print styled terminal output | ☐ |
-| 2 | `config.js` + `llm.js` | Load `.env`, call OpenRouter | ☐ |
-| 3 | Minimal `cli.js` | **Chat with the model** 🎉 | ☐ |
-| 4 | History in `cli.js` | Have a **multi-turn conversation** | ☐ |
-| 5 | `prompt.js` | Inject behavioural rules | ☐ |
-| 6 | `workspace.js` | Fence writes, open reads | ☐ |
-| 7 | Read tools | Model **lists and reads files** | ☐ |
-| 8 | Sandbox + write tools | Model **creates and edits files** safely | ☐ |
-| 9 | `run_command` | Model **runs shell commands** with policy | ☐ |
-| 10 | `memory.js` | Model **remembers and recalls** across runs | ☐ |
-| 11 | `hooks.js` | Observe/rewrite/block lifecycle events | ☐ |
-| 12 | `agent.js` | Extract the loop into a **testable library** | ☐ |
-| 13 | `demo.js` | **Offline demo** proves all guards hold | ☐ |
-| 14 | Full CLI polish | **Sessions**, history trimming, banner, exit codes | ☐ |
-| 15 | Tests | `npm test` passes fully offline | ☐ |
-| 16 | Docs | README teaches the architecture | ☐ |
-
----
-
-# Part III: The teacher's handbook
-
-This part is for the person running the room. It assumes you have read Parts 0–E and skimmed Part II. It gives you a plan you can teach from, not a script you must read verbatim. The best version of this course is a sequence of **predictions, demonstrations and repairs**: you ask the room what will happen, run it, and then explain the gap.
+This part is for the person running the room. It assumes you have read Parts 0–E and the stage builds in `book.md`. It gives you a plan you can teach from, not a script you must read verbatim. The best version of this course is a sequence of **predictions, demonstrations and repairs**: you ask the room what will happen, run it, and then explain the gap.
 
 ## 1. What this course is and is not
 
@@ -4241,7 +3357,7 @@ Use these as the spine of your assessment. A student who can do the right-hand c
 
 ### Option A — Sixteen sessions (the default)
 
-One stage per session, 60–120 minutes. Best for a weekly cohort or a semester. Sessions 0–5 are lighter; 9 and 12 are the heaviest. Give students the build companion and the lab before each session.
+One stage per session, 60–120 minutes. Best for a weekly cohort or a semester. Sessions 0–5 are lighter; 9 and 12 are the heaviest. Give students the matching workbook stage and the lab before each session.
 
 | Session | Stage | Session shape |
 |---|---|---|
@@ -4268,16 +3384,16 @@ Day one: stages 0–9 (a chatbot that becomes an agent). Day two: stages 10–16
 
 ### Option C — Self-paced
 
-Students read the theory chapter, do the build entry, tick the boxes, and do the lab. The teacher acts as reviewer. Use the self-assessment in Part IV as the completion gate. Add a weekly office hour for the "why" questions.
+Students read the theory chapter, do the matching workbook stage, tick the boxes, and do the lab. The teacher acts as reviewer. Use the self-assessment in Part III as the completion gate. Add a weekly office hour for the "why" questions.
 
-**A note on session length:** the times in Part II are for a focused student typing from scratch. In a live class, double them. The value is in the mistakes, not the typing.
+**A note on session length:** the times in the workbook stages are for a focused student typing from scratch. In a live class, double them. The value is in the mistakes, not the typing.
 
 ## 4. The session run sheet
 
 Use this for every stage. It works because it alternates telling with predicting and doing.
 
 **Before the session (10 minutes)**
-- Re-read the stage's *Teach it* block in Part II.
+- Re-read the stage's *Teach it* block in `book.md`.
 - Run the stage's demo on the exact machine you will teach from.
 - Prepare one deliberate failure to show. A stage with no failure is a stage students will not remember.
 - Check the environment: Node version, `node_modules`, `.env`, network, terminal size.
@@ -4301,7 +3417,7 @@ Use this for every stage. It works because it alternates telling with predicting
 - Connect to a principle: errors as observations, least privilege, bounded autonomy, etc.
 
 **Student lab (15–30 minutes)**
-- Give the lab from Part IV. Circulate. Look for the specific misconception, not just a wrong output.
+- Give the lab from Part III. Circulate. Look for the specific misconception, not just a wrong output.
 
 **Close (5 minutes)**
 - One-sentence exit ticket: "Explain X to someone who has not read the chapter."
@@ -4510,9 +3626,9 @@ Delete the network. Run the tests. "The harness does not need the model to be te
 
 ---
 
-# Part IV: The student workbook
+# Part III: The student workbook
 
-The theory tells you how the harness works. The build companion tells you what to type. This workbook is where you find out whether *you* can do it. Every lab has a concrete artefact, a question that cannot be answered by copying, and a way to check yourself.
+The theory tells you how the harness works. `book.md` tells you what to type. This workbook is where you find out whether *you* can do it. Every lab has a concrete artefact, a question that cannot be answered by copying, and a way to check yourself.
 
 ## 1. How to use the labs
 
@@ -4643,7 +3759,7 @@ Answer one after each phase. Keep the answers short; revisit them at the end of 
 
 ## 5. Capstone projects
 
-Choose one. Each is assessed with the rubric in Part III, section 9.
+Choose one. Each is assessed with the rubric in Part II, section 9.
 
 ### Capstone A — The safe extension
 Add a new tool that is genuinely useful and genuinely risky: for example, `http_get` (fetch a URL), `search_files` (grep), or `run_tests`. It must have:
@@ -4734,7 +3850,7 @@ If you ticked fewer than twelve, re-read the matching stage and do its break-it 
 
 ---
 
-# Part V: Deep dives on harness engineering
+# Part IV: Deep dives on harness engineering
 
 Parts 0–E teach *this* harness. This part zooms out: what harness engineering is as a discipline, which decisions transfer to any agent, and where a production system grows beyond the course. It is written for the teacher who needs one level more than the students, and for the student who wants to keep going after Stage 16.
 
@@ -5163,9 +4279,9 @@ If your students leave asking those four questions of every agent they meet, the
 
 ---
 
-# Part VI: Reference
+# Part V: Reference
 
-Everything a student or teacher needs to look up during a lab. This part is deliberately dry; the teaching is in Parts II–V.
+Everything a student or teacher needs to look up during a lab. This part is deliberately dry; the teaching is in Parts 0–E and `book.md`.
 
 ## A. Configuration reference
 
@@ -5412,7 +4528,7 @@ No arrow points from `agent.js` back to `cli.js`. `ui.js` is a leaf. `workspace.
 
 ## F. Final acceptance checklist
 
-The same twenty checks as Part II, Stage 16, repeated here as a sign-off sheet. A release is done when every box is ticked **on a clean checkout**.
+The same twenty checks as `book.md` Stage 16, repeated here as a sign-off sheet. A release is done when every box is ticked **on a clean checkout**.
 
 ### Install and offline proof
 - [ ] 1. `npm install` succeeds with only `chalk` as a runtime dependency.
