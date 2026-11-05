@@ -17,6 +17,8 @@ active state, reading-progress bar, warm-neutral palette (`--paper`, `--terra`,
 - Reads a `.md` file from the explainers directory (or any path you provide)
 - Parses headings, paragraphs, lists, tables, code blocks, blockquotes, and inline
   formatting into semantic HTML
+- Renders blockquotes as callouts whose bodies can hold multiple paragraphs and
+  real `<ul>`/`<ol>` lists (see **Callout contents** below)
 - Generates a numbered sidebar TOC from level-1 (`#`) headings
 - Wraps everything in a self-contained HTML file with no external dependencies
 - Adds active-section highlighting and a top progress bar via a small inline script
@@ -58,11 +60,39 @@ HTML page, call the script or copy and adapt it.
 | `### Heading` | `<h4>` |
 | `` `code` `` | `<code>` with warm-grey background |
 | `\`\`\`lang\n…\n\`\`\`` | `<figure class="code"><figcaption>…</figcaption><pre>…</pre></figure>` |
-| `> quote` | `<div class="callout">` |
+| `> quote` | `<div class="callout">` — may contain paragraphs and `-` / `1.` lists |
 | `\| table \|` | `<div class="table-wrap"><table>…</table></div>` |
 | `- item` / `1. item` | `<ul>` / `<ol>` with custom bullets |
 | `**bold**` / `*italic*` | `<strong>` / `<em>` |
 | `---` | `<hr>` |
+
+## Callout contents (paragraphs and lists)
+
+Blockquotes become callouts, and a callout body is parsed rather than dumped
+inline. Inside a `>` block:
+
+- a blank quoted line (`>`) starts a new paragraph or ends a list
+- `> - item` / `> * item` becomes a real `<ul>` with `<li>` items
+- `> 1. item` becomes a real `<ol>` with `<li>` items
+- anything else is inline text (`**bold**`, `` `code` ``, links)
+
+Write it like this:
+
+```markdown
+> **What is where.**
+> - **Part I** — the staged theory.
+> - **Part II** — the build companion.
+>
+> The code excerpts are illustrative.
+```
+
+...not as one blob of quoted lines. A literal `- ` line inside a callout used to
+render as a paragraph that began with a hyphen (for example in
+`COURSE/course-manual.html`); the parser and the `.callout` styles now handle it.
+Do not "fix" a generated callout list by hand - fix the Markdown and re-run.
+
+The template adds matching spacing for `.callout p`, `.callout ul`/`.callout ol`
+and `.callout li`, so keep that CSS block when copying the template.
 
 ## Tuning the generated page
 
@@ -131,14 +161,17 @@ After running the script, open the generated `.html` in a browser and check:
 3. Code blocks are readable (dark background, Monospace font)
 4. Tables scroll horizontally on narrow viewports
 5. Print stylesheet hides the sidebar and progress bar
-6. The **Aa** button opens the site customiser; the mode select offers System,
+6. A callout written with `> - item` lines renders as a bulleted list (not a
+   paragraph starting with "-"), and a normal `> quote` callout still renders
+   as a paragraph
+7. The **Aa** button opens the site customiser; the mode select offers System,
    Light, and Dark, and switching it repaints both the TOC sidebar and the content
    pane immediately
-7. System follows the OS preference; Light and Dark force their mode and survive a
+8. System follows the OS preference; Light and Dark force their mode and survive a
    reload
-8. Fonts are dropdowns (no free-text inputs); choosing a stack updates headings,
+9. Fonts are dropdowns (no free-text inputs); choosing a stack updates headings,
    body, or code text immediately
-9. Reloading preserves the customised settings, **Reset** restores defaults, and
-   **Copy CSS** produces valid `:root{...}` and `html[data-theme="dark"]{...}`
-   blocks
-10. The customiser is hidden in print and on narrow mobile viewports
+10. Reloading preserves the customised settings, **Reset** restores defaults, and
+    **Copy CSS** produces valid `:root{...}` and `html[data-theme="dark"]{...}`
+    blocks
+11. The customiser is hidden in print and on narrow mobile viewports

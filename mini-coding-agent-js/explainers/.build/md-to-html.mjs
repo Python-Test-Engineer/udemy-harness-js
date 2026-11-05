@@ -59,9 +59,59 @@ function mdToHtml(md) {
     listType = null;
   }
 
+  // A callout may contain paragraphs AND lists. Joining every quoted line into
+  // one string turned `> - item` bullets into a literal "- item" paragraph, so
+  // the body is parsed here: blank quoted lines split paragraphs, `-`/`*` and
+  // `1.` lines become real <ul>/<ol> lists, everything else is inline text.
+  function renderCalloutBody(lines) {
+    const blocks = [];
+    let paragraph = [];
+    let list = null; // { type: 'ul' | 'ol', items: string[] }
+
+    const flushParagraph = () => {
+      if (!paragraph.length) return;
+      blocks.push(`<p>${inline(paragraph.join(' '))}</p>`);
+      paragraph = [];
+    };
+
+    const flushCalloutList = () => {
+      if (!list) return;
+      const items = list.items.map(item => `<li>${inline(item)}</li>`).join('\n');
+      blocks.push(`<${list.type}>\n${items}\n</${list.type}>`);
+      list = null;
+    };
+
+    for (const entry of lines) {
+      const text = String(entry ?? '');
+      if (text.trim() === '') {
+        flushParagraph();
+        flushCalloutList();
+        continue;
+      }
+
+      const ulItem = text.match(/^\s*[-*]\s+(.+)$/);
+      const olItem = text.match(/^\s*\d+\.\s+(.+)$/);
+      if (ulItem || olItem) {
+        flushParagraph();
+        const type = ulItem ? 'ul' : 'ol';
+        if (list && list.type !== type) flushCalloutList();
+        if (!list) list = { type, items: [] };
+        list.items.push(ulItem ? ulItem[1] : olItem[1]);
+        continue;
+      }
+
+      flushCalloutList();
+      paragraph.push(text.trim());
+    }
+
+    flushParagraph();
+    flushCalloutList();
+    return blocks.join('\n');
+  }
+
   function flushBlockquote() {
     if (!inBlockquote || bqBuffer.length === 0) return;
-    const content = bqBuffer.map(l => inline(l)).join('\n');
+    const content = renderCalloutBody(bqBuffer);
     html += `\n<div class="callout">${content}</div>\n`;
     bqBuffer = [];
     inBlockquote = false;
@@ -509,6 +559,11 @@ html[data-theme="dark"] code{background:#2b2521; color:#f0b49a}
   background:var(--tint); color:#4b4741; font-size:0.925rem; line-height:1.62;
 }
 .callout strong{color:var(--ink)}
+.callout p{margin:0.55em 0 0}
+.callout p:first-child{margin-top:0}
+.callout ul,.callout ol{margin:0.55em 0 0.2em 1.15em}
+.callout li{margin:0 0 0.35em}
+.callout li:last-child{margin-bottom:0}
 .callout.warn{border-left-color:var(--amber); background:#f7f0da; color:#4e4734}
 html[data-theme="dark"] .callout{color:var(--prose)}
 html[data-theme="dark"] .callout.warn{background:#2e2a1e; color:#d8cfb8}
